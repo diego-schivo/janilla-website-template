@@ -40,6 +40,12 @@ export default class Page extends WebComponent {
 	async updateDisplay() {
 		let hs = history.state;
 		const a = this.closest("app-element");
+		if (!Object.hasOwn(hs, "page"))
+			history.replaceState(hs = {
+				...hs,
+				page: a.serverState?.page
+			}, "");
+
 		if (this.dataset.slug != hs.page?.slug) {
 			const u = new URL(`${a.dataset.apiUrl}/pages`, location.href);
 			u.searchParams.append("slug", this.dataset.slug);

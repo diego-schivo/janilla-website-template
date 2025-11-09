@@ -39,9 +39,11 @@ export default class App extends WebComponent {
 	connectedCallback() {
 		const el = this.children.length === 1 ? this.firstElementChild : null;
 		if (el?.matches('[type="application/json"]')) {
-			history.replaceState(JSON.parse(el.text), "");
+			this.serverState = JSON.parse(el.text);
 			el.remove();
 		}
+		if (!history.state)
+			history.replaceState({}, "");
 		super.connectedCallback();
 		this.addEventListener("change", this.handleChange);
 		this.addEventListener("click", this.handleClick);
@@ -80,27 +82,44 @@ export default class App extends WebComponent {
 	}
 
 	handlePopState = () => {
-		console.log("handlePopState", JSON.stringify(history.state));
+		// console.log("handlePopState", JSON.stringify(history.state));
+		delete this.serverState;
 		window.scrollTo(0, 0);
 		delete this.state.notFound;
 		this.requestDisplay();
 	}
 
 	async updateDisplay() {
+		const s = this.state;
+		if (!Object.hasOwn(s, "user"))
+			s.user = Object.hasOwn(this.serverState, "user")
+				? this.serverState.user
+				: await (await fetch(`${this.dataset.apiUrl}/users/me`)).json();
+
 		const m = location.pathname.match(adminRegex);
-		const hs = history.state;
 		if (m) {
 			this.appendChild(this.interpolateDom({
 				$template: "",
 				admin: {
 					$template: "admin",
-					email: hs.user?.email,
+					email: s.user?.email,
 					path: m[1] ?? "/"
 				}
 			}));
 			return;
 		}
 
+		if (!Object.hasOwn(s, "header"))
+			s.header = Object.hasOwn(this.serverState, "header")
+				? this.serverState.header
+				: await (await fetch(`${this.dataset.apiUrl}/header`)).json();
+		if (!Object.hasOwn(s, "footer"))
+			s.footer = Object.hasOwn(this.serverState, "footer")
+				? this.serverState.footer
+				: await (await fetch(`${this.dataset.apiUrl}/footer`)).json();
+
+		/*
+		const hs = history.state;
 		if (hs.redirects)
 			for (const x of hs.redirects)
 				if (x.from === location.pathname) {
@@ -108,6 +127,8 @@ export default class App extends WebComponent {
 					dispatchEvent(new CustomEvent("popstate"));
 					return;
 				}
+		*/
+
 		const link = x => {
 			let h;
 			switch (x.type.name) {
@@ -138,9 +159,9 @@ export default class App extends WebComponent {
 			style: `color-scheme: ${cs ?? "light dark"}`,
 			header: {
 				$template: "header",
-				navItems: hs.header?.navItems?.map(link)
+				navItems: s.header?.navItems?.map(link)
 			},
-			content: hs.notFound ? { $template: "not-found" } : (() => {
+			content: s.notFound ? { $template: "not-found" } : (() => {
 				const m2 = location.pathname.match(postsRegex);
 				if (m2)
 					return m2[1] ? {
@@ -160,7 +181,7 @@ export default class App extends WebComponent {
 			})(),
 			footer: {
 				$template: "footer",
-				navItems: hs.footer?.navItems?.map(link),
+				navItems: s.footer?.navItems?.map(link),
 				options: ["auto", "light", "dark"].map(x => ({
 					$template: "option",
 					value: x,

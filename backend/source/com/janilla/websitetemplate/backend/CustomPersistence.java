@@ -40,8 +40,10 @@ import java.util.Set;
 
 import com.janilla.cms.CmsPersistence;
 import com.janilla.cms.Document;
+import com.janilla.cms.DocumentReference;
+import com.janilla.cms.DocumentStatus;
 import com.janilla.cms.Types;
-import com.janilla.ioc.DependencyInjector;
+import com.janilla.ioc.DiFactory;
 import com.janilla.java.Java;
 import com.janilla.json.Converter;
 import com.janilla.json.Json;
@@ -56,14 +58,14 @@ public class CustomPersistence extends CmsPersistence {
 
 	private CrudObserver searchObserver;
 
-	protected final DependencyInjector injector;
+	protected final DiFactory diFactory;
 
 	protected final Properties configuration;
 
 	public CustomPersistence(SqliteDatabase database, Collection<Class<? extends Entity<?>>> types,
-			TypeResolver typeResolver, DependencyInjector injector, Properties configuration) {
+			TypeResolver typeResolver, DiFactory diFactory, Properties configuration) {
 		super(database, types, typeResolver);
-		this.injector = injector;
+		this.diFactory = diFactory;
 		this.configuration = configuration;
 	}
 
@@ -78,10 +80,10 @@ public class CustomPersistence extends CmsPersistence {
 				public <E> void afterCreate(E entity) {
 					var d = (Document<?>) entity;
 					var dc = d.getClass();
-					if (types.contains(dc) && d.documentStatus() == Document.Status.PUBLISHED)
+					if (types.contains(dc) && d.documentStatus() == DocumentStatus.PUBLISHED)
 						crud(SearchResult.class)
 								.create(Reflection.copy(d,
-										new SearchResult(null, new Document.Reference(dc, d.id()), null, null, null,
+										new SearchResult(null, new DocumentReference(dc, d.id()), null, null, null,
 												null, null, null, null, null),
 										y -> !Set.of("id", "document").contains(y)));
 				}
@@ -99,13 +101,13 @@ public class CustomPersistence extends CmsPersistence {
 								;
 							else
 								c.create(Reflection.copy(d2,
-										new SearchResult(null, new Document.Reference(dc, d2.id()), null, null, null,
+										new SearchResult(null, new DocumentReference(dc, d2.id()), null, null, null,
 												null, null, null, null, null),
 										y -> !Set.of("id", "document").contains(y)));
 							break;
 						case PUBLISHED:
 							if (d2.documentStatus() == d1.documentStatus())
-								c.update(c.find("document", new Document.Reference(dc, d2.id())),
+								c.update(c.find("document", new DocumentReference(dc, d2.id())),
 										x -> Reflection.copy(d2, x, y -> !Set.of("id", "document").contains(y)));
 							else
 								c.delete(c.find("document", d2.id()));
@@ -118,9 +120,9 @@ public class CustomPersistence extends CmsPersistence {
 				public <E> void afterDelete(E entity) {
 					var d = (Document<?>) entity;
 					var dc = d.getClass();
-					if (types.contains(dc) && d.documentStatus() == Document.Status.PUBLISHED) {
+					if (types.contains(dc) && d.documentStatus() == DocumentStatus.PUBLISHED) {
 						var c = crud(SearchResult.class);
-						c.delete(c.find("document", new Document.Reference(dc, d.id())));
+						c.delete(c.find("document", new DocumentReference(dc, d.id())));
 					}
 				}
 			};
@@ -148,7 +150,7 @@ public class CustomPersistence extends CmsPersistence {
 		try (var is = getClass().getResourceAsStream("seed-data.json")) {
 			var s = new String(is.readAllBytes());
 			var o = Json.parse(s);
-			sd = (SeedData) injector.create(Converter.class).convert(o, SeedData.class);
+			sd = (SeedData) diFactory.create(Converter.class).convert(o, SeedData.class);
 		}
 		for (var x : sd.categories())
 			crud(Category.class).create(x);

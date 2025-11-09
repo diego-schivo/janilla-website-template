@@ -23,10 +23,10 @@
  */
 package com.janilla.websitetemplate.backend;
 
-import com.janilla.cms.Document;
+import com.janilla.cms.DocumentReference;
 import com.janilla.cms.Types;
-import com.janilla.persistence.Index;
 
-public record Link(LinkType type, Boolean newTab, @Index Document.@Types( {
-		Page.class, Post.class }) Reference<?, ?> reference, String uri, String text, LinkAppearance appearance){
+public record Link(LinkType type, Boolean newTab, @Types( {
+		Page.class, Post.class }) DocumentReference<?, ?> reference, String uri, String text,
+		LinkAppearance appearance){
 }

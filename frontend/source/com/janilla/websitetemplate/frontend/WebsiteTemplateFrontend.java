@@ -45,7 +45,7 @@ import javax.net.ssl.SSLContext;
 import com.janilla.http.HttpClient;
 import com.janilla.http.HttpHandler;
 import com.janilla.http.HttpServer;
-import com.janilla.ioc.DependencyInjector;
+import com.janilla.ioc.DiFactory;
 import com.janilla.java.Java;
 import com.janilla.net.Net;
 import com.janilla.reflect.ClassAndMethod;
@@ -63,10 +63,10 @@ public class WebsiteTemplateFrontend {
 		try {
 			WebsiteTemplateFrontend a;
 			{
-				var f = new DependencyInjector(Java.getPackageClasses(WebsiteTemplateFrontend.class.getPackageName()),
+				var f = new DiFactory(Java.getPackageClasses(WebsiteTemplateFrontend.class.getPackageName()),
 						WebsiteTemplateFrontend.INSTANCE::get);
 				a = f.create(WebsiteTemplateFrontend.class,
-						Java.hashMap("factory", f, "configurationFile",
+						Java.hashMap("diFactory", f, "configurationFile",
 								args.length > 0 ? Path.of(
 										args[0].startsWith("~") ? System.getProperty("user.home") + args[0].substring(1)
 												: args[0])
@@ -80,7 +80,7 @@ public class WebsiteTemplateFrontend {
 					c = Net.getSSLContext(Map.entry("JKS", x), "passphrase".toCharArray());
 				}
 				var p = Integer.parseInt(a.configuration.getProperty("website-template.frontend.server.port"));
-				s = a.injector.create(HttpServer.class,
+				s = a.diFactory.create(HttpServer.class,
 						Map.of("sslContext", c, "endpoint", new InetSocketAddress(p), "handler", a.handler));
 			}
 			s.serve();
@@ -93,24 +93,24 @@ public class WebsiteTemplateFrontend {
 
 	protected final DataFetching dataFetching;
 
-	protected final DependencyInjector injector;
+	protected final DiFactory diFactory;
 
 	protected final HttpHandler handler;
 
 	protected final HttpClient httpClient;
 
-	public WebsiteTemplateFrontend(DependencyInjector injector, Path configurationFile) {
-		this.injector = injector;
+	public WebsiteTemplateFrontend(DiFactory diFactory, Path configurationFile) {
+		this.diFactory = diFactory;
 		if (!INSTANCE.compareAndSet(null, this))
 			throw new IllegalStateException();
-		configuration = injector.create(Properties.class, Collections.singletonMap("file", configurationFile));
+		configuration = diFactory.create(Properties.class, Collections.singletonMap("file", configurationFile));
 
 		{
-			var f = injector.create(ApplicationHandlerFactory.class, Map.of("methods",
+			var f = diFactory.create(ApplicationHandlerFactory.class, Map.of("methods",
 					types().stream().flatMap(x -> Arrays.stream(x.getMethods())
 							.filter(y -> !Modifier.isStatic(y.getModifiers())).map(y -> new ClassAndMethod(x, y)))
 							.toList(),
-					"renderableFactory", injector.create(RenderableFactory.class), "files",
+					"renderableFactory", diFactory.create(RenderableFactory.class), "files",
 					Stream.of("com.janilla.frontend", WebsiteTemplateFrontend.class.getPackageName())
 							.flatMap(x -> Java.getPackagePaths(x).stream().filter(Files::isRegularFile)).toList()));
 			handler = x -> {
@@ -129,10 +129,10 @@ public class WebsiteTemplateFrontend {
 				throw new UncheckedIOException(e);
 			}
 //			httpClient = new HttpClient(c);
-			httpClient = injector.create(HttpClient.class, Map.of("sslContext", c));
+			httpClient = diFactory.create(HttpClient.class, Map.of("sslContext", c));
 		}
 
-		dataFetching = injector.create(DataFetching.class);
+		dataFetching = diFactory.create(DataFetching.class);
 	}
 
 	public Properties configuration() {
@@ -143,8 +143,8 @@ public class WebsiteTemplateFrontend {
 		return dataFetching;
 	}
 
-	public DependencyInjector injector() {
-		return injector;
+	public DiFactory diFactory() {
+		return diFactory;
 	}
 
 	public HttpHandler handler() {
@@ -156,7 +156,7 @@ public class WebsiteTemplateFrontend {
 	}
 
 	public Collection<Class<?>> types() {
-		return injector.types();
+		return diFactory.types();
 	}
 
 	@Handle(method = "GET", path = "/admin(/[\\w\\d/-]*)?")
@@ -195,6 +195,7 @@ public class WebsiteTemplateFrontend {
 		if (pp.isEmpty())
 			throw new NotFoundException("slug=" + slug);
 		var m = new LinkedHashMap<String, Object>();
+		m.put("user", exchange.sessionUser());
 		m.put("header", dataFetching.header());
 		m.put("post", pp.getFirst());
 		m.put("footer", dataFetching.footer());
@@ -205,6 +206,7 @@ public class WebsiteTemplateFrontend {
 	public Index posts(CustomHttpExchange exchange) {
 		IO.println("WebsiteTemplateFrontend.posts");
 		var m = new LinkedHashMap<String, Object>();
+		m.put("user", exchange.sessionUser());
 		m.put("header", dataFetching.header());
 		m.put("posts", dataFetching.posts(null, exchange.tokenCookie()));
 		m.put("footer", dataFetching.footer());
@@ -220,6 +222,7 @@ public class WebsiteTemplateFrontend {
 		if (pp.isEmpty() && !slug.equals("home"))
 			throw new NotFoundException("slug=" + slug);
 		var m = new LinkedHashMap<String, Object>();
+		m.put("user", exchange.sessionUser());
 		m.put("header", dataFetching.header());
 		m.put("page", !pp.isEmpty() ? pp.getFirst() : null);
 		m.put("footer", dataFetching.footer());
@@ -227,9 +230,10 @@ public class WebsiteTemplateFrontend {
 	}
 
 	@Handle(method = "GET", path = "/search")
-	public Index search(@Bind("q") String query) {
+	public Index search(@Bind("q") String query, CustomHttpExchange exchange) {
 		IO.println("WebsiteTemplateFrontend.search, query=" + query);
 		var m = new LinkedHashMap<String, Object>();
+		m.put("user", exchange.sessionUser());
 		m.put("header", dataFetching.header());
 		m.put("results", dataFetching.searchResults(query));
 		m.put("footer", dataFetching.footer());

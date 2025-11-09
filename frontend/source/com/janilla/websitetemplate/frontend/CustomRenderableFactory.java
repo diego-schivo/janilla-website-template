@@ -23,20 +23,20 @@
  */
 package com.janilla.websitetemplate.frontend;
 
-import com.janilla.ioc.DependencyInjector;
+import com.janilla.ioc.DiFactory;
 import com.janilla.web.RenderableFactory;
 import com.janilla.web.Renderer;
 
 public class CustomRenderableFactory extends RenderableFactory {
 
-	protected final DependencyInjector injector;
+	protected final DiFactory diFactory;
 
-	public CustomRenderableFactory(DependencyInjector injector) {
-		this.injector = injector;
+	public CustomRenderableFactory(DiFactory diFactory) {
+		this.diFactory = diFactory;
 	}
 
 	@Override
 	protected <T> Renderer<T> createRenderer(Class<Renderer<T>> c) {
-		return injector.create(c);
+		return diFactory.create(c);
 	}
 }

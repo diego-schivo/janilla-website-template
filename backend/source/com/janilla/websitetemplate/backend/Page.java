@@ -27,16 +27,17 @@ import java.time.Instant;
 import java.util.List;
 
 import com.janilla.cms.Document;
+import com.janilla.cms.DocumentStatus;
 import com.janilla.cms.Types;
 import com.janilla.cms.Versions;
 import com.janilla.persistence.Index;
 import com.janilla.persistence.Store;
 
 @Store
-@Index(sort = "-createdAt")
+//@Index(sort = "-createdAt")
 @Versions(drafts = true)
 public record Page(Long id, String title, Hero hero, List<@Types( {
 		Archive.class, CallToAction.class, Content.class, FormBlock.class, MediaBlock.class }) Object> layout,
-		Meta meta, @Index String slug, Instant createdAt, Instant updatedAt, Document.Status documentStatus,
+		Meta meta, @Index String slug, Instant createdAt, Instant updatedAt, DocumentStatus documentStatus,
 		Instant publishedAt) implements Document<Long> {
 }

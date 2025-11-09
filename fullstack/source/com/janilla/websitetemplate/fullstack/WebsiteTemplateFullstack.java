@@ -37,7 +37,7 @@ import javax.net.ssl.SSLContext;
 
 import com.janilla.http.HttpHandler;
 import com.janilla.http.HttpServer;
-import com.janilla.ioc.DependencyInjector;
+import com.janilla.ioc.DiFactory;
 import com.janilla.java.Java;
 import com.janilla.net.Net;
 import com.janilla.websitetemplate.backend.WebsiteTemplateBackend;
@@ -51,10 +51,10 @@ public class WebsiteTemplateFullstack {
 		try {
 			WebsiteTemplateFullstack a;
 			{
-				var f = new DependencyInjector(Java.getPackageClasses(WebsiteTemplateFullstack.class.getPackageName()),
+				var f = new DiFactory(Java.getPackageClasses(WebsiteTemplateFullstack.class.getPackageName()),
 						WebsiteTemplateFullstack.INSTANCE::get, "fullstack");
 				a = f.create(WebsiteTemplateFullstack.class,
-						Java.hashMap("factory", f, "configurationFile",
+						Java.hashMap("diFactory", f, "configurationFile",
 								args.length > 0 ? Path.of(
 										args[0].startsWith("~") ? System.getProperty("user.home") + args[0].substring(1)
 												: args[0])
@@ -68,7 +68,7 @@ public class WebsiteTemplateFullstack {
 					c = Net.getSSLContext(Map.entry("JKS", x), "passphrase".toCharArray());
 				}
 				var p = Integer.parseInt(a.configuration.getProperty("website-template.fullstack.server.port"));
-				s = a.injector.create(HttpServer.class,
+				s = a.diFactory.create(HttpServer.class,
 						Map.of("sslContext", c, "endpoint", new InetSocketAddress(p), "handler", a.handler));
 			}
 			s.serve();
@@ -81,17 +81,17 @@ public class WebsiteTemplateFullstack {
 
 	protected final Properties configuration;
 
-	protected final DependencyInjector injector;
+	protected final DiFactory diFactory;
 
 	protected final WebsiteTemplateFrontend frontend;
 
 	protected final HttpHandler handler;
 
-	public WebsiteTemplateFullstack(DependencyInjector injector, Path configurationFile) {
-		this.injector = injector;
+	public WebsiteTemplateFullstack(DiFactory diFactory, Path configurationFile) {
+		this.diFactory = diFactory;
 		if (!INSTANCE.compareAndSet(null, this))
 			throw new IllegalStateException();
-		configuration = injector.create(Properties.class, Collections.singletonMap("file", configurationFile));
+		configuration = diFactory.create(Properties.class, Collections.singletonMap("file", configurationFile));
 
 		var cf = Optional.ofNullable(configurationFile).orElseGet(() -> {
 			try {
@@ -100,19 +100,19 @@ public class WebsiteTemplateFullstack {
 				throw new RuntimeException(e);
 			}
 		});
-		backend = injector.create(WebsiteTemplateBackend.class,
-				Java.hashMap("factory",
-						new DependencyInjector(
+		backend = diFactory.create(WebsiteTemplateBackend.class,
+				Java.hashMap("diFactory",
+						new DiFactory(
 								Stream.of("fullstack", "backend")
 										.flatMap(x -> Java.getPackageClasses(WebsiteTemplateBackend.class
 												.getPackageName().replace(".backend", "." + x)).stream())
 										.toList(),
 								WebsiteTemplateBackend.INSTANCE::get, "backend"),
 						"configurationFile", cf));
-		frontend = injector
+		frontend = diFactory
 				.create(WebsiteTemplateFrontend.class,
-						Java.hashMap("factory",
-								new DependencyInjector(
+						Java.hashMap("diFactory",
+								new DiFactory(
 										Stream.of("fullstack", "frontend")
 												.flatMap(x -> Java
 														.getPackageClasses(WebsiteTemplateFrontend.class
@@ -143,8 +143,8 @@ public class WebsiteTemplateFullstack {
 		return configuration;
 	}
 
-	public DependencyInjector injector() {
-		return injector;
+	public DiFactory diFactory() {
+		return diFactory;
 	}
 
 	public WebsiteTemplateFrontend frontend() {

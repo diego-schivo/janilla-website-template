@@ -35,6 +35,6 @@ public class CustomHttpClient extends DirectHttpClient {
 
 	public CustomHttpClient() {
 		var b = WebsiteTemplateBackend.INSTANCE.get();
-		super(b.injector().create(HttpServer.class, Map.of("handler", b.handler())));
+		super(b.diFactory().create(HttpServer.class, Map.of("handler", b.handler())));
 	}
 }

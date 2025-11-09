@@ -25,21 +25,21 @@ package com.janilla.websitetemplate.frontend;
 
 import java.util.Map;
 
-import com.janilla.ioc.DependencyInjector;
+import com.janilla.ioc.DiFactory;
 import com.janilla.json.Json;
 import com.janilla.json.ReflectionJsonIterator;
 import com.janilla.web.Renderer;
 
 public class StateRenderer<T> extends Renderer<T> {
 
-	protected final DependencyInjector injector;
+	protected final DiFactory diFactory;
 
-	public StateRenderer(DependencyInjector injector) {
-		this.injector = injector;
+	public StateRenderer(DiFactory diFactory) {
+		this.diFactory = diFactory;
 	}
 
 	@Override
 	public String apply(T value) {
-		return Json.format(injector.create(ReflectionJsonIterator.class, Map.of("object", value, "includeType", true)));
+		return Json.format(diFactory.create(ReflectionJsonIterator.class, Map.of("object", value, "includeType", true)));
 	}
 }
