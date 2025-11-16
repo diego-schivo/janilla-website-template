@@ -40,7 +40,6 @@ import java.util.function.Predicate;
 import javax.net.ssl.SSLContext;
 
 import com.janilla.cms.Cms;
-import com.janilla.cms.UserRole;
 import com.janilla.http.HttpExchange;
 import com.janilla.http.HttpHandler;
 import com.janilla.http.HttpServer;

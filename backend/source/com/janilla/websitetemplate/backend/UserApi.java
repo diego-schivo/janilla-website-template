@@ -32,7 +32,7 @@ import com.janilla.persistence.Persistence;
 import com.janilla.web.Handle;
 
 @Handle(path = "/api/users")
-public class UserApi extends com.janilla.cms.UserApi<Long, User> {
+public class UserApi extends com.janilla.cms.UserApi<Long, UserRole, User> {
 
 	public static final AtomicReference<UserApi> INSTANCE = new AtomicReference<>();
 
