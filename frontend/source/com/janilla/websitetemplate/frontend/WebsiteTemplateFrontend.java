@@ -48,9 +48,9 @@ import com.janilla.http.HttpServer;
 import com.janilla.ioc.DiFactory;
 import com.janilla.java.Java;
 import com.janilla.net.Net;
-import com.janilla.reflect.ClassAndMethod;
 import com.janilla.web.ApplicationHandlerFactory;
 import com.janilla.web.Bind;
+import com.janilla.web.Invocable;
 import com.janilla.web.Handle;
 import com.janilla.web.NotFoundException;
 import com.janilla.web.RenderableFactory;
@@ -108,7 +108,7 @@ public class WebsiteTemplateFrontend {
 		{
 			var f = diFactory.create(ApplicationHandlerFactory.class, Map.of("methods",
 					types().stream().flatMap(x -> Arrays.stream(x.getMethods())
-							.filter(y -> !Modifier.isStatic(y.getModifiers())).map(y -> new ClassAndMethod(x, y)))
+							.filter(y -> !Modifier.isStatic(y.getModifiers())).map(y -> new Invocable(x, y)))
 							.toList(),
 					"renderableFactory", diFactory.create(RenderableFactory.class), "files",
 					Stream.of("com.janilla.frontend", WebsiteTemplateFrontend.class.getPackageName())
