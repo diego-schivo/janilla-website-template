@@ -76,7 +76,7 @@ public class WebsiteTemplateFrontend {
 			HttpServer s;
 			{
 				SSLContext c;
-				try (var x = Net.class.getResourceAsStream("testkeys")) {
+				try (var x = Net.class.getResourceAsStream("localhost")) {
 					c = Net.getSSLContext(Map.entry("JKS", x), "passphrase".toCharArray());
 				}
 				var p = Integer.parseInt(a.configuration.getProperty("website-template.frontend.server.port"));
@@ -123,7 +123,7 @@ public class WebsiteTemplateFrontend {
 
 		{
 			SSLContext c;
-			try (var x = Net.class.getResourceAsStream("testkeys")) {
+			try (var x = Net.class.getResourceAsStream("localhost")) {
 				c = Net.getSSLContext(Map.entry("JKS", x), "passphrase".toCharArray());
 			} catch (IOException e) {
 				throw new UncheckedIOException(e);

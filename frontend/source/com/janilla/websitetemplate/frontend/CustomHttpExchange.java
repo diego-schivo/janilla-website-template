@@ -30,15 +30,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import com.janilla.http.BaseHttpExchange;
+import com.janilla.http.SimpleHttpExchange;
 import com.janilla.http.HttpCookie;
-import com.janilla.http.HttpExchange;
 import com.janilla.http.HttpRequest;
 import com.janilla.http.HttpResponse;
 import com.janilla.json.Jwt;
 import com.janilla.web.UnauthorizedException;
 
-public class CustomHttpExchange extends BaseHttpExchange {
+public class CustomHttpExchange extends SimpleHttpExchange {
 
 	private static final String SESSION_COOKIE = "janilla-website-template-token";
 
@@ -94,11 +93,5 @@ public class CustomHttpExchange extends BaseHttpExchange {
 						.withExpires(value != null && !value.isEmpty() ? ZonedDateTime.now(ZoneOffset.UTC).plusHours(2)
 								: ZonedDateTime.ofInstant(Instant.EPOCH, ZoneOffset.UTC))
 						.format());
-	}
-
-	@Override
-	public HttpExchange withException(Exception exception) {
-		this.exception = exception;
-		return this;
 	}
 }
