@@ -1,7 +1,8 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025 Diego Schivo
+ * Copyright (c) 2018-2025 Payload CMS, Inc. <info@payloadcms.com>
+ * Copyright (c) 2024-2025 Diego Schivo <diego.schivo@janilla.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,8 +30,8 @@ import java.util.Optional;
 
 import javax.net.ssl.SSLContext;
 
-import com.janilla.websitetemplate.backend.WebsiteTemplateBackend;
-import com.janilla.websitetemplate.frontend.WebsiteTemplateFrontend;
+import com.janilla.websitetemplate.backend.WebsiteBackend;
+import com.janilla.websitetemplate.frontend.WebsiteFrontend;
 import com.janilla.http.HttpExchange;
 import com.janilla.http.HttpHandler;
 import com.janilla.http.HttpRequest;
@@ -41,12 +42,12 @@ import com.janilla.ioc.Context;
 @Context("fullstack")
 public class CustomHttpServer extends HttpServer {
 
-	protected final WebsiteTemplateBackend backend;
+	protected final WebsiteBackend backend;
 
-	protected final WebsiteTemplateFrontend frontend;
+	protected final WebsiteFrontend frontend;
 
 	public CustomHttpServer(SSLContext sslContext, SocketAddress endpoint, HttpHandler handler,
-			WebsiteTemplateBackend backend, WebsiteTemplateFrontend frontend) {
+			WebsiteBackend backend, WebsiteFrontend frontend) {
 		super(sslContext, endpoint, handler);
 		this.backend = backend;
 		this.frontend = frontend;

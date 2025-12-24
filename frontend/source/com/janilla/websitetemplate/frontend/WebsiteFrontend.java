@@ -1,7 +1,8 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025 Diego Schivo
+ * Copyright (c) 2018-2025 Payload CMS, Inc. <info@payloadcms.com>
+ * Copyright (c) 2024-2025 Diego Schivo <diego.schivo@janilla.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,11 +22,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.janilla.websitetemplate.backend;
+package com.janilla.websitetemplate.frontend;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.lang.reflect.Modifier;
 import java.net.InetSocketAddress;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
@@ -35,37 +38,32 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import javax.net.ssl.SSLContext;
 
-import com.janilla.cms.Cms;
-import com.janilla.http.HttpExchange;
+import com.janilla.http.HttpClient;
 import com.janilla.http.HttpHandler;
 import com.janilla.http.HttpServer;
 import com.janilla.ioc.DiFactory;
-import com.janilla.java.DollarTypeResolver;
 import com.janilla.java.Java;
-import com.janilla.java.TypeResolver;
 import com.janilla.net.Net;
-import com.janilla.persistence.ApplicationPersistenceBuilder;
-import com.janilla.persistence.Persistence;
 import com.janilla.web.ApplicationHandlerFactory;
 import com.janilla.web.Invocable;
-import com.janilla.web.Handle;
 import com.janilla.web.NotFoundException;
+import com.janilla.web.RenderableFactory;
 
-public class WebsiteTemplateBackend {
+public class WebsiteFrontend {
 
-	public static final AtomicReference<WebsiteTemplateBackend> INSTANCE = new AtomicReference<>();
+	public static final AtomicReference<WebsiteFrontend> INSTANCE = new AtomicReference<>();
 
 	public static void main(String[] args) {
 		try {
-			WebsiteTemplateBackend a;
+			WebsiteFrontend a;
 			{
-				var f = new DiFactory(Java.getPackageClasses(WebsiteTemplateBackend.class.getPackageName()),
-						INSTANCE::get);
-				a = f.create(WebsiteTemplateBackend.class,
+				var f = new DiFactory(Stream.of(WebsiteFrontend.class.getPackageName(), "com.janilla.web")
+						.flatMap(x -> Java.getPackageClasses(x).stream()).toList(), INSTANCE::get);
+				a = f.create(WebsiteFrontend.class,
 						Java.hashMap("diFactory", f, "configurationFile",
 								args.length > 0 ? Path.of(
 										args[0].startsWith("~") ? System.getProperty("user.home") + args[0].substring(1)
@@ -79,7 +77,7 @@ public class WebsiteTemplateBackend {
 				try (var x = Net.class.getResourceAsStream("localhost")) {
 					c = Net.getSSLContext(Map.entry("JKS", x), "passphrase".toCharArray());
 				}
-				var p = Integer.parseInt(a.configuration.getProperty("website-template.backend.server.port"));
+				var p = Integer.parseInt(a.configuration.getProperty("website-template.frontend.server.port"));
 				s = a.diFactory.create(HttpServer.class,
 						Map.of("sslContext", c, "endpoint", new InetSocketAddress(p), "handler", a.handler));
 			}
@@ -91,40 +89,50 @@ public class WebsiteTemplateBackend {
 
 	protected final Properties configuration;
 
-	protected final Predicate<HttpExchange> drafts = x -> {
-		var u = x instanceof CustomHttpExchange x2 ? x2.sessionUser() : null;
-		return u != null && u.hasRole(UserRole.ADMIN);
-	};
+	protected final DataFetching dataFetching;
 
 	protected final DiFactory diFactory;
 
+	protected final List<Path> files;
+
 	protected final HttpHandler handler;
 
-	protected final Persistence persistence;
+	protected final HttpClient httpClient;
 
-	protected final TypeResolver typeResolver;
+	protected final IndexFactory indexFactory;
 
-	public WebsiteTemplateBackend(DiFactory diFactory, Path configurationFile) {
+	protected final List<Invocable> invocables;
+
+	protected final RenderableFactory renderableFactory;
+
+	public WebsiteFrontend(DiFactory diFactory, Path configurationFile) {
 		this.diFactory = diFactory;
 		if (!INSTANCE.compareAndSet(null, this))
 			throw new IllegalStateException();
 		configuration = diFactory.create(Properties.class, Collections.singletonMap("file", configurationFile));
-		typeResolver = diFactory.create(DollarTypeResolver.class);
 
 		{
-			var f = configuration.getProperty("website-template.database.file");
-			if (f.startsWith("~"))
-				f = System.getProperty("user.home") + f.substring(1);
-			var b = diFactory.create(ApplicationPersistenceBuilder.class, Map.of("databaseFile", Path.of(f)));
-			persistence = b.build();
+			SSLContext c;
+			try (var x = Net.class.getResourceAsStream("localhost")) {
+				c = Net.getSSLContext(Map.entry("JKS", x), "passphrase".toCharArray());
+			} catch (IOException e) {
+				throw new UncheckedIOException(e);
+			}
+			httpClient = diFactory.create(HttpClient.class, Map.of("sslContext", c));
 		}
+		dataFetching = diFactory.create(DataFetching.class);
+		indexFactory = diFactory.create(IndexFactory.class);
 
+		files = Stream.of("com.janilla.frontend", "com.janilla.admin.frontend", WebsiteFrontend.class.getPackageName())
+				.flatMap(x -> Java.getPackagePaths(x).stream().filter(Files::isRegularFile)).toList();
+		invocables = types().stream()
+				.flatMap(x -> Arrays.stream(x.getMethods())
+						.filter(y -> !Modifier.isStatic(y.getModifiers()) && !y.isBridge())
+						.map(y -> new Invocable(x, y)))
+				.toList();
+		renderableFactory = diFactory.create(RenderableFactory.class);
 		{
-			var f = diFactory.create(ApplicationHandlerFactory.class, Map.of("methods",
-					types().stream().flatMap(x -> Arrays.stream(x.getMethods())
-							.filter(y -> !Modifier.isStatic(y.getModifiers())).map(y -> new Invocable(x, y)))
-							.toList(),
-					"files", List.of()));
+			var f = diFactory.create(ApplicationHandlerFactory.class);
 			handler = x -> {
 				var h = f.createHandler(Objects.requireNonNullElse(x.exception(), x.request()));
 				if (h == null)
@@ -138,37 +146,39 @@ public class WebsiteTemplateBackend {
 		return configuration;
 	}
 
-	public Predicate<HttpExchange> drafts() {
-		return drafts;
+	public DataFetching dataFetching() {
+		return dataFetching;
 	}
 
 	public DiFactory diFactory() {
 		return diFactory;
 	}
 
+	public List<Path> files() {
+		return files;
+	}
+
 	public HttpHandler handler() {
 		return handler;
 	}
 
-	public Persistence persistence() {
-		return persistence;
+	public HttpClient httpClient() {
+		return httpClient;
 	}
 
-	public TypeResolver typeResolver() {
-		return typeResolver;
+	public IndexFactory indexFactory() {
+		return indexFactory;
+	}
+
+	public List<Invocable> invocables() {
+		return invocables;
+	}
+
+	public RenderableFactory renderableFactory() {
+		return renderableFactory;
 	}
 
 	public Collection<Class<?>> types() {
 		return diFactory.types();
-	}
-
-	@Handle(method = "GET", path = "/api/schema")
-	public Map<String, Map<String, Map<String, Object>>> schema() {
-		return Cms.schema(Data.class);
-	}
-
-	@Handle(method = "POST", path = "/api/seed")
-	public void seed() throws IOException {
-		((CustomPersistence) persistence).seed();
 	}
 }

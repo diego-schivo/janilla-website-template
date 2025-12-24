@@ -1,7 +1,8 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025 Diego Schivo
+ * Copyright (c) 2018-2025 Payload CMS, Inc. <info@payloadcms.com>
+ * Copyright (c) 2024-2025 Diego Schivo <diego.schivo@janilla.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,7 +38,7 @@ import com.janilla.http.HttpResponse;
 import com.janilla.json.Jwt;
 import com.janilla.web.UnauthorizedException;
 
-public class CustomHttpExchange extends SimpleHttpExchange {
+public class FrontendExchange extends SimpleHttpExchange {
 
 	private static final String SESSION_COOKIE = "janilla-website-template-token";
 
@@ -47,7 +48,7 @@ public class CustomHttpExchange extends SimpleHttpExchange {
 
 	protected final Map<String, Object> session = new HashMap<>();
 
-	public CustomHttpExchange(HttpRequest request, HttpResponse response, Properties configuration,
+	public FrontendExchange(HttpRequest request, HttpResponse response, Properties configuration,
 			DataFetching dataFetching) {
 		super(request, response);
 		this.configuration = configuration;

@@ -1,7 +1,8 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025 Diego Schivo
+ * Copyright (c) 2018-2025 Payload CMS, Inc. <info@payloadcms.com>
+ * Copyright (c) 2024-2025 Diego Schivo <diego.schivo@janilla.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -44,9 +45,9 @@ import com.janilla.web.Invocation;
 import com.janilla.web.InvocationHandlerFactory;
 import com.janilla.web.RenderableFactory;
 
-public class CustomMethodHandlerFactory extends InvocationHandlerFactory {
+public class CustomInvocationHandlerFactory extends InvocationHandlerFactory {
 
-	public static final AtomicReference<CustomMethodHandlerFactory> INSTANCE = new AtomicReference<>();
+	public static final AtomicReference<CustomInvocationHandlerFactory> INSTANCE = new AtomicReference<>();
 
 	protected static final Set<String> GUEST_POST = Set.of("/api/form-submissions", "/api/users/first-register",
 			"/api/users/forgot-password", "/api/users/login", "/api/users/reset-password");
@@ -57,7 +58,7 @@ public class CustomMethodHandlerFactory extends InvocationHandlerFactory {
 
 	protected final DiFactory diFactory;
 
-	public CustomMethodHandlerFactory(List<Invocable> invocables, Function<Class<?>, Object> instanceResolver,
+	public CustomInvocationHandlerFactory(List<Invocable> invocables, Function<Class<?>, Object> instanceResolver,
 			Comparator<Invocation> invocationComparator, RenderableFactory renderableFactory,
 			HttpHandlerFactory rootFactory, Properties configuration, DiFactory diFactory) {
 		super(invocables, instanceResolver, invocationComparator, renderableFactory, rootFactory);
@@ -74,7 +75,7 @@ public class CustomMethodHandlerFactory extends InvocationHandlerFactory {
 			if (rq.getMethod().equals("OPTIONS") || GUEST_POST.contains(rq.getPath()))
 				;
 			else
-				((CustomHttpExchange) exchange).requireSessionEmail();
+				((BackendExchange) exchange).requireSessionEmail();
 		}
 
 		if (Boolean.parseBoolean(configuration.getProperty("website-template.live-demo"))) {

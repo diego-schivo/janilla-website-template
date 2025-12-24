@@ -1,7 +1,8 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025 Diego Schivo
+ * Copyright (c) 2018-2025 Payload CMS, Inc. <info@payloadcms.com>
+ * Copyright (c) 2024-2025 Diego Schivo <diego.schivo@janilla.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -41,7 +42,7 @@ public class Cors {
 	@Handle(method = "OPTIONS", path = "/api/(.*)")
 	public void allow(HttpRequest request, HttpResponse response) {
 		var o = configuration.getProperty("website-template.api.cors.origin");
-		var m = CustomMethodHandlerFactory.INSTANCE.get().handleMethods(request.getPath());
+		var m = CustomInvocationHandlerFactory.INSTANCE.get().handleMethods(request.getPath());
 		var h = configuration.getProperty("website-template.api.cors.headers");
 
 		response.setStatus(204);

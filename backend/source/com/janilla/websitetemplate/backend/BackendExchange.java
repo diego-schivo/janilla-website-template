@@ -1,7 +1,8 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025 Diego Schivo
+ * Copyright (c) 2018-2025 Payload CMS, Inc. <info@payloadcms.com>
+ * Copyright (c) 2024-2025 Diego Schivo <diego.schivo@janilla.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -39,9 +40,9 @@ import com.janilla.json.Jwt;
 import com.janilla.persistence.Persistence;
 import com.janilla.web.UnauthorizedException;
 
-public class CustomHttpExchange extends SimpleHttpExchange implements UserHttpExchange {
+public class BackendExchange extends SimpleHttpExchange implements UserHttpExchange {
 
-	private static final String SESSION_COOKIE = "janilla-website-template-token";
+	private static final String SESSION_COOKIE = "website-token";
 
 	protected final Properties configuration;
 
@@ -49,7 +50,7 @@ public class CustomHttpExchange extends SimpleHttpExchange implements UserHttpEx
 
 	protected final Map<String, Object> session = new HashMap<>();
 
-	public CustomHttpExchange(HttpRequest request, HttpResponse response, Properties configuration,
+	public BackendExchange(HttpRequest request, HttpResponse response, Properties configuration,
 			Persistence persistence) {
 		super(request, response);
 		this.configuration = configuration;
@@ -84,7 +85,7 @@ public class CustomHttpExchange extends SimpleHttpExchange implements UserHttpEx
 
 	public void requireSessionEmail() {
 		if (sessionEmail() == null)
-			throw new UnauthorizedException();
+			throw new UnauthorizedException("Unauthorized, you must be logged in to make this request.");
 	}
 
 	@Override

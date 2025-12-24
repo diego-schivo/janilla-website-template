@@ -1,7 +1,8 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025 Diego Schivo
+ * Copyright (c) 2018-2025 Payload CMS, Inc. <info@payloadcms.com>
+ * Copyright (c) 2024-2025 Diego Schivo <diego.schivo@janilla.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,13 +29,13 @@ import java.util.Map;
 import com.janilla.http.HttpServer;
 import com.janilla.ioc.Context;
 import com.janilla.http.DirectHttpClient;
-import com.janilla.websitetemplate.backend.WebsiteTemplateBackend;
+import com.janilla.websitetemplate.backend.WebsiteBackend;
 
 @Context("frontend")
 public class CustomHttpClient extends DirectHttpClient {
 
 	public CustomHttpClient() {
-		var b = WebsiteTemplateBackend.INSTANCE.get();
+		var b = WebsiteBackend.INSTANCE.get();
 		super(b.diFactory().create(HttpServer.class, Map.of("handler", b.handler())));
 	}
 }

@@ -1,7 +1,8 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025 Diego Schivo
+ * Copyright (c) 2018-2025 Payload CMS, Inc. <info@payloadcms.com>
+ * Copyright (c) 2024-2025 Diego Schivo <diego.schivo@janilla.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,20 +41,21 @@ import com.janilla.http.HttpServer;
 import com.janilla.ioc.DiFactory;
 import com.janilla.java.Java;
 import com.janilla.net.Net;
-import com.janilla.websitetemplate.backend.WebsiteTemplateBackend;
-import com.janilla.websitetemplate.frontend.WebsiteTemplateFrontend;
+import com.janilla.websitetemplate.backend.BackendExchange;
+import com.janilla.websitetemplate.backend.WebsiteBackend;
+import com.janilla.websitetemplate.frontend.WebsiteFrontend;
 
-public class WebsiteTemplateFullstack {
+public class WebsiteFullstack {
 
-	public static final AtomicReference<WebsiteTemplateFullstack> INSTANCE = new AtomicReference<>();
+	public static final AtomicReference<WebsiteFullstack> INSTANCE = new AtomicReference<>();
 
 	public static void main(String[] args) {
 		try {
-			WebsiteTemplateFullstack a;
+			WebsiteFullstack a;
 			{
-				var f = new DiFactory(Java.getPackageClasses(WebsiteTemplateFullstack.class.getPackageName()),
-						WebsiteTemplateFullstack.INSTANCE::get, "fullstack");
-				a = f.create(WebsiteTemplateFullstack.class,
+				var f = new DiFactory(Java.getPackageClasses(WebsiteFullstack.class.getPackageName()),
+						WebsiteFullstack.INSTANCE::get, "fullstack");
+				a = f.create(WebsiteFullstack.class,
 						Java.hashMap("diFactory", f, "configurationFile",
 								args.length > 0 ? Path.of(
 										args[0].startsWith("~") ? System.getProperty("user.home") + args[0].substring(1)
@@ -77,17 +79,17 @@ public class WebsiteTemplateFullstack {
 		}
 	}
 
-	protected final WebsiteTemplateBackend backend;
+	protected final WebsiteBackend backend;
 
 	protected final Properties configuration;
 
 	protected final DiFactory diFactory;
 
-	protected final WebsiteTemplateFrontend frontend;
+	protected final WebsiteFrontend frontend;
 
 	protected final HttpHandler handler;
 
-	public WebsiteTemplateFullstack(DiFactory diFactory, Path configurationFile) {
+	public WebsiteFullstack(DiFactory diFactory, Path configurationFile) {
 		this.diFactory = diFactory;
 		if (!INSTANCE.compareAndSet(null, this))
 			throw new IllegalStateException();
@@ -95,47 +97,43 @@ public class WebsiteTemplateFullstack {
 
 		var cf = Optional.ofNullable(configurationFile).orElseGet(() -> {
 			try {
-				return Path.of(WebsiteTemplateFullstack.class.getResource("configuration.properties").toURI());
+				return Path.of(WebsiteFullstack.class.getResource("configuration.properties").toURI());
 			} catch (URISyntaxException e) {
 				throw new RuntimeException(e);
 			}
 		});
-		backend = diFactory.create(WebsiteTemplateBackend.class,
-				Java.hashMap("diFactory",
-						new DiFactory(
-								Stream.of("fullstack", "backend")
-										.flatMap(x -> Java.getPackageClasses(WebsiteTemplateBackend.class
-												.getPackageName().replace(".backend", "." + x)).stream())
-										.toList(),
-								WebsiteTemplateBackend.INSTANCE::get, "backend"),
-						"configurationFile", cf));
-		frontend = diFactory
-				.create(WebsiteTemplateFrontend.class,
+		backend = diFactory
+				.create(WebsiteBackend.class,
 						Java.hashMap("diFactory",
 								new DiFactory(
-										Stream.of("fullstack", "frontend")
-												.flatMap(x -> Java
-														.getPackageClasses(WebsiteTemplateFrontend.class
-																.getPackageName().replace(".frontend", "." + x))
-														.stream())
-												.toList(),
-										WebsiteTemplateFrontend.INSTANCE::get, "frontend"),
+										Stream.concat(
+												Stream.of("fullstack", "backend")
+														.map(x -> WebsiteBackend.class.getPackageName()
+																.replace(".backend", "." + x)),
+												Stream.of("com.janilla.web"))
+												.flatMap(x -> Java.getPackageClasses(x).stream()).toList(),
+										WebsiteBackend.INSTANCE::get, "backend"),
+								"configurationFile", cf));
+		frontend = diFactory
+				.create(WebsiteFrontend.class,
+						Java.hashMap("diFactory",
+								new DiFactory(
+										Stream.concat(
+												Stream.of("fullstack", "frontend")
+														.map(x -> WebsiteFrontend.class.getPackageName()
+																.replace(".frontend", "." + x)),
+												Stream.of("com.janilla.web"))
+												.flatMap(x -> Java.getPackageClasses(x).stream()).toList(),
+										WebsiteFrontend.INSTANCE::get, "frontend"),
 								"configurationFile", cf));
 
 		handler = x -> {
-//			IO.println("WebsiteTemplateFullstack, " + x.request().getPath());
-//			var h = switch (Objects.requireNonNullElse(x.exception(), x.request())) {
-//			case HttpRequest y -> y.getPath().startsWith("/api/") ? backend.handler() : frontend.handler();
-//			case Exception _ -> backend.handler();
-//			default -> null;
-//			};
-			var h = x instanceof com.janilla.websitetemplate.backend.CustomHttpExchange ? backend.handler()
-					: frontend.handler();
+			var h = x instanceof BackendExchange ? backend.handler() : frontend.handler();
 			return h.handle(x);
 		};
 	}
 
-	public WebsiteTemplateBackend backend() {
+	public WebsiteBackend backend() {
 		return backend;
 	}
 
@@ -147,7 +145,7 @@ public class WebsiteTemplateFullstack {
 		return diFactory;
 	}
 
-	public WebsiteTemplateFrontend frontend() {
+	public WebsiteFrontend frontend() {
 		return frontend;
 	}
 

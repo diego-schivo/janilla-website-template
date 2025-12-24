@@ -22,37 +22,48 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.janilla.websitetemplate.backend;
+package com.janilla.websitetemplate.frontend;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Properties;
+import java.util.stream.Stream;
 
-import com.janilla.ioc.DiFactory;
-import com.janilla.persistence.ApplicationPersistenceBuilder;
-import com.janilla.persistence.Persistence;
+import com.janilla.admin.frontend.AdminFrontend;
+import com.janilla.frontend.Frontend;
 
-public class CustomPersistenceBuilder extends ApplicationPersistenceBuilder {
+public class IndexFactory {
 
 	protected final Properties configuration;
 
-	public CustomPersistenceBuilder(Path databaseFile, DiFactory diFactory, Properties configuration) {
-		super(databaseFile, diFactory);
+	protected final DataFetching dataFetching;
+
+	public IndexFactory(Properties configuration, DataFetching dataFetching) {
 		this.configuration = configuration;
+		this.dataFetching = dataFetching;
 	}
 
-	@Override
-	public Persistence build() {
-		var fe = Files.exists(databaseFile);
-		var p = super.build();
-		if (!fe && Boolean.parseBoolean(configuration.getProperty("website-template.live-demo")))
-			try {
-				((CustomPersistence) persistence).seed();
-			} catch (IOException e) {
-				throw new UncheckedIOException(e);
-			}
-		return p;
+	public Index index(FrontendExchange exchange) {
+		return new Index(imports(), configuration.getProperty("website-template.api.url"), state(exchange));
+	}
+
+	protected Map<String, Object> state(FrontendExchange exchange) {
+		var x = new LinkedHashMap<String, Object>();
+		x.put("user", exchange.sessionUser());
+		x.put("header", dataFetching.header());
+		x.put("footer", dataFetching.footer());
+//		x.put("enums", dataFetching.enums());
+		return x;
+	}
+
+	protected Map<String, String> imports() {
+		var m = new LinkedHashMap<String, String>();
+		Frontend.putImports(m);
+		AdminFrontend.putImports(m);
+		Stream.of("admin").forEach(x -> m.put(x, "/custom-" + x + ".js"));
+		Stream.of("app", "archive", "banner", "call-to-action", "card", "content", "form-block", "hero", "lucide-icon",
+				"media-block", "not-found", "page", "post", "posts", "rich-text", "search")
+				.forEach(x -> m.put(x, "/" + x + ".js"));
+		return m;
 	}
 }

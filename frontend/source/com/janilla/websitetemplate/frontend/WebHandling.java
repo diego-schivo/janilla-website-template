@@ -1,0 +1,102 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2018-2025 Payload CMS, Inc. <info@payloadcms.com>
+ * Copyright (c) 2024-2025 Diego Schivo <diego.schivo@janilla.com>
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+package com.janilla.websitetemplate.frontend;
+
+import java.net.URI;
+import java.util.List;
+
+import com.janilla.web.Bind;
+import com.janilla.web.Handle;
+import com.janilla.web.NotFoundException;
+
+public class WebHandling {
+
+	protected final DataFetching dataFetching;
+
+	protected final IndexFactory indexFactory;
+
+	public WebHandling(DataFetching dataFetching, IndexFactory indexFactory) {
+		this.dataFetching = dataFetching;
+		this.indexFactory = indexFactory;
+	}
+
+	@Handle(method = "GET", path = "/admin(/[\\w\\d/-]*)?")
+	public Object admin(String path, FrontendExchange exchange) {
+		IO.println("WebHandling.admin, path=" + path);
+		if (path == null || path.isEmpty())
+			path = "/";
+		switch (path) {
+		case "/":
+			if (exchange.sessionUser() == null)
+				return URI.create("/admin/login");
+			break;
+		case "/login":
+			if (((List<?>) dataFetching.users(0l, 1l)).isEmpty())
+				return URI.create("/admin/create-first-user");
+			break;
+		}
+		return indexFactory.index(exchange);
+	}
+
+	@Handle(method = "GET", path = "/([\\w\\d-]*)")
+	public Object page(String slug, FrontendExchange exchange) {
+		IO.println("WebHandling.page, slug=" + slug);
+		if (slug == null || slug.isEmpty())
+			slug = "home";
+		var pp = dataFetching.pages(slug, exchange.tokenCookie());
+		if (pp.isEmpty() && !slug.equals("home"))
+			throw new NotFoundException("slug=" + slug);
+		var i = indexFactory.index(exchange);
+		i.state().put("page", !pp.isEmpty() ? pp.getFirst() : null);
+		return i;
+	}
+
+	@Handle(method = "GET", path = "/posts/([\\w\\d-]+)")
+	public Index post(String slug, FrontendExchange exchange) {
+		IO.println("WebHandling.post, slug=" + slug);
+		var pp = dataFetching.posts(slug, exchange.tokenCookie());
+		if (pp.isEmpty())
+			throw new NotFoundException("slug=" + slug);
+		var i = indexFactory.index(exchange);
+		i.state().put("post", pp.getFirst());
+		return i;
+	}
+
+	@Handle(method = "GET", path = "/posts")
+	public Index posts(FrontendExchange exchange) {
+		IO.println("WebHandling.posts");
+		var i = indexFactory.index(exchange);
+		i.state().put("posts", dataFetching.posts(null, exchange.tokenCookie()));
+		return i;
+	}
+
+	@Handle(method = "GET", path = "/search")
+	public Index search(@Bind("q") String query, FrontendExchange exchange) {
+		IO.println("WebHandling.search, query=" + query);
+		var i = indexFactory.index(exchange);
+		i.state().put("results", dataFetching.searchResults(query));
+		return i;
+	}
+}

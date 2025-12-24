@@ -1,20 +1,54 @@
-@font-face {
-  font-family: Geist;
-  src: url("/Geist-v1.4.01/webfonts/Geist-Regular.woff2");
+/*
+ * MIT License
+ *
+ * Copyright (c) 2018-2025 Payload CMS, Inc. <info@payloadcms.com>
+ * Copyright (c) 2024-2025 Diego Schivo <diego.schivo@janilla.com>
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+:root,
+:host {
+  color-scheme: light dark;
+  line-height: 1.5;
+  text-size-adjust: 100%;
 }
 
 :root {
-  color-scheme: light dark;
+  --background-1: rgb(0, 0, 0);
+  --background-2: rgb(248, 250, 252);
+  --background-3: rgba(248, 250, 252, 0.9);
+  --background-4: rgb(10, 10, 10);
+  --border-1: rgba(38, 38, 38, 0.8);
+  --color-1: rgb(255, 255, 255);
+  --color-2: rgb(209, 213, 219);
+  --color-3: rgb(15, 23, 42);
+  --color-4: rgb(248, 250, 252);
 }
 
 a,
 strong {
-  color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));
+  color: var(--color-1);
 }
 
 body {
-  background: light-dark(rgb(255, 255, 255), rgb(0, 0, 0));
-  color: light-dark(rgb(46, 42, 36), rgb(209, 213, 219));
+  background: var(--background-1);
+  color: var(--color-2);
   font-family: Geist;
   margin: 0;
 }
@@ -29,11 +63,11 @@ textarea {
 /*button,*/
 .button {
   align-items: center;
-  background: light-dark(rgb(7, 5, 3), rgb(248, 250, 252));
+  background: var(--background-2);
   border: none;
   border-radius: 0.25rem;
   box-sizing: border-box;
-  color: light-dark(rgb(240, 232, 213), rgb(15, 23, 42));
+  color: var(--color-3);
   cursor: pointer;
   display: inline-flex;
   font-size: 0.875rem;
@@ -44,7 +78,7 @@ textarea {
   text-decoration: none;
 
   &:hover {
-    background: rgba(248, 250, 252, 0.9);
+    background: var(--background-3);
   }
 }
 
@@ -62,7 +96,7 @@ ul {
 h1,
 h2,
 h3 {
-  color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));
+  color: var(--color-1);
 }
 
 h1 {
@@ -94,7 +128,7 @@ input,
 select,
 textarea {
   background: transparent;
-  border: 1px solid rgba(38, 38, 38, 0.8);
+  border: 1px solid var(--border-1);
   border-radius: 0.25rem;
   box-sizing: border-box;
   font-family: Geist;

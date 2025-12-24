@@ -1,7 +1,8 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025 Diego Schivo
+ * Copyright (c) 2018-2025 Payload CMS, Inc. <info@payloadcms.com>
+ * Copyright (c) 2024-2025 Diego Schivo <diego.schivo@janilla.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,31 +22,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.janilla.websitetemplate.frontend;
+package com.janilla.websitetemplate.backend;
 
-import java.net.SocketAddress;
-import java.util.Map;
+import java.nio.file.Path;
+import java.util.Properties;
 
-import javax.net.ssl.SSLContext;
+import com.janilla.cms.CmsFileHandlerFactory;
 
-import com.janilla.http.HttpExchange;
-import com.janilla.http.HttpHandler;
-import com.janilla.http.HttpRequest;
-import com.janilla.http.HttpResponse;
-import com.janilla.http.HttpServer;
-import com.janilla.ioc.DiFactory;
+public class CustomFileHandlerFactory extends CmsFileHandlerFactory {
 
-public class CustomHttpServer extends HttpServer {
-
-	protected final DiFactory diFactory;
-
-	public CustomHttpServer(SSLContext sslContext, SocketAddress endpoint, HttpHandler handler, DiFactory diFactory) {
-		super(sslContext, endpoint, handler);
-		this.diFactory = diFactory;
-	}
-
-	@Override
-	protected HttpExchange createExchange(HttpRequest request, HttpResponse response) {
-		return diFactory.create(HttpExchange.class, Map.of("request", request, "response", response));
+	public CustomFileHandlerFactory(Properties configuration) {
+		var d = configuration.getProperty("website-template.upload.directory");
+		if (d.startsWith("~"))
+			d = System.getProperty("user.home") + d.substring(1);
+		super(Path.of(d));
 	}
 }
