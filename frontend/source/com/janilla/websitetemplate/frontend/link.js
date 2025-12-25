@@ -24,10 +24,14 @@
  */
 import WebComponent from "web-component";
 
-export default class Content extends WebComponent {
+export default class Link extends WebComponent {
 
 	static get templateNames() {
-		return ["content"];
+		return ["link"];
+	}
+
+	static get observedAttributes() {
+		return ["data-document", "data-href", "data-target"];
 	}
 
 	constructor() {
@@ -35,13 +39,21 @@ export default class Content extends WebComponent {
 	}
 
 	async updateDisplay() {
-		const d = this.closest("page-element").data(this.dataset.path);
+		const o = { ...this.dataset };
+		if (this.dataset.document) {
+			const [t, s] = this.dataset.document.split(":");
+			switch (t) {
+				case "Page":
+					o.href = `/${s}`;
+					break;
+				case "Product":
+					o.href = `/products/${s}`;
+					break;
+			}
+		}
 		this.appendChild(this.interpolateDom({
 			$template: "",
-			sections: d.columns.map(x => ({
-				$template: "section",
-				...x
-			}))
+			...o
 		}));
 	}
 }

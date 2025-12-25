@@ -1,31 +1,12 @@
+<!--${public}-->
 <!--${admin}-->
-<div style="${style}">
-  <!--${header}-->
-  <!--${content}-->
-  <!--${footer}-->
-</div>
 
-<template id="admin">
-  <cms-admin data-email="${email}" data-path="${path}"></cms-admin>
-</template>
-
-<template id="header">
-  <header>
-    <a href="/">
-      <img src="/images/janilla-logo-light.svg" loading="lazy" />
-    </a>
-    <nav>
-      <!--${navItems}-->
-      <a href="/search">
-        <span class="visually-hidden">Search</span>
-        <lucide-icon data-name="search"></lucide-icon>
-      </a>
-    </nav>
-  </header>
-</template>
-
-<template id="link">
-  <a href="${href}" target="${target}">${text}</a>
+<template id="public">
+  <div style="color-scheme: ${colorScheme}">
+    <header-element></header-element>
+    <!--${content}-->
+    <!--${footer}-->
+  </div>
 </template>
 
 <template id="page">
@@ -67,6 +48,16 @@
   </footer>
 </template>
 
+<template id="link">
+  <link-element data-document="${document}" data-href="${href}" data-target="${target}" data-class="${class}" data-text="${text}"></link-element>
+</template>
+
 <template id="option">
   <option value="${value}" selected="${selected}">${text}</option>
+</template>
+
+<template id="admin">
+  <admin-element class="admin" data-path="${path}" data-api-url="${apiUrl}"
+    data-user-id="${userId}" data-user-admin="${userAdmin}">
+  </admin-element>
 </template>

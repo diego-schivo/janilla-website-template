@@ -22,26 +22,52 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import WebComponent from "web-component";
+header-element {
+  header {
+    @media (min-width: 1441px) {
+      box-sizing: border-box;
+      margin-left: auto;
+      margin-right: auto;
+      max-width: 86rem;
+      width: 100%;
+    }
 
-export default class Content extends WebComponent {
+    a:not(:hover) {
+      text-decoration: none;
+    }
+  }
 
-	static get templateNames() {
-		return ["content"];
-	}
+  header {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    padding: 2rem 1rem;
+    position: relative;
+    z-index: 20;
 
-	constructor() {
-		super();
-	}
+    @media (min-width: 1441px) {
+      padding: 2rem;
+    }
 
-	async updateDisplay() {
-		const d = this.closest("page-element").data(this.dataset.path);
-		this.appendChild(this.interpolateDom({
-			$template: "",
-			sections: d.columns.map(x => ({
-				$template: "section",
-				...x
-			}))
-		}));
-	}
+    a {
+      color: var(--color-1);
+      font-size: 0.875rem;
+      font-weight: 500;
+      line-height: 1.25rem;
+    }
+
+    img {
+      height: 34px;
+    }
+
+    nav {
+      align-items: center;
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    lucide-icon {
+      width: 1.25rem;
+    }
+  }
 }

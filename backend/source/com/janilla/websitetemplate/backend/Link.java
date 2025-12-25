@@ -28,6 +28,6 @@ import com.janilla.cms.DocumentReference;
 import com.janilla.cms.Types;
 
 public record Link(LinkType type, Boolean newTab, @Types( {
-		Page.class, Post.class }) DocumentReference<?, ?> reference, String uri, String text,
+		Page.class, Post.class }) DocumentReference<?, ?> document, String uri, String text,
 		LinkAppearance appearance){
 }

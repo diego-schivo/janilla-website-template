@@ -60,9 +60,9 @@ public class IndexFactory {
 		var m = new LinkedHashMap<String, String>();
 		Frontend.putImports(m);
 		AdminFrontend.putImports(m);
-		Stream.of("admin").forEach(x -> m.put(x, "/custom-" + x + ".js"));
-		Stream.of("app", "archive", "banner", "call-to-action", "card", "content", "form-block", "hero", "lucide-icon",
-				"media-block", "not-found", "page", "post", "posts", "rich-text", "search")
+		Stream.of("admin", "admin-dashboard").forEach(x -> m.put(x, "/custom-" + x + ".js"));
+		Stream.of("app", "archive", "banner", "call-to-action", "card", "content", "form-block", "header", "hero",
+				"link", "lucide-icon", "media-block", "not-found", "page", "post", "posts", "rich-text", "search")
 				.forEach(x -> m.put(x, "/" + x + ".js"));
 		return m;
 	}

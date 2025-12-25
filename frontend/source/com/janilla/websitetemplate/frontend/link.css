@@ -22,26 +22,5 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import WebComponent from "web-component";
-
-export default class Content extends WebComponent {
-
-	static get templateNames() {
-		return ["content"];
-	}
-
-	constructor() {
-		super();
-	}
-
-	async updateDisplay() {
-		const d = this.closest("page-element").data(this.dataset.path);
-		this.appendChild(this.interpolateDom({
-			$template: "",
-			sections: d.columns.map(x => ({
-				$template: "section",
-				...x
-			}))
-		}));
-	}
+link-element {
 }

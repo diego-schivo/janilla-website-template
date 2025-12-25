@@ -32,7 +32,9 @@
 @import "content.css";
 @import "rich-text.css";
 @import "form-block.css";
+@import "header.css";
 @import "hero.css";
+@import "link.css";
 @import "lucide-icon.css";
 @import "media-block.css";
 @import "not-found.css";

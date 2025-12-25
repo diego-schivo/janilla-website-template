@@ -22,26 +22,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import WebComponent from "web-component";
+import AdminDashboard from "./admin-dashboard.js";
 
-export default class Content extends WebComponent {
+export default class CustomAdminDashboard extends AdminDashboard {
 
-	static get templateNames() {
-		return ["content"];
-	}
+    static get templateNames() {
+        return ["custom-admin-dashboard", "admin-dashboard"];
+    }
 
-	constructor() {
-		super();
-	}
-
-	async updateDisplay() {
-		const d = this.closest("page-element").data(this.dataset.path);
-		this.appendChild(this.interpolateDom({
-			$template: "",
-			sections: d.columns.map(x => ({
-				$template: "section",
-				...x
-			}))
-		}));
-	}
+    constructor() {
+        super();
+    }
 }

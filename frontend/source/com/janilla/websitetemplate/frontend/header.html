@@ -1,0 +1,16 @@
+<header>
+  <a href="/">
+    <img src="/images/janilla-logo-light.svg" loading="lazy" />
+  </a>
+  <nav>
+    <!--${navItems}-->
+    <a href="/search">
+      <span class="visually-hidden">Search</span>
+      <lucide-icon data-name="search"></lucide-icon>
+    </a>
+  </nav>
+</header>
+
+<template id="link">
+  <link-element data-document="${document}" data-href="${href}" data-target="${target}" data-class="${class}" data-text="${text}"></link-element>
+</template>

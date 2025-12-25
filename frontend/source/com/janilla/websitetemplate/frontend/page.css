@@ -30,6 +30,10 @@ page-element {
     p {
       margin-top: 1.25rem;
     }
+
+    a {
+      font-weight: 500;
+    }
   }
 
   /*

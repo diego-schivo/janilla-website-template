@@ -40,7 +40,7 @@ import com.janilla.web.UnauthorizedException;
 
 public class FrontendExchange extends SimpleHttpExchange {
 
-	private static final String SESSION_COOKIE = "janilla-website-template-token";
+	private static final String SESSION_COOKIE = "website-token";
 
 	protected final Properties configuration;
 

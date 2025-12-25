@@ -127,8 +127,8 @@
 			{
 				"$type": "Link",
 				"type": "REFERENCE",
-				"reference": {
-					"$type": "Document.Reference",
+				"document": {
+					"$type": "DocumentReference",
 					"type": "Page",
 					"id": 2
 				},

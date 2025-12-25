@@ -44,7 +44,7 @@ public class WebHandling {
 
 	@Handle(method = "GET", path = "/admin(/[\\w\\d/-]*)?")
 	public Object admin(String path, FrontendExchange exchange) {
-		IO.println("WebHandling.admin, path=" + path);
+//		IO.println("WebHandling.admin, path=" + path);
 		if (path == null || path.isEmpty())
 			path = "/";
 		switch (path) {
@@ -62,7 +62,7 @@ public class WebHandling {
 
 	@Handle(method = "GET", path = "/([\\w\\d-]*)")
 	public Object page(String slug, FrontendExchange exchange) {
-		IO.println("WebHandling.page, slug=" + slug);
+//		IO.println("WebHandling.page, slug=" + slug);
 		if (slug == null || slug.isEmpty())
 			slug = "home";
 		var pp = dataFetching.pages(slug, exchange.tokenCookie());
@@ -75,7 +75,7 @@ public class WebHandling {
 
 	@Handle(method = "GET", path = "/posts/([\\w\\d-]+)")
 	public Index post(String slug, FrontendExchange exchange) {
-		IO.println("WebHandling.post, slug=" + slug);
+//		IO.println("WebHandling.post, slug=" + slug);
 		var pp = dataFetching.posts(slug, exchange.tokenCookie());
 		if (pp.isEmpty())
 			throw new NotFoundException("slug=" + slug);
@@ -86,7 +86,7 @@ public class WebHandling {
 
 	@Handle(method = "GET", path = "/posts")
 	public Index posts(FrontendExchange exchange) {
-		IO.println("WebHandling.posts");
+//		IO.println("WebHandling.posts");
 		var i = indexFactory.index(exchange);
 		i.state().put("posts", dataFetching.posts(null, exchange.tokenCookie()));
 		return i;
@@ -94,7 +94,7 @@ public class WebHandling {
 
 	@Handle(method = "GET", path = "/search")
 	public Index search(@Bind("q") String query, FrontendExchange exchange) {
-		IO.println("WebHandling.search, query=" + query);
+//		IO.println("WebHandling.search, query=" + query);
 		var i = indexFactory.index(exchange);
 		i.state().put("results", dataFetching.searchResults(query));
 		return i;

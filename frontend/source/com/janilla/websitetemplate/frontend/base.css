@@ -41,6 +41,7 @@
   --color-4: rgb(248, 250, 252);
 }
 
+html:not(:has(.admin)) {
 a,
 strong {
   color: var(--color-1);
@@ -170,4 +171,5 @@ textarea {
   position: absolute;
   white-space: nowrap;
   width: 1px;
+}
 }

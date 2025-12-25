@@ -49,10 +49,6 @@ export default class CustomAdmin extends Admin {
         return x;
     }
 
-    dashboardGroups() {
-        return super.dashboardGroups().filter(x => x !== "collections");
-    }
-
     field(path, parent) {
         const f = super.field(path, parent);
         if (f.parent?.type === "User" && f.name === "password")

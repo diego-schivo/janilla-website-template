@@ -24,24 +24,30 @@
  */
 import WebComponent from "web-component";
 
-export default class Content extends WebComponent {
+export default class Header extends WebComponent {
 
-	static get templateNames() {
-		return ["content"];
-	}
+    static get templateNames() {
+        return ["header"];
+    }
 
-	constructor() {
-		super();
-	}
+    static get observedAttributes() {
+        return [];
+    }
 
-	async updateDisplay() {
-		const d = this.closest("page-element").data(this.dataset.path);
-		this.appendChild(this.interpolateDom({
-			$template: "",
-			sections: d.columns.map(x => ({
-				$template: "section",
-				...x
-			}))
-		}));
-	}
+    constructor() {
+        super();
+    }
+
+    async updateDisplay() {
+        this.appendChild(this.interpolateDom({
+            $template: "",
+            navItems: this.closest("app-element").state.header?.navItems?.map(x => ({
+                $template: "link",
+                ...x,
+                document: x.type.name === "REFERENCE" ? `${x.document.$type}:${x.document.slug}` : null,
+                href: x.type.name === "CUSTOM" ? x.uri : null,
+                target: x.newTab ? "_blank" : null
+            })),
+        }));
+    }
 }
