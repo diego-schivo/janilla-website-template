@@ -25,9 +25,11 @@
 package com.janilla.websitetemplate.backend;
 
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 
+import com.janilla.cms.UserHttpExchange;
 import com.janilla.http.HttpExchange;
 import com.janilla.persistence.Persistence;
 import com.janilla.web.Handle;
@@ -41,5 +43,12 @@ public class UserApi extends com.janilla.cms.UserApi<Long, UserRole, User> {
 		super(User.class, drafts, persistence, configuration.getProperty("website-template.jwt.key"));
 		if (!INSTANCE.compareAndSet(null, this))
 			throw new IllegalStateException();
+	}
+
+	@Override
+	public User firstRegister(CreateData<User> data, UserHttpExchange exchange) {
+		var u = data.user().withRoles(Set.of(UserRole.ADMIN));
+		data = data.withUser(u);
+		return super.firstRegister(data, exchange);
 	}
 }

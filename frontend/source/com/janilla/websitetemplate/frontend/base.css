@@ -22,14 +22,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-:root,
-:host {
+:root:not(:has(.admin)),
+:host:not(:has(.admin)) {
   color-scheme: light dark;
   line-height: 1.5;
   text-size-adjust: 100%;
 }
 
-:root {
+:where(:root:not(:has(.admin))) {
   --background-1: rgb(0, 0, 0);
   --background-2: rgb(248, 250, 252);
   --background-3: rgba(248, 250, 252, 0.9);
@@ -39,137 +39,134 @@
   --color-2: rgb(209, 213, 219);
   --color-3: rgb(15, 23, 42);
   --color-4: rgb(248, 250, 252);
-}
 
-html:not(:has(.admin)) {
-a,
-strong {
-  color: var(--color-1);
-}
-
-body {
-  background: var(--background-1);
-  color: var(--color-2);
-  font-family: Geist;
-  margin: 0;
-}
-
-button,
-input,
-select,
-textarea {
-  color: inherit;
-}
-
-/*button,*/
-.button {
-  align-items: center;
-  background: var(--background-2);
-  border: none;
-  border-radius: 0.25rem;
-  box-sizing: border-box;
-  color: var(--color-3);
-  cursor: pointer;
-  display: inline-flex;
-  font-size: 0.875rem;
-  font-weight: 500;
-  height: 2.5rem;
-  justify-content: center;
-  padding: 0.5rem 1rem;
-  text-decoration: none;
-
-  &:hover {
-    background: var(--background-3);
+  a,
+  strong {
+    color: var(--color-1);
   }
-}
 
-dd,
-dl,
-h1,
-h2,
-h3,
-ol,
-p,
-ul {
-  margin: 0;
-}
-
-h1,
-h2,
-h3 {
-  color: var(--color-1);
-}
-
-h1 {
-  font-size: 2.25rem;
-  font-weight: normal;
-  line-height: 1.1111111;
-
-  @media (min-width: 1441px) {
-    font-size: 3.5rem;
+  body {
+    background: var(--background-1);
+    color: var(--color-2);
+    font-family: Geist;
+    margin: 0;
   }
-}
 
-h2 {
-  font-size: 1.5rem;
-  font-weight: 700;
-}
-
-h3 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 0.75rem;
-}
-
-img {
-  display: block;
-}
-
-input,
-select,
-textarea {
-  background: transparent;
-  border: 1px solid var(--border-1);
-  border-radius: 0.25rem;
-  box-sizing: border-box;
-  font-family: Geist;
-  font-size: 0.875rem;
-  padding: 0.5rem 0.75rem;
-
-  &:focus {
-    outline: 2px solid rgb(255, 255, 255);
+  button,
+  input,
+  select,
+  textarea {
+    color: inherit;
   }
-}
 
-input {
-  height: 2.5rem;
-}
+  .button {
+    align-items: center;
+    background: var(--background-2);
+    border: none;
+    border-radius: 0.25rem;
+    box-sizing: border-box;
+    color: var(--color-3);
+    cursor: pointer;
+    display: inline-flex;
+    font-size: 0.875rem;
+    font-weight: 500;
+    height: 2.5rem;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    text-decoration: none;
 
-label:has([required]) span::after {
-  content: " *";
-}
+    &:hover {
+      background: var(--background-3);
+    }
+  }
 
-ol,
-ul {
-  list-style: none;
-  padding: 0;
-}
+  dd,
+  dl,
+  h1,
+  h2,
+  h3,
+  ol,
+  p,
+  ul {
+    margin: 0;
+  }
 
-strong {
-  font-weight: 600;
-}
+  h1,
+  h2,
+  h3 {
+    color: var(--color-1);
+  }
 
-textarea {
-  resize: none;
-}
+  h1 {
+    font-size: 2.25rem;
+    font-weight: normal;
+    line-height: 1.1111111;
 
-.visually-hidden {
-  clip: rect(0 0 0 0);
-  clip-path: inset(50%);
-  height: 1px;
-  overflow: hidden;
-  position: absolute;
-  white-space: nowrap;
-  width: 1px;
-}
+    @media (min-width: 1441px) {
+      font-size: 3.5rem;
+    }
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
+
+  img {
+    display: block;
+  }
+
+  input,
+  select,
+  textarea {
+    background: transparent;
+    border: 1px solid var(--border-1);
+    border-radius: 0.25rem;
+    box-sizing: border-box;
+    font-family: Geist;
+    font-size: 0.875rem;
+    padding: 0.5rem 0.75rem;
+
+    &:focus {
+      outline: 2px solid rgb(255, 255, 255);
+    }
+  }
+
+  input {
+    height: 2.5rem;
+  }
+
+  label:has([required]) span::after {
+    content: " *";
+  }
+
+  ol,
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  strong {
+    font-weight: 600;
+  }
+
+  textarea {
+    resize: none;
+  }
+
+  .visually-hidden {
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
 }

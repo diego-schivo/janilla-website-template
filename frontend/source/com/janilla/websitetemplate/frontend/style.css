@@ -22,6 +22,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-@import "admin.css" layer(admin);
-@import "custom-admin-dashboard.css" layer(admin);
-@import "site.css" layer(site);
+@import "admin.css"/* layer(admin)*/;
+@import "custom-admin-dashboard.css"/* layer(admin)*/;
+@import "site.css"/* layer(site)*/;
