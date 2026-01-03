@@ -2,7 +2,7 @@
  * MIT License
  *
  * Copyright (c) 2018-2025 Payload CMS, Inc. <info@payloadcms.com>
- * Copyright (c) 2024-2025 Diego Schivo <diego.schivo@janilla.com>
+ * Copyright (c) 2024-2026 Diego Schivo <diego.schivo@janilla.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.stream.Stream;
 
-import com.janilla.admin.frontend.AdminFrontend;
+import com.janilla.cms.CmsFrontend;
 import com.janilla.frontend.Frontend;
 
 public class IndexFactory {
@@ -52,18 +52,25 @@ public class IndexFactory {
 		x.put("user", exchange.sessionUser());
 		x.put("header", dataFetching.header());
 		x.put("footer", dataFetching.footer());
-//		x.put("enums", dataFetching.enums());
 		return x;
 	}
 
 	protected Map<String, String> imports() {
-		var m = new LinkedHashMap<String, String>();
-		Frontend.putImports(m);
-		AdminFrontend.putImports(m);
-		Stream.of("admin", "admin-dashboard").forEach(x -> m.put(x, "/custom-" + x + ".js"));
-		Stream.of("app", "archive", "banner", "call-to-action", "card", "content", "form-block", "header", "hero",
-				"link", "lucide-icon", "media-block", "not-found", "page", "post", "posts", "rich-text", "search")
-				.forEach(x -> m.put(x, "/" + x + ".js"));
-		return m;
+		class A {
+			private static Map<String, String> m;
+		}
+		if (A.m == null)
+			synchronized (this) {
+				if (A.m == null) {
+					A.m = new LinkedHashMap<String, String>();
+					Frontend.putImports(A.m);
+					CmsFrontend.putImports(A.m);
+					Stream.of("admin", "admin-dashboard").forEach(x -> A.m.put(x, "/custom-" + x + ".js"));
+					Stream.of("app", "archive", "banner", "call-to-action", "card", "content", "form-block", "header",
+							"hero", "link", "lucide-icon", "media-block", "not-found", "page", "post", "posts",
+							"rich-text", "search").forEach(x -> A.m.put(x, "/" + x + ".js"));
+				}
+			}
+		return A.m;
 	}
 }

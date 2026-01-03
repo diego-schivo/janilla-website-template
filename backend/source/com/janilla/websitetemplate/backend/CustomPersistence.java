@@ -2,7 +2,7 @@
  * MIT License
  *
  * Copyright (c) 2018-2025 Payload CMS, Inc. <info@payloadcms.com>
- * Copyright (c) 2024-2025 Diego Schivo <diego.schivo@janilla.com>
+ * Copyright (c) 2024-2026 Diego Schivo <diego.schivo@janilla.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@
 package com.janilla.websitetemplate.backend;
 
 import java.io.IOException;
+import java.lang.reflect.ParameterizedType;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.FileVisitResult;
@@ -33,11 +34,14 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.janilla.cms.CmsPersistence;
 import com.janilla.cms.Document;
@@ -138,41 +142,33 @@ public class CustomPersistence extends CmsPersistence {
 		return x;
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void seed() throws IOException {
-		for (var t : List.of(Category.class, Footer.class, Form.class, FormSubmission.class, Header.class, Media.class,
-				Page.class, Post.class, Redirect.class, SearchResult.class, User.class))
-			database.perform(() -> {
-				var c = crud(t);
-				c.delete(c.list());
-				return null;
-			}, true);
+		Reflection.properties(SeedData.class).forEach(x -> database.perform(() -> {
+			var t = x.genericType() instanceof ParameterizedType pt ? (Class<?>) pt.getActualTypeArguments()[0]
+					: x.type();
+			var c = crud((Class) t);
+			c.delete(c.list());
+			return null;
+		}, true));
 
 		SeedData sd;
 		try (var is = getClass().getResourceAsStream("seed-data.json")) {
 			var s = new String(is.readAllBytes());
 			var o = Json.parse(s);
-			sd = (SeedData) diFactory.create(Converter.class).convert(o, SeedData.class);
+			sd = diFactory.create(Converter.class).convert(o, SeedData.class);
 		}
-		for (var x : sd.categories())
-			crud(Category.class).create(x);
-		crud(Footer.class).create(sd.footer());
-		for (var x : sd.forms())
-			crud(Form.class).create(x);
-		for (var x : sd.formSubmissions())
-			crud(FormSubmission.class).create(x);
-		crud(Header.class).create(sd.header());
-		for (var x : sd.media())
-			crud(Media.class).create(x);
-		for (var x : sd.pages())
-			crud(Page.class).create(x);
-		for (var x : sd.posts())
-			crud(Post.class).create(x);
-		for (var x : sd.redirects())
-			crud(Redirect.class).create(x);
-		for (var x : sd.searchResults())
-			crud(SearchResult.class).create(x);
-		for (var x : sd.users())
-			crud(User.class).create(x);
+
+		var pp = Reflection.properties(SeedData.class).collect(Collectors.toCollection(ArrayList::new));
+//		IO.println("pp=" + pp);
+		pp.stream().forEach(x -> database.perform(() -> {
+			var t = x.genericType() instanceof ParameterizedType pt ? (Class<?>) pt.getActualTypeArguments()[0]
+					: x.type();
+			var c = crud((Class) t);
+			var o = x.get(sd);
+			(o instanceof List<?> oo ? oo.stream() : Stream.of(o)).forEach(y -> c.create((Entity) y));
+			return null;
+		}, true));
 
 		var r = getClass().getResource("seed-data.zip");
 		URI u;
@@ -184,7 +180,6 @@ public class CustomPersistence extends CmsPersistence {
 		if (!u.toString().startsWith("jar:"))
 			u = URI.create("jar:" + u);
 		var s = Java.zipFileSystem(u).getPath("/");
-//		var d = Files.createDirectories(databaseFile.getParent().resolve("website-template-upload"));
 		var ud = configuration.getProperty("website-template.upload.directory");
 		if (ud.startsWith("~"))
 			ud = System.getProperty("user.home") + ud.substring(1);
