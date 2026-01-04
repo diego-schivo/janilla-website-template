@@ -85,9 +85,12 @@ public class CustomInvocationHandlerFactory extends InvocationHandlerFactory {
 				throw new HandleException(new MethodBlockedException());
 		}
 
-		var rs = exchange.response();
-		rs.setHeaderValue("access-control-allow-origin", configuration.getProperty("website-template.api.cors.origin"));
-		rs.setHeaderValue("access-control-allow-credentials", "true");
+		var o = configuration.getProperty("website-template.api.cors.origin");
+		if (o != null && !o.isEmpty()) {
+			var rs = exchange.response();
+			rs.setHeaderValue("access-control-allow-credentials", "true");
+			rs.setHeaderValue("access-control-allow-origin", o);
+		}
 
 //		if (r.getPath().startsWith("/api/"))
 //			try {
