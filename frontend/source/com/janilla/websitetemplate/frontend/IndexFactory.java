@@ -31,6 +31,7 @@ import java.util.stream.Stream;
 
 import com.janilla.cms.CmsFrontend;
 import com.janilla.frontend.Frontend;
+import com.janilla.frontend.resources.FrontendResources;
 
 public class IndexFactory {
 
@@ -64,11 +65,12 @@ public class IndexFactory {
 				if (A.m == null) {
 					A.m = new LinkedHashMap<String, String>();
 					Frontend.putImports(A.m);
+					FrontendResources.putImports(A.m);
 					CmsFrontend.putImports(A.m);
 					Stream.of("admin", "admin-dashboard").forEach(x -> A.m.put(x, "/custom-" + x + ".js"));
 					Stream.of("app", "archive", "banner", "call-to-action", "card", "content", "form-block", "header",
-							"hero", "link", "lucide-icon", "media-block", "not-found", "page", "post", "posts",
-							"rich-text", "search").forEach(x -> A.m.put(x, "/" + x + ".js"));
+							"hero", "link", "media-block", "not-found", "page", "post", "posts", "rich-text", "search")
+							.forEach(x -> A.m.put(x, "/" + x + ".js"));
 				}
 			}
 		return A.m;

@@ -59,7 +59,7 @@ export default class Page extends WebComponent {
                         columns: [
                             {
                                 $type: "Column",
-                                size: "FULL",
+                                size: { name: "FULL" },
                                 richText: `<h1>Janilla Website Template</h1>
 											<p>
 											  <a href="/admin">Visit the admin dashboard</a>
