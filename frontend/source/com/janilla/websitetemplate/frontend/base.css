@@ -22,11 +22,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-:root:not(:has(.admin)),
-:host:not(:has(.admin)) {
+:where(:root:not(:has(.admin)), :host:not(:has(.admin))) {
   color-scheme: light dark;
   line-height: 1.5;
   text-size-adjust: 100%;
+
+  &:has([data-color-scheme="light"]) {
+    color-scheme: light;
+  }
+
+  &:has([data-color-scheme="dark"]) {
+    color-scheme: dark;
+  }
 }
 
 :where(:root:not(:has(.admin))) {
