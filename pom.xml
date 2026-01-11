@@ -10,7 +10,7 @@
 		<dependency>
 			<groupId>com.janilla</groupId>
 			<artifactId>janilla</artifactId>
-			<version>8.1.1-SNAPSHOT</version>
+			<version>8.1.3</version>
 		</dependency>
 	</dependencies>
 	<dependencyManagement>
@@ -66,7 +66,7 @@
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>exec-maven-plugin</artifactId>
-					<version>3.6.0</version>
+					<version>3.6.3</version>
 					<executions>
 						<execution>
 							<goals>
@@ -79,7 +79,7 @@
 		</pluginManagement>
 	</build>
 	<name>Janilla Website Template</name>
-	<description>Next.js App Router Course porting to Janilla</description>
+	<description>Payload Website Template porting to Janilla</description>
 	<url>https://github.com/diego-schivo/janilla-website-template</url>
 	<licenses>
 		<license>
