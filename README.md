@@ -6,12 +6,12 @@ This is a porting of [Payload Website Template](https://github.com/payloadcms/pa
 
 > **_Note:_**  if you are unfamiliar with the terminal, you can set up the project in an IDE (section below).
 
-Make sure you have Java SE Platform (JDK 24) and [Apache Maven](https://maven.apache.org/install.html) installed.
+Make sure you have Java SE Platform (JDK 25) and [Apache Maven](https://maven.apache.org/install.html) installed.
 
 From the parent project root, run the following command to run the application:
 
 ```shell
-mvn compile exec:exec -pl website
+mvn -pl fullstack -P execute compile exec:exec
 ```
 
 Then open a browser and navigate to <https://localhost:8443/>.
@@ -25,10 +25,10 @@ Then open a browser and navigate to <https://localhost:8443/>.
 [Eclipse IDE](https://eclipseide.org/):
 
 1. download the [Eclipse Installer](https://www.eclipse.org/downloads/packages/installer)
-2. install the package for Enterprise Java and Web Developers with JRE 24
+2. install the package for Enterprise Java and Web Developers with JRE 25
 3. launch the IDE and choose Import projects from Git (with smart import)
-4. select GitHub as the repository source, then search for `janilla-templates` and complete the wizard
-5. open the Java class `com.janilla.templates.website.WebsiteTemplate` and launch Debug as Java Application
+4. select GitHub as the repository source, then search for `janilla-website-template` and complete the wizard
+5. open the Java class `com.janilla.websitetemplate.fullstack.WebsiteFullstack` and launch Debug as Java Application
 6. open a browser and navigate to <https://localhost:8443/>
 
 > **_Note:_**  consider checking the Disable Cache checkbox in the Network tab of the Web Developer Tools.
@@ -37,4 +37,4 @@ Then open a browser and navigate to <https://localhost:8443/>.
 
 Please visit [www.janilla.com](https://janilla.com/) for more information.
 
-You can use [GitHub Issues](https://github.com/diego-schivo/janilla-templates/issues) to give or receive feedback.
+You can use [GitHub Issues](https://github.com/diego-schivo/janilla-website-template/issues) to give or receive feedback.

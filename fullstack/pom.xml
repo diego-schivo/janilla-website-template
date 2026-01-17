@@ -18,21 +18,29 @@
 		<artifactId>janilla-website-template</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-				<configuration>
-					<executable>java</executable>
-					<arguments>
-						<argument>-p</argument>
-						<modulepath/>
-						<argument>-m</argument>
-						<argument>com.janilla.websitetemplate.fullstack/com.janilla.websitetemplate.fullstack.WebsiteTemplateFullstack</argument>
-					</arguments>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+	<properties>
+		<exec.mainClass>com.janilla.websitetemplate.fullstack.WebsiteFullstack</exec.mainClass>
+	</properties>
+	<profiles>
+		<profile>
+			<id>execute</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<configuration>
+							<executable>java</executable>
+							<arguments>
+								<argument>-p</argument>
+								<modulepath/>
+								<argument>-m</argument>
+								<argument>com.janilla.websitetemplate.fullstack/com.janilla.websitetemplate.fullstack.WebsiteFullstack</argument>
+							</arguments>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
