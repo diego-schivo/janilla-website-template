@@ -51,25 +51,7 @@ export default class Page extends WebComponent {
         if (this.dataset.slug != hs.page?.slug) {
             const u = new URL(`${a.dataset.apiUrl}/pages`, location.href);
             u.searchParams.append("slug", this.dataset.slug);
-            const p = (await (await fetch(u)).json())[0] ?? (this.dataset.slug === "home" ? {
-                placeholder: true,
-                layout: [
-                    {
-                        $type: "Content",
-                        columns: [
-                            {
-                                $type: "Column",
-                                size: { name: "FULL" },
-                                richText: `<h1>Janilla Website Template</h1>
-											<p>
-											  <a href="/admin">Visit the admin dashboard</a>
-											  to make your account and seed content for your website.
-											</p>`
-                            }
-                        ]
-                    }
-                ]
-            } : null);
+            const p = (await (await fetch(u)).json())[0] ?? (this.dataset.slug === "home" ? { slug: "home" } : null);
             history.replaceState(hs = {
                 ...hs,
                 page: p
@@ -77,10 +59,33 @@ export default class Page extends WebComponent {
         }
 
         if (hs.page) {
+            if (hs.page.slug === "home" && !hs.page.layout)
+                history.replaceState(hs = {
+                    ...hs,
+                    page: {
+                        ...hs.page,
+                        layout: [
+                            {
+                                $type: "Content",
+                                columns: [
+                                    {
+                                        $type: "Column",
+                                        size: { name: "FULL" },
+                                        richText: `<h1>Janilla Website Template</h1>
+													<p>
+													  <a href="/admin">Visit the admin dashboard</a>
+													  to make your account and seed content for your website.
+													</p>`
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }, "");
             a.updateSeo(hs.page.meta);
             this.appendChild(this.interpolateDom({
                 $template: "",
-                placeholder: hs.page.placeholder ? "placeholder" : null,
+                placeholder: !hs.page.id ? "placeholder" : null,
                 hero: (hs.page.hero?.type?.name ?? "NONE") !== "NONE" ? {
                     $template: "hero",
                     path: "hero"

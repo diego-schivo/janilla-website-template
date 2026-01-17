@@ -1,63 +1,47 @@
-<!--${public}-->
+<!--${site}-->
 <!--${admin}-->
 
-<template id="public">
-  <div style="color-scheme: ${colorScheme}">
-    <header-element></header-element>
+<template id="site">
+  <!--${adminBar}-->
+  <div data-color-scheme="${colorScheme}">
+    <!--${header}-->
     <!--${content}-->
     <!--${footer}-->
   </div>
 </template>
 
-<template id="page">
-  <page-element data-slug="${slug}"></page-element>
+<template id="admin-bar">
+  <admin-bar data-user-email="${userEmail}"></admin-bar>
 </template>
 
-<template id="posts">
-  <posts-element></posts-element>
-</template>
-
-<template id="post">
-  <post-element data-slug="${slug}"></post-element>
-</template>
-
-<template id="search">
-  <search-element data-query="${query}"></search-element>
+<template id="header">
+  <header-element></header-element>
 </template>
 
 <template id="not-found">
   <not-found></not-found>
 </template>
 
+<template id="page">
+  <page-element data-slug="${slug}"></page-element>
+</template>
+
+<template id="post">
+  <post-element data-slug="${slug}"></post-element>
+</template>
+
+<template id="posts">
+  <posts-element></posts-element>
+</template>
+
+<template id="search">
+  <search-element data-query="${query}"></search-element>
+</template>
+
 <template id="footer">
-  <footer>
-    <div>
-      <a href="/">
-        <janilla-logo></janilla-logo>
-      </a>
-      <nav>
-        <!--${navItems}-->
-      </nav>
-      <div>
-        <select>
-          <!--${options}-->
-        </select>
-        <lucide-icon data-name="chevron-down"></lucide-icon>
-      </div>
-    </div>
-  </footer>
-</template>
-
-<template id="link">
-  <link-element data-document="${document}" data-href="${href}" data-target="${target}" data-class="${class}" data-text="${text}"></link-element>
-</template>
-
-<template id="option">
-  <option value="${value}" selected="${selected}">${text}</option>
+  <footer-element></footer-element>
 </template>
 
 <template id="admin">
-  <admin-element class="admin" data-path="${path}" data-api-url="${apiUrl}"
-    data-user-id="${userId}" data-user-admin="${userAdmin}">
-  </admin-element>
+  <admin-element class="admin" data-user="${user}" data-path="${path}"></admin-element>
 </template>

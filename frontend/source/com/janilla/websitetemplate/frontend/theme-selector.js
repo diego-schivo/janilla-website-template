@@ -22,33 +22,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-posts-element {
-  margin-top: 2rem;
+import WebComponent from "web-component";
 
-  main > article {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    padding: 1rem;
+export default class ThemeSelector extends WebComponent {
 
-    > div {
-      @media (min-width: 1441px) {
-        display: grid;
-        gap: 2rem;
-        grid-template-columns: repeat(3, 1fr);
-      }
+    static get templateNames() {
+        return ["theme-selector"];
     }
-  }
 
-  h1 {
-    font-size: 2.25rem;
-    line-height: 2.5rem;
-    margin-bottom: 3rem;
-
-    & + p {
-      color: rgb(248, 250, 252);
-      font-weight: 600;
-      margin-bottom: 1rem;
+    constructor() {
+        super();
     }
-  }
+
+    connectedCallback() {
+        super.connectedCallback();
+        this.addEventListener("change", this.handleChange);
+    }
+
+    disconnectedCallback() {
+        super.disconnectedCallback();
+        this.removeEventListener("change", this.handleChange);
+    }
+
+    async updateDisplay() {
+        const a = this.closest("app-element");
+        this.appendChild(this.interpolateDom({
+            $template: "",
+            options: ["auto", "light", "dark"].map(x => ({
+                $template: "option",
+                value: x,
+                text: x.charAt(0).toUpperCase() + x.substring(1),
+                selected: x === (a.colorScheme ?? "auto")
+            }))
+        }));
+    }
+
+    handleChange = event => {
+        const el = event.target.closest("select");
+        if (el)
+            this.closest("app-element").colorScheme = el.value === "auto" ? null : el.value;
+    }
 }

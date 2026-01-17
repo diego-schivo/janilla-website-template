@@ -29,8 +29,8 @@ archive-element {
     gap: 4rem;
 
     article {
-      background: var(--background-4);
-      border: 1px solid var(--border-1);
+      background: light-dark(rgb(244, 244, 245), rgb(10, 10, 10));
+      border: 1px solid light-dark(rgb(201, 201, 207), rgba(38, 38, 38, 0.8));
       border-radius: 0.2rem;
     }
   }

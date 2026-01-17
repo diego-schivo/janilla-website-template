@@ -24,14 +24,23 @@
  */
 package com.janilla.websitetemplate.frontend;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.janilla.cms.CmsFrontend;
 import com.janilla.frontend.Frontend;
 import com.janilla.frontend.resources.FrontendResources;
+import com.janilla.web.DefaultFile;
+import com.janilla.web.FileMap;
+import com.janilla.websitetemplate.frontend.Index.Template;
 
 public class IndexFactory {
 
@@ -39,13 +48,17 @@ public class IndexFactory {
 
 	protected final DataFetching dataFetching;
 
-	public IndexFactory(Properties configuration, DataFetching dataFetching) {
+	protected final FileMap fileMap;
+
+	public IndexFactory(Properties configuration, DataFetching dataFetching, FileMap fileMap) {
 		this.configuration = configuration;
 		this.dataFetching = dataFetching;
+		this.fileMap = fileMap;
 	}
 
 	public Index index(FrontendExchange exchange) {
-		return new Index(imports(), configuration.getProperty("website-template.api.url"), state(exchange));
+		return new Index(imports(), configuration.getProperty("website-template.api.url"), state(exchange),
+				templates());
 	}
 
 	protected Map<String, Object> state(FrontendExchange exchange) {
@@ -58,21 +71,44 @@ public class IndexFactory {
 
 	protected Map<String, String> imports() {
 		class A {
-			private static Map<String, String> m;
+			private static Map<String, String> x;
 		}
-		if (A.m == null)
-			synchronized (this) {
-				if (A.m == null) {
-					A.m = new LinkedHashMap<String, String>();
-					Frontend.putImports(A.m);
-					FrontendResources.putImports(A.m);
-					CmsFrontend.putImports(A.m);
-					Stream.of("admin", "admin-dashboard").forEach(x -> A.m.put(x, "/custom-" + x + ".js"));
-					Stream.of("app", "archive", "banner", "call-to-action", "card", "content", "form-block", "header",
-							"hero", "link", "media-block", "not-found", "page", "post", "posts", "rich-text", "search")
-							.forEach(x -> A.m.put(x, "/" + x + ".js"));
+		if (A.x == null)
+			synchronized (A.class) {
+				if (A.x == null) {
+					A.x = new LinkedHashMap<String, String>();
+					Frontend.putImports(A.x);
+					FrontendResources.putImports(A.x);
+					CmsFrontend.putImports(A.x);
+					Stream.of("admin", "admin-dashboard").forEach(x -> A.x.put(x, "/custom-" + x + ".js"));
+					Stream.of("app", "archive", "banner", "call-to-action", "card", "content", "footer", "form-block",
+							"header", "hero", "link", "media-block", "not-found", "page", "post", "posts", "rich-text",
+							"search", "theme-selector").forEach(x -> A.x.put(x, "/" + x + ".js"));
 				}
 			}
-		return A.m;
+		return A.x;
+	}
+
+	protected List<Template> templates() {
+		return Stream.of("app", "footer", "header", "janilla-logo", "link", "theme-selector").map(this::template)
+				.collect(Collectors.toCollection(ArrayList::new));
+	}
+
+	public Template template(String name) {
+		class A {
+			private static Map<String, Template> x = new HashMap<>();
+		}
+		if (!A.x.containsKey(name))
+			synchronized (A.class) {
+				if (!A.x.containsKey(name)) {
+					var f = (DefaultFile) fileMap.get("/" + name + ".html");
+					try (var in = f != null ? f.newInputStream() : null) {
+						A.x.put(name, in != null ? new Template(name, new String(in.readAllBytes())) : null);
+					} catch (IOException e) {
+						throw new UncheckedIOException(e);
+					}
+				}
+			}
+		return A.x.get(name);
 	}
 }

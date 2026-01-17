@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-@import "base.css";
+@import "site-base.css";
 
 @import "app.css";
 @import "archive.css";
@@ -31,6 +31,7 @@
 @import "card.css";
 @import "content.css";
 @import "rich-text.css";
+@import "footer.css";
 @import "form-block.css";
 @import "header.css";
 @import "hero.css";
@@ -42,3 +43,4 @@
 @import "post.css";
 @import "posts.css";
 @import "search.css";
+@import "theme-selector.css";

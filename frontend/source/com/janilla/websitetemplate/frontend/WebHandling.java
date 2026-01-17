@@ -26,6 +26,7 @@ package com.janilla.websitetemplate.frontend;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
 import com.janilla.web.Bind;
 import com.janilla.web.Handle;
@@ -66,8 +67,12 @@ public class WebHandling {
 		if (slug == null || slug.isEmpty())
 			slug = "home";
 		var pp = dataFetching.pages(slug, exchange.tokenCookie());
-		if (pp.isEmpty() && !slug.equals("home"))
-			throw new NotFoundException("slug=" + slug);
+		if (pp.isEmpty()) {
+			if (slug.equals("home"))
+				pp = List.of(Map.of("slug", "home"));
+			else
+				throw new NotFoundException("slug=" + slug);
+		}
 		var i = indexFactory.index(exchange);
 		i.state().put("page", !pp.isEmpty() ? pp.getFirst() : null);
 		return i;

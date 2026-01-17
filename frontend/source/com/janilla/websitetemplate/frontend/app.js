@@ -43,13 +43,29 @@ export default class App extends WebComponent {
             history.replaceState({}, "");
     }
 
-    get user() {
+    get colorScheme() {
+        return this.state.colorScheme;
+    }
+
+    set colorScheme(colorScheme) {
+        if (colorScheme)
+            localStorage.setItem("janilla-website-template.color-scheme", colorScheme);
+        else
+            localStorage.removeItem("janilla-website-template.color-scheme");
+        this.requestDisplay();
+    }
+
+    get currentPath() {
+        return location.pathname;
+    }
+
+    get currentUser() {
         return this.state.user;
     }
 
-    set user(user) {
-        this.state.user = user;
-        this.dispatchEvent(new CustomEvent("userchanged", { detail: user }));
+    set currentUser(currentUser) {
+        this.state.user = currentUser;
+        this.dispatchEvent(new CustomEvent("userchanged", { detail: currentUser }));
     }
 
     connectedCallback() {
@@ -59,14 +75,12 @@ export default class App extends WebComponent {
             el.remove();
         }
         super.connectedCallback();
-        this.addEventListener("change", this.handleChange);
         this.addEventListener("click", this.handleClick);
         addEventListener("popstate", this.handlePopState);
     }
 
     disconnectedCallback() {
         super.disconnectedCallback();
-        this.removeEventListener("change", this.handleChange);
         this.removeEventListener("click", this.handleClick);
         removeEventListener("popstate", this.handlePopState);
     }
@@ -83,7 +97,7 @@ export default class App extends WebComponent {
                 ? ss.user
                 : await (await fetch(`${this.dataset.apiUrl}/users/me`)).json();
 
-        const p = location.pathname;
+        const p = this.currentPath;
         const spp = new URLSearchParams(location.search);
         const m = p.match(adminRegex);
         if (m) {
@@ -91,7 +105,7 @@ export default class App extends WebComponent {
                 $template: "",
                 admin: {
                     $template: "admin",
-                    user: s.user ? JSON.stringify(s.user) : null,
+                    user: this.currentUser ? JSON.stringify(this.currentUser) : null,
                     path: m[1] ?? "/"
                 }
             }));
@@ -106,50 +120,18 @@ export default class App extends WebComponent {
             s.footer = ss && Object.hasOwn(ss, "footer")
                 ? ss.footer
                 : await (await fetch(`${this.dataset.apiUrl}/footer`)).json();
+        s.colorScheme = localStorage.getItem("janilla-website-template.color-scheme");
 
-        /*
-        const hs = history.state;
-        if (hs.redirects)
-            for (const x of hs.redirects)
-                if (x.from === location.pathname) {
-                    history.pushState({}, "", x.to);
-                    dispatchEvent(new CustomEvent("popstate"));
-                    return;
-                }
-        */
-
-        /*
-        const link = x => {
-            let h;
-            switch (x.type.name) {
-                case "REFERENCE":
-                    switch (x.reference?.$type) {
-                        case "Page":
-                            h = `/${x.reference.slug}`;
-                            break;
-                        case "Post":
-                            h = `/posts/${x.reference.slug}`;
-                            break;
-                    }
-                    break;
-                case "CUSTOM":
-                    h = x.uri;
-                    break;
-            }
-            return {
-                $template: "link",
-                ...x,
-                href: h,
-                target: x.newTab ? "_blank" : null
-            };
-        };
-        */
-        const cs = localStorage.getItem("janilla-templates.website.color-scheme");
         this.appendChild(this.interpolateDom({
             $template: "",
-            public: {
-                $template: "public",
-                colorScheme: cs ?? "light dark",
+            site: {
+                $template: "site",
+                colorScheme: this.colorScheme ?? "light dark",
+				adminBar: this.currentUser?.roles?.some(x => x.name === "ADMIN") ? {
+				    $template: "admin-bar",
+				    userEmail: this.currentUser?.email
+				} : null,
+				header: { $template: "header" },
                 content: s.notFound ? { $template: "not-found" } : (() => {
                     const m2 = p.match(postsRegex);
                     if (m2)
@@ -165,35 +147,9 @@ export default class App extends WebComponent {
                         slug: location.pathname.split("/").map(x => x === "" ? "home" : x)[1]
                     };
                 })(),
-                footer: {
-                    $template: "footer",
-                    navItems: s.footer?.navItems?.map(x => ({
-                        $template: "link",
-                        ...x,
-                        document: x.type.name === "REFERENCE" ? `${x.document.$type}:${x.document.slug}` : null,
-                        href: x.type.name === "CUSTOM" ? x.uri : null,
-                        target: x.newTab ? "_blank" : null
-                    })),
-                    options: ["auto", "light", "dark"].map(x => ({
-                        $template: "option",
-                        value: x,
-                        text: x.charAt(0).toUpperCase() + x.substring(1),
-                        selected: x === (cs ?? "auto")
-                    }))
-                }
+                footer: { $template: "footer" }
             }
         }));
-    }
-
-    handleChange = event => {
-        const el = event.target.closest("select");
-        if (el?.closest("footer")) {
-            if (el.value === "auto")
-                localStorage.removeItem("janilla-templates.website.color-scheme");
-            else
-                localStorage.setItem("janilla-templates.website.color-scheme", el.value);
-            this.requestDisplay();
-        }
     }
 
     handleClick = event => {
@@ -209,15 +165,15 @@ export default class App extends WebComponent {
     handlePopState = () => {
         // console.log("handlePopState", JSON.stringify(history.state));
         delete this.serverState;
-        window.scrollTo(0, 0);
         delete this.state.notFound;
+        window.scrollTo(0, 0);
         this.requestDisplay();
     }
 
     navigate(url) {
         delete this.serverState;
         delete this.state.notFound;
-        if (url.pathname !== location.pathname)
+        if (url.pathname !== this.currentPath)
             window.scrollTo(0, 0);
         history.pushState({}, "", url.pathname + url.search);
         this.requestDisplay();

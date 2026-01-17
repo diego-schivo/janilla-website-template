@@ -1,0 +1,23 @@
+<footer>
+  <div class="logo">
+    <a href="/">
+      <janilla-logo></janilla-logo>
+    </a>
+    <theme-selector></theme-selector>
+    <!--${navigation}-->
+  </div>
+</footer>
+
+<template id="navigation">
+  <nav>
+    <ul>
+      <!--${items}-->
+    </ul>
+  </nav>
+</template>
+
+<template id="list-item">
+  <li>
+    <link-element data-document="${document}" data-href="${href}" data-target="${target}" data-class="${class}" data-text="${text}"></link-element>
+  </li>
+</template>

@@ -24,8 +24,8 @@
  */
 card-element {
   article {
-    background: var(--background-4);
-    border: 1px solid var(--border-1);
+    background: rgb(10, 10, 10);
+    border: 1px solid rgba(38, 38, 38, 0.8);
     border-radius: 0.2rem;
     height: 100%;
   }
