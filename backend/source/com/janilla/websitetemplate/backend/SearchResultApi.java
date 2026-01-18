@@ -29,9 +29,9 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.janilla.cms.CollectionApi;
+import com.janilla.backend.cms.CollectionApi;
 import com.janilla.http.HttpExchange;
-import com.janilla.persistence.Persistence;
+import com.janilla.backend.persistence.Persistence;
 import com.janilla.web.Bind;
 import com.janilla.web.Handle;
 

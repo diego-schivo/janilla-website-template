@@ -30,10 +30,10 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import com.janilla.cms.CollectionApi;
+import com.janilla.backend.cms.CollectionApi;
 import com.janilla.http.HttpExchange;
-import com.janilla.persistence.Persistence;
-import com.janilla.smtp.SmtpClient;
+import com.janilla.backend.persistence.Persistence;
+import com.janilla.backend.smtp.SmtpClient;
 import com.janilla.web.Handle;
 
 @Handle(path = "/api/form-submissions")

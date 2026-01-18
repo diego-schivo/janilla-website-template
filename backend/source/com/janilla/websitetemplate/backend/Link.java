@@ -24,8 +24,8 @@
  */
 package com.janilla.websitetemplate.backend;
 
-import com.janilla.cms.DocumentReference;
-import com.janilla.cms.Types;
+import com.janilla.backend.cms.DocumentReference;
+import com.janilla.backend.cms.Types;
 
 public record Link(LinkType type, Boolean newTab, @Types( {
 		Page.class, Post.class }) DocumentReference<?, ?> document, String uri, String text,

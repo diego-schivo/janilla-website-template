@@ -27,12 +27,12 @@ package com.janilla.websitetemplate.backend;
 import java.time.Instant;
 import java.util.List;
 
-import com.janilla.cms.Document;
-import com.janilla.cms.DocumentReference;
-import com.janilla.cms.DocumentStatus;
-import com.janilla.cms.Types;
-import com.janilla.persistence.Index;
-import com.janilla.persistence.Store;
+import com.janilla.backend.cms.Document;
+import com.janilla.backend.cms.DocumentReference;
+import com.janilla.backend.cms.DocumentStatus;
+import com.janilla.backend.cms.Types;
+import com.janilla.backend.persistence.Index;
+import com.janilla.backend.persistence.Store;
 
 @Store
 public record SearchResult(Long id, @Index @Types( {

@@ -26,7 +26,7 @@ package com.janilla.websitetemplate.backend;
 
 import java.util.List;
 
-import com.janilla.cms.Types;
+import com.janilla.backend.cms.Types;
 
 public record Hero(HeroType type, String richText, List<Link> links, @Types(Media.class) Long media) {
 }

@@ -27,9 +27,9 @@ package com.janilla.websitetemplate.backend;
 import java.util.List;
 import java.util.function.Predicate;
 
-import com.janilla.cms.CollectionApi;
+import com.janilla.backend.cms.CollectionApi;
 import com.janilla.http.HttpExchange;
-import com.janilla.persistence.Persistence;
+import com.janilla.backend.persistence.Persistence;
 import com.janilla.web.Bind;
 import com.janilla.web.Handle;
 

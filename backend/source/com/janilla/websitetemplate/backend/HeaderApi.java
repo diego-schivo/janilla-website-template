@@ -27,9 +27,9 @@ package com.janilla.websitetemplate.backend;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 
-import com.janilla.cms.GlobalApi;
+import com.janilla.backend.cms.GlobalApi;
 import com.janilla.http.HttpExchange;
-import com.janilla.persistence.Persistence;
+import com.janilla.backend.persistence.Persistence;
 import com.janilla.web.Handle;
 
 @Handle(path = "/api/header")

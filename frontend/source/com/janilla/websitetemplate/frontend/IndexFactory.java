@@ -35,7 +35,7 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.janilla.cms.CmsFrontend;
+import com.janilla.frontend.cms.CmsFrontend;
 import com.janilla.frontend.Frontend;
 import com.janilla.frontend.resources.FrontendResources;
 import com.janilla.web.DefaultFile;
