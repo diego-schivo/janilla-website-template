@@ -36,115 +36,63 @@ import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.janilla.backend.cms.CmsPersistence;
-import com.janilla.backend.cms.Document;
-import com.janilla.backend.cms.DocumentReference;
-import com.janilla.backend.cms.DocumentStatus;
 import com.janilla.backend.cms.Types;
-import com.janilla.ioc.DiFactory;
-import com.janilla.java.Converter;
-import com.janilla.java.Java;
-import com.janilla.java.TypeResolver;
-import com.janilla.json.Json;
 import com.janilla.backend.persistence.Crud;
 import com.janilla.backend.persistence.CrudObserver;
 import com.janilla.backend.persistence.Entity;
-import com.janilla.reflect.Reflection;
 import com.janilla.backend.sqlite.SqliteDatabase;
+import com.janilla.ioc.DiFactory;
+import com.janilla.java.Converter;
+import com.janilla.java.Java;
+import com.janilla.java.Reflection;
+import com.janilla.java.TypeResolver;
+import com.janilla.json.Json;
 
-public class CustomPersistence extends CmsPersistence {
+public class WebsitePersistence extends CmsPersistence {
 
-	private CrudObserver searchObserver;
+	private SearchObserver<?> searchObserver;
 
 	protected final DiFactory diFactory;
 
 	protected final Properties configuration;
 
-	public CustomPersistence(SqliteDatabase database, Collection<Class<? extends Entity<?>>> types,
-			TypeResolver typeResolver, DiFactory diFactory, Properties configuration) {
-		super(database, types, typeResolver);
+	protected final String configurationKey;
+
+	public WebsitePersistence(SqliteDatabase database, List<Class<? extends Entity<?>>> storables,
+			TypeResolver typeResolver, DiFactory diFactory, Properties configuration, String configurationKey) {
+		super(database, storables, typeResolver);
 		this.diFactory = diFactory;
 		this.configuration = configuration;
+		this.configurationKey = configurationKey;
 	}
 
-	protected CrudObserver searchObserver() {
+	protected SearchObserver<?> searchObserver() {
 		if (searchObserver == null)
-			searchObserver = new CrudObserver() {
-
-				private List<Class<?>> types = Arrays.stream(Reflection.property(SearchResult.class, "document")
-						.annotatedType().getAnnotation(Types.class).value()).toList();
-
-				@Override
-				public void afterCreate(Entity entity) {
-					var d = (Document<?>) entity;
-					var dc = d.getClass();
-					if (types.contains(dc) && d.documentStatus() == DocumentStatus.PUBLISHED)
-						crud(SearchResult.class)
-								.create(Reflection.copy(d,
-										new SearchResult(null, new DocumentReference(dc, d.id()), null, null, null,
-												null, null, null, null, null),
-										y -> !Set.of("id", "document").contains(y)));
-				}
-
-				@Override
-				public void afterUpdate(Entity entity1, Entity entity2) {
-					var d1 = (Document<?>) entity1;
-					var d2 = (Document<?>) entity2;
-					var dc = d1.getClass();
-					if (types.contains(dc)) {
-						var c = crud(SearchResult.class);
-						switch (d1.documentStatus()) {
-						case DRAFT:
-							if (d2.documentStatus() == d1.documentStatus())
-								;
-							else
-								c.create(Reflection.copy(d2,
-										new SearchResult(null, new DocumentReference(dc, d2.id()), null, null, null,
-												null, null, null, null, null),
-										y -> !Set.of("id", "document").contains(y)));
-							break;
-						case PUBLISHED:
-							if (d2.documentStatus() == d1.documentStatus())
-								c.update(c.find("document", new DocumentReference(dc, d2.id())),
-										x -> Reflection.copy(d2, x, y -> !Set.of("id", "document").contains(y)));
-							else
-								c.delete(c.find("document", d2.id()));
-							break;
-						}
-					}
-				}
-
-				@Override
-				public void afterDelete(Entity entity) {
-					var d = (Document<?>) entity;
-					var dc = d.getClass();
-					if (types.contains(dc) && d.documentStatus() == DocumentStatus.PUBLISHED) {
-						var c = crud(SearchResult.class);
-						c.delete(c.find("document", new DocumentReference(dc, d.id())));
-					}
-				}
-			};
+			searchObserver = new SearchObserver<>(Arrays.stream(Reflection.property(SearchResult.class, "document")
+					.annotatedType().getAnnotation(Types.class).value()).toList(), this);
 		return searchObserver;
 	}
 
 	@Override
 	protected <E extends Entity<?>> Crud<?, E> newCrud(Class<E> type) {
-		var x = super.newCrud(type);
-		if (x != null)
-			x.observers().add(searchObserver());
-		return x;
+		var c = super.newCrud(type);
+		if (c != null) {
+			@SuppressWarnings("unchecked")
+			var o = (CrudObserver<E>) searchObserver();
+			c.observers().add(o);
+		}
+		return c;
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void seed() throws IOException {
-		Reflection.properties(SeedData.class).forEach(x -> database.perform(() -> {
+		Reflection.properties(seedDataClass()).forEach(x -> database.perform(() -> {
 			var t = x.genericType() instanceof ParameterizedType pt ? (Class<?>) pt.getActualTypeArguments()[0]
 					: x.type();
 			var c = crud((Class) t);
@@ -152,14 +100,14 @@ public class CustomPersistence extends CmsPersistence {
 			return null;
 		}, true));
 
-		SeedData sd;
+		Object sd;
 		try (var is = getClass().getResourceAsStream("seed-data.json")) {
 			var s = new String(is.readAllBytes());
 			var o = Json.parse(s);
-			sd = diFactory.create(Converter.class).convert(o, SeedData.class);
+			sd = diFactory.create(Converter.class).convert(o, seedDataClass());
 		}
 
-		var pp = Reflection.properties(SeedData.class).collect(Collectors.toCollection(ArrayList::new));
+		var pp = Reflection.properties(seedDataClass()).collect(Collectors.toCollection(ArrayList::new));
 //		IO.println("pp=" + pp);
 		pp.stream().forEach(x -> database.perform(() -> {
 			var t = x.genericType() instanceof ParameterizedType pt ? (Class<?>) pt.getActualTypeArguments()[0]
@@ -180,7 +128,7 @@ public class CustomPersistence extends CmsPersistence {
 		if (!u.toString().startsWith("jar:"))
 			u = URI.create("jar:" + u);
 		var s = Java.zipFileSystem(u).getPath("/");
-		var ud = configuration.getProperty("website-template.upload.directory");
+		var ud = configuration.getProperty(configurationKey + ".upload.directory");
 		if (ud.startsWith("~"))
 			ud = System.getProperty("user.home") + ud.substring(1);
 		var d = Files.createDirectories(Path.of(ud));
@@ -193,5 +141,9 @@ public class CustomPersistence extends CmsPersistence {
 				return FileVisitResult.CONTINUE;
 			}
 		});
+	}
+
+	protected Class<?> seedDataClass() {
+		return SeedData.class;
 	}
 }

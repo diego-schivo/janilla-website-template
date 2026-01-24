@@ -26,16 +26,15 @@ package com.janilla.websitetemplate.fullstack;
 
 import java.util.Map;
 
+import com.janilla.http.DirectHttpClient;
 import com.janilla.http.HttpServer;
 import com.janilla.ioc.Context;
-import com.janilla.http.DirectHttpClient;
-import com.janilla.websitetemplate.backend.WebsiteBackend;
 
 @Context("frontend")
 public class CustomHttpClient extends DirectHttpClient {
 
 	public CustomHttpClient() {
-		var b = WebsiteBackend.INSTANCE.get();
+		var b = WebsiteFullstack.INSTANCE.get().backend();
 		super(b.diFactory().create(HttpServer.class, Map.of("handler", b.handler())));
 	}
 }

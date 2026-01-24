@@ -30,10 +30,6 @@ export default class Banner extends WebComponent {
 		return ["banner"];
 	}
 
-	constructor() {
-		super();
-	}
-
 	async updateDisplay() {
 		const d = this.closest("post-element").data(this.dataset.path);
 		this.appendChild(this.interpolateDom({

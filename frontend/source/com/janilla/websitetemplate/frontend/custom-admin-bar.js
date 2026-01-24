@@ -22,22 +22,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-//package com.janilla.websitetemplate.frontend;
-//
-//import java.util.List;
-//
-//import com.janilla.backend.cms.CmsReflectionJsonIterator;
-//import com.janilla.backend.persistence.Persistence;
-//
-//public class CustomReflectionJsonIterator extends CmsReflectionJsonIterator {
-//
-//	public CustomReflectionJsonIterator(Object object, boolean includeType, Persistence persistence) {
-//		super(object, includeType, persistence);
-//	}
-//
-//	@Override
-//	protected List<?> list(List<?> list) {
-//		return super.list(list).stream()
-//				.map(x -> x instanceof Post y && y.relatedPosts() != null ? y.withRelatedPosts(null) : x).toList();
-//	}
-//}
+import AdminBar from "./admin-bar.js";
+
+export default class CustomAdminBar extends AdminBar {
+
+    static get templateNames() {
+        return ["admin-bar"];
+    }
+
+    links() {
+        const x = super.links();
+        x.splice(2, 0, {
+            href: "/admin/collections/pages/create",
+            target: "_blank",
+            text: "New Page"
+        });
+        return x;
+    }
+}

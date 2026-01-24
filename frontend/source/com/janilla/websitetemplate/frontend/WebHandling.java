@@ -27,6 +27,7 @@ package com.janilla.websitetemplate.frontend;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import com.janilla.web.Bind;
 import com.janilla.web.Handle;
@@ -74,7 +75,21 @@ public class WebHandling {
 				throw new NotFoundException("slug=" + slug);
 		}
 		var i = indexFactory.index(exchange);
-		i.state().put("page", !pp.isEmpty() ? pp.getFirst() : null);
+		Object p = pp.getFirst();
+		i.state().put("page", p);
+
+		class A {
+			@SuppressWarnings("unchecked")
+			private static boolean pageLayoutContains(Object page, String component) {
+				var l = (List<Object>) ((Map<String, Object>) page).get("layout");
+				return l != null && l.stream().anyMatch(x -> ((Map<String, Object>) x).get("$type").equals(component));
+			}
+		}
+		if (A.pageLayoutContains(p, "Archive"))
+			i.state().put("posts", dataFetching.posts(null, exchange.tokenCookie()));
+
+		Stream.of("archive", "call-to-action", "content", "form-block", "hero", "media-block", "page")
+				.map(indexFactory::template).forEach(i.templates()::add);
 		return i;
 	}
 
@@ -86,6 +101,8 @@ public class WebHandling {
 			throw new NotFoundException("slug=" + slug);
 		var i = indexFactory.index(exchange);
 		i.state().put("post", pp.getFirst());
+		Stream.of("banner", "card", "media-block", "post", "rich-text").map(indexFactory::template)
+				.forEach(i.templates()::add);
 		return i;
 	}
 
@@ -94,6 +111,7 @@ public class WebHandling {
 //		IO.println("WebHandling.posts");
 		var i = indexFactory.index(exchange);
 		i.state().put("posts", dataFetching.posts(null, exchange.tokenCookie()));
+		Stream.of("card", "posts").map(indexFactory::template).forEach(i.templates()::add);
 		return i;
 	}
 
@@ -102,6 +120,7 @@ public class WebHandling {
 //		IO.println("WebHandling.search, query=" + query);
 		var i = indexFactory.index(exchange);
 		i.state().put("results", dataFetching.searchResults(query));
+		Stream.of("card", "search").map(indexFactory::template).forEach(i.templates()::add);
 		return i;
 	}
 }

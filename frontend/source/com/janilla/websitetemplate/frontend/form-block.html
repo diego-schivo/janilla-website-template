@@ -5,7 +5,7 @@
 </article>
 
 <template id="intro">
-  <section>
+  <section class="intro">
     <!--${introContent}-->
   </section>
 </template>
@@ -13,7 +13,7 @@
 <template id="form">
   <form>
     <!--${fields}-->
-    <button>Submit</button>
+    <button class="button primary">Submit</button>
   </form>
 </template>
 
@@ -24,11 +24,11 @@
   </label>
 </template>
 
-<template id="input-control">
+<template id="input">
   <input type="${type}" name="${name}" required="${required}" />
 </template>
 
-<template id="cms-textarea">
+<template id="textarea">
   <textarea name="${name}" rows="3" required="${required}"></textarea>
 </template>
 

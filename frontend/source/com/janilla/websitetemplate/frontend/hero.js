@@ -30,19 +30,19 @@ export default class Hero extends WebComponent {
 		return ["hero"];
 	}
 
-	constructor() {
-		super();
-	}
-
 	async updateDisplay() {
 		const d = this.closest("page-element").data(this.dataset.path);
 		this.appendChild(this.interpolateDom({
 			$template: "",
-			style: d.media?.uri ? `background-image: url("${d.media.uri}")` : null,
+			backgroundImage: d.media ? `url("${d.media.uri}")` : "none",
 			...d,
 			links: d.links?.map(x => ({
-				$template: "link",
-				...x
+			    $template: "link",
+			    ...x,
+			    document: x.type.name === "REFERENCE" ? `${x.document.$type}:${x.document.slug}` : null,
+			    href: x.type.name === "CUSTOM" ? x.uri : null,
+			    target: x.newTab ? "_blank" : null,
+				class: `button ${x.appearance?.name === "OUTLINE" ? "secondary" : "primary"}`
 			}))
 		}));
 	}

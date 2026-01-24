@@ -25,24 +25,23 @@
 package com.janilla.websitetemplate.backend;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 
 import com.janilla.backend.cms.CollectionApi;
-import com.janilla.http.HttpExchange;
 import com.janilla.backend.persistence.Persistence;
+import com.janilla.http.HttpExchange;
 import com.janilla.web.Bind;
 import com.janilla.web.Handle;
 
 @Handle(path = "/api/pages")
 public class PageApi extends CollectionApi<Long, Page> {
 
-	public static final AtomicReference<PageApi> INSTANCE = new AtomicReference<>();
+//	public static final AtomicReference<PageApi> INSTANCE = new AtomicReference<>();
 
 	public PageApi(Predicate<HttpExchange> drafts, Persistence persistence) {
 		super(Page.class, drafts, persistence);
-		if (!INSTANCE.compareAndSet(null, this))
-			throw new IllegalStateException();
+//		if (!INSTANCE.compareAndSet(null, this))
+//			throw new IllegalStateException();
 	}
 
 	@Handle(method = "GET")

@@ -34,10 +34,6 @@ export default class Search extends WebComponent {
 		return ["search"];
 	}
 
-	constructor() {
-		super();
-	}
-
 	connectedCallback() {
 		super.connectedCallback();
 		this.addEventListener("input", this.handleInput);

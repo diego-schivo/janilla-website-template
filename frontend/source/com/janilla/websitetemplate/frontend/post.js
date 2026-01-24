@@ -34,10 +34,6 @@ export default class Post extends WebComponent {
 		return ["post"];
 	}
 
-	constructor() {
-		super();
-	}
-
 	async updateDisplay() {
 		let hs = history.state;
 		const a = this.closest("app-element");

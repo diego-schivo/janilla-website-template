@@ -31,24 +31,17 @@ form-block {
     margin-top: 4rem;
   }
 
-  article,
-  form,
-  label {
+  article {
     display: flex;
     flex-direction: column;
-  }
-
-  article {
     gap: 1.25rem;
   }
 
-  form,
-  .confirmation {
+  form {
     border: 1px solid rgba(38, 38, 38, 0.8);
     border-radius: 0.75rem;
-  }
-
-  form {
+    display: flex;
+    flex-direction: column;
     gap: 1rem;
     padding: 1rem;
 
@@ -59,6 +52,8 @@ form-block {
 
   label {
     color: rgb(248, 250, 252);
+    display: flex;
+    flex-direction: column;
     font-size: 0.875rem;
     font-weight: 500;
     gap: 0.25rem;
@@ -69,6 +64,8 @@ form-block {
   }
 
   .confirmation {
+    border: 1px solid rgba(38, 38, 38, 0.8);
+    border-radius: 0.75rem;
     padding: 1rem 2rem;
 
     h2 {

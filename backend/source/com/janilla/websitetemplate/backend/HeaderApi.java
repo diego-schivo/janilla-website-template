@@ -24,23 +24,22 @@
  */
 package com.janilla.websitetemplate.backend;
 
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 
 import com.janilla.backend.cms.GlobalApi;
-import com.janilla.http.HttpExchange;
 import com.janilla.backend.persistence.Persistence;
+import com.janilla.http.HttpExchange;
 import com.janilla.web.Handle;
 
 @Handle(path = "/api/header")
 public class HeaderApi extends GlobalApi<Long, Header> {
 
-	public static final AtomicReference<HeaderApi> INSTANCE = new AtomicReference<>();
+//	public static final AtomicReference<HeaderApi> INSTANCE = new AtomicReference<>();
 
 	public HeaderApi(Predicate<HttpExchange> drafts, Persistence persistence) {
 		super(Header.class, drafts, persistence);
-		if (!INSTANCE.compareAndSet(null, this))
-			throw new IllegalStateException();
+//		if (!INSTANCE.compareAndSet(null, this))
+//			throw new IllegalStateException();
 	}
 
 	@Override

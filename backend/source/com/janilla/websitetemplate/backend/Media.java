@@ -35,9 +35,9 @@ public record Media(Long id, File file, String alt, String caption, Instant crea
 		DocumentStatus documentStatus, Instant publishedAt) implements Document<Long> {
 
 	public String uri() {
+		var b = WebsiteBackend.INSTANCE.get();
 		return file != null
-				? (WebsiteBackend.INSTANCE.get().configuration().getProperty("website-template.api.url")
-						+ "/images/" + file.name())
+				? (b.configuration().getProperty(b.configurationKey() + ".api.url") + "/images/" + file.name())
 				: null;
 	}
 }

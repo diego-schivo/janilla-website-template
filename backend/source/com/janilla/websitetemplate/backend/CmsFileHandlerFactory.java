@@ -41,8 +41,11 @@ public class CmsFileHandlerFactory implements HttpHandlerFactory {
 
 	protected final Properties configuration;
 
-	public CmsFileHandlerFactory(Properties configuration) {
+	protected final String configurationKey;
+
+	public CmsFileHandlerFactory(Properties configuration, String configurationKey) {
 		this.configuration = configuration;
+		this.configurationKey = configurationKey;
 	}
 
 	@Override
@@ -51,7 +54,7 @@ public class CmsFileHandlerFactory implements HttpHandlerFactory {
 		var n = p != null && p.startsWith("/api/images/") ? p.substring("/api/images/".length()) : null;
 		if (n == null)
 			return null;
-		var d = configuration.getProperty("website-template.upload.directory");
+		var d = configuration.getProperty(configurationKey + ".upload.directory");
 		if (d.startsWith("~"))
 			d = System.getProperty("user.home") + d.substring(1);
 		var f = Path.of(d).resolve(n);

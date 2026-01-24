@@ -30,10 +30,6 @@ export default class Content extends WebComponent {
 		return ["content"];
 	}
 
-	constructor() {
-		super();
-	}
-
 	async updateDisplay() {
 		const d = this.closest("page-element").data(this.dataset.path);
 		this.appendChild(this.interpolateDom({

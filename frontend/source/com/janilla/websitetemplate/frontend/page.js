@@ -34,10 +34,6 @@ export default class Page extends WebComponent {
         return ["data-slug"];
     }
 
-    constructor() {
-        super();
-    }
-
     async updateDisplay() {
         let hs = history.state;
         const a = this.closest("app-element");
@@ -71,7 +67,7 @@ export default class Page extends WebComponent {
                                     {
                                         $type: "Column",
                                         size: { name: "FULL" },
-                                        richText: `<h1>Janilla Website Template</h1>
+                                        richText: `<h1>${a.dataset.title}</h1>
 													<p>
 													  <a href="/admin">Visit the admin dashboard</a>
 													  to make your account and seed content for your website.

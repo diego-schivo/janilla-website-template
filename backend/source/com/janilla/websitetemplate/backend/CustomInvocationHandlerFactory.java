@@ -29,7 +29,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
 import com.janilla.http.HttpExchange;
@@ -47,7 +46,7 @@ import com.janilla.web.RenderableFactory;
 
 public class CustomInvocationHandlerFactory extends InvocationHandlerFactory {
 
-	public static final AtomicReference<CustomInvocationHandlerFactory> INSTANCE = new AtomicReference<>();
+//	public static final AtomicReference<CustomInvocationHandlerFactory> INSTANCE = new AtomicReference<>();
 
 	protected static final Set<String> GUEST_POST = Set.of("/api/form-submissions", "/api/users/first-register",
 			"/api/users/forgot-password", "/api/users/login", "/api/users/reset-password");
@@ -56,16 +55,19 @@ public class CustomInvocationHandlerFactory extends InvocationHandlerFactory {
 
 	protected final Properties configuration;
 
+	protected final String configurationKey;
+
 	protected final DiFactory diFactory;
 
 	public CustomInvocationHandlerFactory(List<Invocable> invocables, Function<Class<?>, Object> instanceResolver,
 			Comparator<Invocation> invocationComparator, RenderableFactory renderableFactory,
-			HttpHandlerFactory rootFactory, Properties configuration, DiFactory diFactory) {
+			HttpHandlerFactory rootFactory, Properties configuration, String configurationKey, DiFactory diFactory) {
 		super(invocables, instanceResolver, invocationComparator, renderableFactory, rootFactory);
 		this.configuration = configuration;
+		this.configurationKey = configurationKey;
 		this.diFactory = diFactory;
-		if (!INSTANCE.compareAndSet(null, this))
-			throw new IllegalStateException();
+//		if (!INSTANCE.compareAndSet(null, this))
+//			throw new IllegalStateException();
 	}
 
 	@Override
@@ -78,14 +80,14 @@ public class CustomInvocationHandlerFactory extends InvocationHandlerFactory {
 				((BackendExchange) exchange).requireSessionEmail();
 		}
 
-		if (Boolean.parseBoolean(configuration.getProperty("website-template.live-demo"))) {
+		if (Boolean.parseBoolean(configuration.getProperty(configurationKey + ".live-demo"))) {
 			if (rq.getMethod().equals("GET") || USER_LOGIN_LOGOUT.contains(rq.getPath()))
 				;
 			else
 				throw new HandleException(new MethodBlockedException());
 		}
 
-		var o = configuration.getProperty("website-template.api.cors.origin");
+		var o = configuration.getProperty(configurationKey + ".api.cors.origin");
 		if (o != null && !o.isEmpty()) {
 			var rs = exchange.response();
 			rs.setHeaderValue("access-control-allow-credentials", "true");

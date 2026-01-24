@@ -29,8 +29,4 @@ export default class NotFound extends WebComponent {
 	static get templateNames() {
 		return ["not-found"];
 	}
-
-	constructor() {
-		super();
-	}
 }

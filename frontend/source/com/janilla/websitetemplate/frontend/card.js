@@ -34,10 +34,6 @@ export default class Card extends WebComponent {
 		return ["card"];
 	}
 
-	constructor() {
-		super();
-	}
-
 	async updateDisplay() {
 		const el = this.closest("post-element, posts-element, search-element");
 		const hs = history.state;

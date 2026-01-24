@@ -44,7 +44,7 @@ export default class App extends WebComponent {
     }
 
     get colorScheme() {
-        return this.state.colorScheme;
+        return this.customState.colorScheme;
     }
 
     set colorScheme(colorScheme) {
@@ -60,11 +60,11 @@ export default class App extends WebComponent {
     }
 
     get currentUser() {
-        return this.state.user;
+        return this.customState.user;
     }
 
     set currentUser(currentUser) {
-        this.state.user = currentUser;
+        this.customState.user = currentUser;
         this.dispatchEvent(new CustomEvent("userchanged", { detail: currentUser }));
     }
 
@@ -86,7 +86,7 @@ export default class App extends WebComponent {
     }
 
     async updateDisplay() {
-        const s = this.state;
+        const s = this.customState;
         const ss = this.serverState;
 
         if (ss?.error?.code === 404)
@@ -127,10 +127,7 @@ export default class App extends WebComponent {
             site: {
                 $template: "site",
                 colorScheme: this.colorScheme ?? "light dark",
-				adminBar: this.currentUser?.roles?.some(x => x.name === "ADMIN") ? {
-				    $template: "admin-bar",
-				    userEmail: this.currentUser?.email
-				} : null,
+				adminBar: this.currentUser?.roles?.some(x => x.name === "ADMIN") ? { $template: "admin-bar" } : null,
 				header: { $template: "header" },
                 content: s.notFound ? { $template: "not-found" } : (() => {
                     const m2 = p.match(postsRegex);
@@ -165,14 +162,14 @@ export default class App extends WebComponent {
     handlePopState = () => {
         // console.log("handlePopState", JSON.stringify(history.state));
         delete this.serverState;
-        delete this.state.notFound;
+        delete this.customState.notFound;
         window.scrollTo(0, 0);
         this.requestDisplay();
     }
 
     navigate(url) {
         delete this.serverState;
-        delete this.state.notFound;
+        delete this.customState.notFound;
         if (url.pathname !== this.currentPath)
             window.scrollTo(0, 0);
         history.pushState({}, "", url.pathname + url.search);
@@ -180,7 +177,7 @@ export default class App extends WebComponent {
     }
 
     updateSeo(meta) {
-        const sn = "Janilla Website Template";
+        const sn = this.dataset.title;
         const t = [meta?.title && meta.title !== sn ? meta.title : null, sn].filter(x => x).join(" | ");
         const d = meta?.description ?? "";
         for (const [k, v] of Object.entries({
@@ -200,7 +197,7 @@ export default class App extends WebComponent {
     }
 
     notFound() {
-        this.state.notFound = true;
+        this.customState.notFound = true;
         this.requestDisplay();
     }
 }

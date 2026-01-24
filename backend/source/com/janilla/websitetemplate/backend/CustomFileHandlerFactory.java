@@ -31,8 +31,8 @@ import com.janilla.backend.cms.CmsFileHandlerFactory;
 
 public class CustomFileHandlerFactory extends CmsFileHandlerFactory {
 
-	public CustomFileHandlerFactory(Properties configuration) {
-		var d = configuration.getProperty("website-template.upload.directory");
+	public CustomFileHandlerFactory(Properties configuration, String configurationKey) {
+		var d = configuration.getProperty(configurationKey + ".upload.directory");
 		if (d.startsWith("~"))
 			d = System.getProperty("user.home") + d.substring(1);
 		super(Path.of(d));

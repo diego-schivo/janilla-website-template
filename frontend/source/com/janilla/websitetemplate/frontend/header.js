@@ -34,20 +34,16 @@ export default class Header extends WebComponent {
         return [];
     }
 
-    constructor() {
-        super();
-    }
-
     async updateDisplay() {
         this.appendChild(this.interpolateDom({
             $template: "",
-            navItems: this.closest("app-element").state.header?.navItems?.map(x => ({
+            navItems: this.closest("app-element").customState.header?.navItems?.map(x => ({
                 $template: "link",
                 ...x,
                 document: x.type.name === "REFERENCE" ? `${x.document.$type}:${x.document.slug}` : null,
                 href: x.type.name === "CUSTOM" ? x.uri : null,
                 target: x.newTab ? "_blank" : null
-            })),
+            }))
         }));
     }
 }

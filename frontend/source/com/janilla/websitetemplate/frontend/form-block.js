@@ -26,75 +26,75 @@ import WebComponent from "web-component";
 
 export default class FormBlock extends WebComponent {
 
-	static get templateNames() {
-		return ["form-block"];
-	}
+    static get templateNames() {
+        return ["form-block"];
+    }
 
-	constructor() {
-		super();
-	}
+    connectedCallback() {
+        super.connectedCallback();
+        this.addEventListener("submit", this.handleSubmit);
+    }
 
-	connectedCallback() {
-		super.connectedCallback();
-		this.addEventListener("submit", this.handleSubmit);
-	}
+    disconnectedCallback() {
+        super.disconnectedCallback();
+        this.removeEventListener("submit", this.handleSubmit);
+    }
 
-	disconnectedCallback() {
-		super.disconnectedCallback();
-		this.removeEventListener("submit", this.handleSubmit);
-	}
+    async updateDisplay() {
+        const s = this.customState;
+        s.data = this.closest("page-element").data(this.dataset.path);
+        if (s.submission && s.data.form?.confirmationType?.name === "REDIRECT") {
+            this.closest("app-element").navigate(new URL(s.data.form.redirect, location.href));
+            return;
+        }
 
-	handleSubmit = async event => {
-		event.preventDefault();
-		const ee = [...new FormData(event.target).entries()];
-		this.state.submission = await (await fetch("/api/form-submissions", {
-			method: "POST",
-			headers: { "content-type": "application/json" },
-			body: JSON.stringify({
-				$type: "FormSubmission",
-				form: 1,
-				submissionData: ee.map(([k, v]) => ({
-					field: k,
-					value: v
-				}))
-			})
-		})).json();
-		this.requestDisplay();
-	}
+        this.appendChild(this.interpolateDom({
+            $template: "",
+            intro: !s.submission && s.data.enableIntro ? {
+                $template: "intro",
+                ...s.data
+            } : null,
+            form: !s.submission && s.data.form ? {
+                $template: "form",
+                fields: s.data.form.fields.map(x => ({
+                    $template: "field",
+                    ...x,
+                    control: (() => {
+                        const t = x.$type.replace(/Field$/, "").toLowerCase();
+                        return {
+                            $template: t === "textarea" ? "textarea" : "input",
+                            ...x,
+                            type: ["text", "textarea"].includes(t) ? null : t
+                        };
+                    })()
+                }))
+            } : null,
+            confirmation: s.submission ? {
+                $template: "confirmation",
+                ...s.data.form
+            } : null
+        }));
+    }
 
-	async updateDisplay() {
-		const s = this.state;
-		const d = this.closest("page-element").data(this.dataset.path);
-		if (s.submission && d.form.confirmationType === "REDIRECT") {
-			history.pushState({}, "", d.form.redirect);
-			dispatchEvent(new CustomEvent("popstate"));
-			return;
-		}
-		this.appendChild(this.interpolateDom({
-			$template: "",
-			intro: !s.submission && d.enableIntro ? {
-				$template: "intro",
-				...d
-			} : null,
-			form: !s.submission && d.form ? {
-				$template: "form",
-				fields: d.form.fields.map(x => ({
-					$template: "field",
-					...x,
-					control: (() => {
-						const t = x.$type.replace(/Field$/, "").toLowerCase();
-						return {
-							$template: t === "textarea" ? "cms-textarea" : "input-control",
-							...x,
-							type: t !== "text" ? t : null
-						};
-					})()
-				}))
-			} : null,
-			confirmation: s.submission ? {
-				$template: "confirmation",
-				...d.form
-			} : null
-		}));
-	}
+    handleSubmit = async event => {
+        const el = event.target;
+        event.preventDefault();
+
+        const a = this.closest("app-element");
+		const s = this.customState;
+        const ee = [...new FormData(el).entries()];
+        this.customState.submission = await (await fetch(`${a.dataset.apiUrl}/form-submissions`, {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({
+                $type: "FormSubmission",
+                form: s.data.form.id,
+                submissionData: ee.map(([k, v]) => ({
+                    field: k,
+                    value: v
+                }))
+            })
+        })).json();
+        this.requestDisplay();
+    }
 }

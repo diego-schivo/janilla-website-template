@@ -30,7 +30,7 @@ import java.util.Properties;
 
 import com.janilla.http.HttpClient;
 import com.janilla.http.HttpCookie;
-import com.janilla.net.UriQueryBuilder;
+import com.janilla.java.UriQueryBuilder;
 
 public class DataFetching {
 
@@ -38,8 +38,8 @@ public class DataFetching {
 
 	protected final HttpClient httpClient;
 
-	public DataFetching(Properties configuration, HttpClient httpClient) {
-		apiUrl = configuration.getProperty("website-template.api.url");
+	public DataFetching(Properties configuration, String configurationKey, HttpClient httpClient) {
+		apiUrl = configuration.getProperty(configurationKey + ".api.url");
 		this.httpClient = httpClient;
 	}
 

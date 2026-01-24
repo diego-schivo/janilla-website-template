@@ -26,24 +26,30 @@ import WebComponent from "web-component";
 
 export default class Archive extends WebComponent {
 
-	static get templateNames() {
-		return ["archive"];
-	}
+    static get templateNames() {
+        return ["archive"];
+    }
 
-	constructor() {
-		super();
-	}
+    async updateDisplay() {
+        let hs = history.state;
+        const a = this.closest("app-element");
 
-	async updateDisplay() {
-		const d = this.closest("page-element").data(this.dataset.path);
-		const pp = await (await fetch(`${this.closest("app-element").dataset.apiUrl}/posts`)).json();
-		this.appendChild(this.interpolateDom({
-			$template: "",
-			...d,
-			articles: pp.map(x => ({
-				$template: "article",
-				...x
-			}))
-		}));
-	}
+        if (!Object.hasOwn(hs, "posts")) {
+			const pp = a.serverState?.posts ?? await (await fetch(`${a.dataset.apiUrl}/posts`)).json();
+            history.replaceState(hs = {
+                ...hs,
+                posts: pp
+            }, "");
+        }
+
+        const d = this.closest("page-element").data(this.dataset.path);
+        this.appendChild(this.interpolateDom({
+            $template: "",
+            ...d,
+            posts: hs.posts?.map(x => ({
+                $template: "post",
+                ...x
+            }))
+        }));
+    }
 }

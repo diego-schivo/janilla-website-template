@@ -30,10 +30,6 @@ export default class ThemeSelector extends WebComponent {
         return ["theme-selector"];
     }
 
-    constructor() {
-        super();
-    }
-
     connectedCallback() {
         super.connectedCallback();
         this.addEventListener("change", this.handleChange);

@@ -22,6 +22,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+:root:has(hero-element) {
+  header-element {
+    color-scheme: dark;
+  }
+}
+
 header-element {
   header {
     @media (min-width: 1441px) {

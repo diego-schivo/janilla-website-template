@@ -26,23 +26,23 @@ package com.janilla.websitetemplate.backend;
 
 import java.util.Properties;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 
 import com.janilla.backend.cms.UserHttpExchange;
-import com.janilla.http.HttpExchange;
 import com.janilla.backend.persistence.Persistence;
+import com.janilla.http.HttpExchange;
 import com.janilla.web.Handle;
 
 @Handle(path = "/api/users")
 public class UserApi extends com.janilla.backend.cms.UserApi<Long, UserRole, User> {
 
-	public static final AtomicReference<UserApi> INSTANCE = new AtomicReference<>();
+//	public static final AtomicReference<UserApi> INSTANCE = new AtomicReference<>();
 
-	public UserApi(Predicate<HttpExchange> drafts, Persistence persistence, Properties configuration) {
-		super(User.class, drafts, persistence, configuration.getProperty("website-template.jwt.key"));
-		if (!INSTANCE.compareAndSet(null, this))
-			throw new IllegalStateException();
+	public UserApi(Predicate<HttpExchange> drafts, Persistence persistence, Properties configuration,
+			String configurationKey) {
+		super(User.class, drafts, persistence, configuration.getProperty(configurationKey + ".jwt.key"));
+//		if (!INSTANCE.compareAndSet(null, this))
+//			throw new IllegalStateException();
 	}
 
 	@Override

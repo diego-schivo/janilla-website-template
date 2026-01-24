@@ -32,12 +32,12 @@ import java.util.Map;
 import java.util.Properties;
 
 import com.janilla.backend.cms.UserHttpExchange;
-import com.janilla.http.SimpleHttpExchange;
+import com.janilla.backend.persistence.Persistence;
 import com.janilla.http.HttpCookie;
 import com.janilla.http.HttpRequest;
 import com.janilla.http.HttpResponse;
+import com.janilla.http.SimpleHttpExchange;
 import com.janilla.json.Jwt;
-import com.janilla.backend.persistence.Persistence;
 import com.janilla.web.UnauthorizedException;
 
 public class BackendExchange extends SimpleHttpExchange implements UserHttpExchange {
@@ -46,14 +46,17 @@ public class BackendExchange extends SimpleHttpExchange implements UserHttpExcha
 
 	protected final Properties configuration;
 
+	protected final String configurationKey;
+
 	protected final Persistence persistence;
 
 	protected final Map<String, Object> session = new HashMap<>();
 
 	public BackendExchange(HttpRequest request, HttpResponse response, Properties configuration,
-			Persistence persistence) {
+			String configurationKey, Persistence persistence) {
 		super(request, response);
 		this.configuration = configuration;
+		this.configurationKey = configurationKey;
 		this.persistence = persistence;
 	}
 
@@ -63,7 +66,7 @@ public class BackendExchange extends SimpleHttpExchange implements UserHttpExcha
 					.filter(x -> x.name().equals(SESSION_COOKIE)).findFirst().orElse(null);
 			Map<String, ?> p;
 			try {
-				p = t != null ? Jwt.verifyToken(t.value(), configuration.getProperty("website-template.jwt.key"))
+				p = t != null ? Jwt.verifyToken(t.value(), configuration.getProperty(configurationKey + ".jwt.key"))
 						: null;
 			} catch (IllegalArgumentException e) {
 				p = null;

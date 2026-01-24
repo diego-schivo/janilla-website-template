@@ -30,10 +30,6 @@ export default class RichText extends WebComponent {
 		return ["rich-text"];
 	}
 
-	constructor() {
-		super();
-	}
-
 	async updateDisplay() {
 		const d = this.closest("post-element").data(this.dataset.path);
 		this.appendChild(this.interpolateDom({

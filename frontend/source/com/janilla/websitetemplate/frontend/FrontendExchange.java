@@ -31,10 +31,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import com.janilla.http.SimpleHttpExchange;
 import com.janilla.http.HttpCookie;
 import com.janilla.http.HttpRequest;
 import com.janilla.http.HttpResponse;
+import com.janilla.http.SimpleHttpExchange;
 import com.janilla.json.Jwt;
 import com.janilla.web.UnauthorizedException;
 
@@ -44,14 +44,17 @@ public class FrontendExchange extends SimpleHttpExchange {
 
 	protected final Properties configuration;
 
+	protected final String configurationKey;
+
 	protected final DataFetching dataFetching;
 
 	protected final Map<String, Object> session = new HashMap<>();
 
 	public FrontendExchange(HttpRequest request, HttpResponse response, Properties configuration,
-			DataFetching dataFetching) {
+			String configurationKey, DataFetching dataFetching) {
 		super(request, response);
 		this.configuration = configuration;
+		this.configurationKey = configurationKey;
 		this.dataFetching = dataFetching;
 	}
 
@@ -65,7 +68,7 @@ public class FrontendExchange extends SimpleHttpExchange {
 			var t = tokenCookie();
 			Map<String, ?> p;
 			try {
-				p = t != null ? Jwt.verifyToken(t.value(), configuration.getProperty("website-template.jwt.key"))
+				p = t != null ? Jwt.verifyToken(t.value(), configuration.getProperty(configurationKey + ".jwt.key"))
 						: null;
 			} catch (IllegalArgumentException e) {
 				p = null;

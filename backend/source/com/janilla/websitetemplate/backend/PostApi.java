@@ -24,32 +24,16 @@
  */
 package com.janilla.websitetemplate.backend;
 
-import java.util.List;
 import java.util.function.Predicate;
 
-import com.janilla.backend.cms.CollectionApi;
-import com.janilla.http.HttpExchange;
 import com.janilla.backend.persistence.Persistence;
-import com.janilla.web.Bind;
+import com.janilla.http.HttpExchange;
 import com.janilla.web.Handle;
 
 @Handle(path = "/api/posts")
-public class PostApi extends CollectionApi<Long, Post> {
+public class PostApi extends PostApi0<Post> {
 
 	public PostApi(Predicate<HttpExchange> drafts, Persistence persistence) {
 		super(Post.class, drafts, persistence);
-	}
-
-	@Override
-	public List<Post> read(Long skip, Long limit) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Handle(method = "GET")
-	public List<Post> read(@Bind("slug") String slug, HttpExchange exchange) {
-		IO.println("PostApi.read, slug=" + slug);
-		var d = drafts.test(exchange);
-		return crud().read(
-				slug != null && !slug.isBlank() ? crud().filter(d ? "slugDraft" : "slug", slug) : crud().list(), d);
 	}
 }

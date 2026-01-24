@@ -1,4 +1,4 @@
-<article style="${style}">
+<article style="background-image: ${backgroundImage}">
   <section>
     <!--${richText}-->
     <ul>
@@ -9,6 +9,6 @@
 
 <template id="link">
   <li>
-    <a href="${uri}" class="button primary" data-appearance="${appearance.name}">${text}</a>
+    <link-element data-document="${document}" data-href="${href}" data-target="${target}" data-class="${class}" data-text="${text}"></link-element>
   </li>
 </template>

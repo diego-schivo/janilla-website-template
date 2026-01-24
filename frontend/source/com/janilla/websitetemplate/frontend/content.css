@@ -52,4 +52,12 @@ content-element {
       grid-column: span 6;
     }
   }
+
+  h2 {
+    line-height: 1.3333;
+  }
+
+  h3 {
+    line-height: 1.6;
+  }
 }

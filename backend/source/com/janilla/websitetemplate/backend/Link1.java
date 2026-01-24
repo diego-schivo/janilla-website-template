@@ -22,32 +22,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import WebComponent from "web-component";
+package com.janilla.websitetemplate.backend;
 
-export default class Posts extends WebComponent {
+import com.janilla.backend.cms.DocumentReference;
+import com.janilla.backend.cms.Types;
 
-	static get templateNames() {
-		return ["posts"];
-	}
-
-	async updateDisplay() {
-		let hs = history.state;
-		const a = this.closest("app-element");
-		if (!hs.posts) {
-			history.replaceState(hs = {
-				...hs,
-				posts: await (await fetch(`${a.dataset.apiUrl}/posts`)).json()
-			}, "");
-		}
-
-		a.updateSeo(null);
-		this.appendChild(this.interpolateDom({
-			$template: "",
-			total: hs.posts?.length ?? 0,
-			cards: hs.posts?.map(x => ({
-				$template: "card",
-				...x
-			}))
-		}));
-	}
+public record Link1(LinkType type, Boolean newTab, @Types( {
+		Page.class, Post.class }) DocumentReference<?, ?> document, String uri, String text, LinkAppearance appearance)
+		implements Link{
 }

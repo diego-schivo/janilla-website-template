@@ -22,32 +22,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import WebComponent from "web-component";
+package com.janilla.websitetemplate.backend;
 
-export default class Posts extends WebComponent {
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Predicate;
 
-	static get templateNames() {
-		return ["posts"];
+import com.janilla.backend.cms.CollectionApi;
+import com.janilla.backend.persistence.Persistence;
+import com.janilla.http.HttpExchange;
+import com.janilla.web.Bind;
+import com.janilla.web.Handle;
+
+public abstract class PostApi0<P extends Post0> extends CollectionApi<Long, P> {
+
+	public PostApi0(Class<P> type, Predicate<HttpExchange> drafts, Persistence persistence) {
+		super(type, drafts, persistence);
 	}
 
-	async updateDisplay() {
-		let hs = history.state;
-		const a = this.closest("app-element");
-		if (!hs.posts) {
-			history.replaceState(hs = {
-				...hs,
-				posts: await (await fetch(`${a.dataset.apiUrl}/posts`)).json()
-			}, "");
-		}
+	@Override
+	public List<P> read(Long skip, Long limit) {
+		throw new UnsupportedOperationException();
+	}
 
-		a.updateSeo(null);
-		this.appendChild(this.interpolateDom({
-			$template: "",
-			total: hs.posts?.length ?? 0,
-			cards: hs.posts?.map(x => ({
-				$template: "card",
-				...x
-			}))
-		}));
+	@Handle(method = "GET")
+	public List<P> read(@Bind("slug") String slug, HttpExchange exchange) {
+//		IO.println("PostApi.read, slug=" + slug);
+		var d = drafts.test(exchange);
+		var ll = new ArrayList<>(
+				slug != null && !slug.isBlank() ? crud().filter(d ? "slugDraft" : "slug", slug) : crud().list());
+		Collections.reverse(ll);
+		return crud().read(ll, d);
 	}
 }

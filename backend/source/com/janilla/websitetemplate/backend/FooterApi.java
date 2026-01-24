@@ -24,23 +24,22 @@
  */
 package com.janilla.websitetemplate.backend;
 
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 
 import com.janilla.backend.cms.GlobalApi;
-import com.janilla.http.HttpExchange;
 import com.janilla.backend.persistence.Persistence;
+import com.janilla.http.HttpExchange;
 import com.janilla.web.Handle;
 
 @Handle(path = "/api/footer")
 public class FooterApi extends GlobalApi<Long, Footer> {
 
-	public static final AtomicReference<FooterApi> INSTANCE = new AtomicReference<>();
+//	public static final AtomicReference<FooterApi> INSTANCE = new AtomicReference<>();
 
 	public FooterApi(Predicate<HttpExchange> drafts, Persistence persistence) {
 		super(Footer.class, drafts, persistence);
-		if (!INSTANCE.compareAndSet(null, this))
-			throw new IllegalStateException();
+//		if (!INSTANCE.compareAndSet(null, this))
+//			throw new IllegalStateException();
 	}
 
 	@Override

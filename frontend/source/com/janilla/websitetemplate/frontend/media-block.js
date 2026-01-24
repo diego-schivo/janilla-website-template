@@ -30,10 +30,6 @@ export default class MediaBlock extends WebComponent {
 		return ["media-block"];
 	}
 
-	constructor() {
-		super();
-	}
-
 	async updateDisplay() {
 		const d = this.closest("page-element, post-element").data(this.dataset.path);
 		this.appendChild(this.interpolateDom({

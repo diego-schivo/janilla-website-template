@@ -31,9 +31,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import com.janilla.backend.cms.CollectionApi;
-import com.janilla.http.HttpExchange;
 import com.janilla.backend.persistence.Persistence;
 import com.janilla.backend.smtp.SmtpClient;
+import com.janilla.http.HttpExchange;
 import com.janilla.web.Handle;
 
 @Handle(path = "/api/form-submissions")
@@ -50,16 +50,16 @@ public class FormSubmissionApi extends CollectionApi<Long, FormSubmission> {
 
 	@Override
 	@Handle(method = "POST")
-	public FormSubmission create(FormSubmission entity) {
-		var e = super.create(entity);
-		var m = entity.submissionData().stream()
-				.collect(Collectors.toMap(SubmissionDatum::field, SubmissionDatum::value));
-		var f = persistence.crud(Form.class).read(entity.form());
-		for (var x : f.emails()) {
-			var ss = List.of(x.emailFrom(), x.emailTo(), x.subject(), x.message()).stream()
-					.map(y -> PLACEHOLDER.matcher(y).replaceAll(z -> m.get(z.group(1)))).toList();
-			smtpClient.sendMail(OffsetDateTime.now(), ss.get(0), ss.get(1), ss.get(2), ss.get(3));
-		}
-		return e;
+	public FormSubmission create(FormSubmission document) {
+		var d = super.create(document);
+		var m = d.submissionData().stream().collect(Collectors.toMap(SubmissionDatum::field, SubmissionDatum::value));
+		var f = persistence.crud(Form.class).read(d.form());
+		if (f.confirmationType() == FormConfirmationType.MESSAGE)
+			for (var e : f.emails()) {
+				var ss = List.of(e.emailFrom(), e.emailTo(), e.subject(), e.message()).stream()
+						.map(x -> PLACEHOLDER.matcher(x).replaceAll(y -> m.get(y.group(1)))).toList();
+				smtpClient.sendMail(OffsetDateTime.now(), ss.get(0), ss.get(1), ss.get(2), ss.get(3));
+			}
+		return d;
 	}
 }

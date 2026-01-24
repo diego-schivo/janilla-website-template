@@ -35,30 +35,36 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.janilla.frontend.cms.CmsFrontend;
-import com.janilla.frontend.Frontend;
+import com.janilla.frontend.ImportMaps;
+import com.janilla.frontend.cms.CmsImportMaps;
 import com.janilla.frontend.resources.FrontendResources;
-import com.janilla.web.DefaultFile;
-import com.janilla.web.FileMap;
+import com.janilla.web.DefaultResource;
+import com.janilla.web.ResourceMap;
 import com.janilla.websitetemplate.frontend.Index.Template;
 
 public class IndexFactory {
 
 	protected final Properties configuration;
 
+	protected final String configurationKey;
+
 	protected final DataFetching dataFetching;
 
-	protected final FileMap fileMap;
+	protected final ResourceMap resourceMap;
 
-	public IndexFactory(Properties configuration, DataFetching dataFetching, FileMap fileMap) {
+	protected Map<String, String> imports;
+
+	public IndexFactory(Properties configuration, String configurationKey, DataFetching dataFetching,
+			ResourceMap resourceMap) {
 		this.configuration = configuration;
+		this.configurationKey = configurationKey;
 		this.dataFetching = dataFetching;
-		this.fileMap = fileMap;
+		this.resourceMap = resourceMap;
 	}
 
 	public Index index(FrontendExchange exchange) {
-		return new Index(imports(), configuration.getProperty("website-template.api.url"), state(exchange),
-				templates());
+		return new Index(configuration.getProperty(configurationKey + ".title"), imports(),
+				configuration.getProperty(configurationKey + ".api.url"), state(exchange), templates());
 	}
 
 	protected Map<String, Object> state(FrontendExchange exchange) {
@@ -70,23 +76,24 @@ public class IndexFactory {
 	}
 
 	protected Map<String, String> imports() {
-		class A {
-			private static Map<String, String> x;
-		}
-		if (A.x == null)
-			synchronized (A.class) {
-				if (A.x == null) {
-					A.x = new LinkedHashMap<String, String>();
-					Frontend.putImports(A.x);
-					FrontendResources.putImports(A.x);
-					CmsFrontend.putImports(A.x);
-					Stream.of("admin", "admin-dashboard").forEach(x -> A.x.put(x, "/custom-" + x + ".js"));
-					Stream.of("app", "archive", "banner", "call-to-action", "card", "content", "footer", "form-block",
-							"header", "hero", "link", "media-block", "not-found", "page", "post", "posts", "rich-text",
-							"search", "theme-selector").forEach(x -> A.x.put(x, "/" + x + ".js"));
+		if (imports == null)
+			synchronized (this) {
+				if (imports == null) {
+					imports = new LinkedHashMap<String, String>();
+					putImports(imports);
 				}
 			}
-		return A.x;
+		return imports;
+	}
+
+	protected void putImports(Map<String, String> map) {
+		ImportMaps.putImports(map);
+		FrontendResources.putImports(map);
+		CmsImportMaps.putImports(map);
+		Stream.of("admin", "admin-bar", "admin-dashboard").forEach(x -> map.put(x, "/custom-" + x + ".js"));
+		Stream.of("app", "archive", "banner", "call-to-action", "card", "content", "footer", "form-block", "header",
+				"hero", "link", "media-block", "not-found", "page", "post", "posts", "rich-text", "search",
+				"theme-selector").forEach(x -> map.put(x, "/" + x + ".js"));
 	}
 
 	protected List<Template> templates() {
@@ -101,7 +108,7 @@ public class IndexFactory {
 		if (!A.x.containsKey(name))
 			synchronized (A.class) {
 				if (!A.x.containsKey(name)) {
-					var f = (DefaultFile) fileMap.get("/" + name + ".html");
+					var f = (DefaultResource) resourceMap.get("/" + name + ".html");
 					try (var in = f != null ? f.newInputStream() : null) {
 						A.x.put(name, in != null ? new Template(name, new String(in.readAllBytes())) : null);
 					} catch (IOException e) {

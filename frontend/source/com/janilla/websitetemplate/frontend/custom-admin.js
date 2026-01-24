@@ -34,10 +34,6 @@ export default class CustomAdmin extends Admin {
         return ["data-user", "data-path"];
     }
 
-    constructor() {
-        super();
-    }
-
     cell(object, key) {
         const x = super.cell(object, key);
         switch (key) {
@@ -85,7 +81,8 @@ export default class CustomAdmin extends Admin {
                     case "message":
                     case "richText":
                         return "rich-text";
-                    case "type":
+                    case "confirmationType":
+                    //case "type":
                         return field.options.length <= 2 ? "radio-group" : "select";
                 }
                 break;

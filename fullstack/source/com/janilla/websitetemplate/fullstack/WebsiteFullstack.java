@@ -28,32 +28,35 @@ import java.net.InetSocketAddress;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
 import javax.net.ssl.SSLContext;
 
+import com.janilla.http.HttpExchange;
 import com.janilla.http.HttpHandler;
 import com.janilla.http.HttpServer;
 import com.janilla.ioc.DiFactory;
 import com.janilla.java.Java;
-import com.janilla.net.Net;
+import com.janilla.net.SecureServer;
 import com.janilla.websitetemplate.backend.BackendExchange;
 import com.janilla.websitetemplate.backend.WebsiteBackend;
 import com.janilla.websitetemplate.frontend.WebsiteFrontend;
 
 public class WebsiteFullstack {
 
-	public static final AtomicReference<WebsiteFullstack> INSTANCE = new AtomicReference<>();
+//	public static final AtomicReference<WebsiteFullstack> INSTANCE = new AtomicReference<>();
+
+	public static final ScopedValue<WebsiteFullstack> INSTANCE = ScopedValue.newInstance();
 
 	public static void main(String[] args) {
 		try {
 			WebsiteFullstack a;
 			{
-				var f = new DiFactory(Java.getPackageClasses(WebsiteFullstack.class.getPackageName()), INSTANCE::get,
+				var f = new DiFactory(Java.getPackageClasses(WebsiteFullstack.class.getPackageName()), // INSTANCE::get,
 						"fullstack");
 				a = f.create(WebsiteFullstack.class,
 						Java.hashMap("diFactory", f, "configurationFile",
@@ -66,8 +69,8 @@ public class WebsiteFullstack {
 			HttpServer s;
 			{
 				SSLContext c;
-				try (var x = Net.class.getResourceAsStream("localhost")) {
-					c = Net.getSSLContext(Map.entry("JKS", x), "passphrase".toCharArray());
+				try (var x = SecureServer.class.getResourceAsStream("localhost")) {
+					c = Java.sslContext(x, "passphrase".toCharArray());
 				}
 				var p = Integer.parseInt(a.configuration.getProperty("website-template.fullstack.server.port"));
 				s = a.diFactory.create(HttpServer.class,
@@ -83,6 +86,10 @@ public class WebsiteFullstack {
 
 	protected final Properties configuration;
 
+	protected final Path configurationFile;
+
+	protected final String configurationKey;
+
 	protected final DiFactory diFactory;
 
 	protected final WebsiteFrontend frontend;
@@ -90,47 +97,39 @@ public class WebsiteFullstack {
 	protected final HttpHandler handler;
 
 	public WebsiteFullstack(DiFactory diFactory, Path configurationFile) {
+		this(diFactory, configurationFile, "website-template");
+	}
+
+	public WebsiteFullstack(DiFactory diFactory, Path configurationFile, String configurationKey) {
 		this.diFactory = diFactory;
-		if (!INSTANCE.compareAndSet(null, this))
-			throw new IllegalStateException();
+		this.configurationFile = configurationFile;
+		this.configurationKey = configurationKey;
+//		if (!INSTANCE.compareAndSet(null, this))
+//			throw new IllegalStateException();
+		diFactory.context(this);
 		configuration = diFactory.create(Properties.class, Collections.singletonMap("file", configurationFile));
 
 		var cf = Optional.ofNullable(configurationFile).orElseGet(() -> {
 			try {
-				return Path.of(WebsiteFullstack.class.getResource("configuration.properties").toURI());
+				return Path.of(getClass().getResource("configuration.properties").toURI());
 			} catch (URISyntaxException e) {
 				throw new RuntimeException(e);
 			}
 		});
-		backend = diFactory
-				.create(WebsiteBackend.class,
-						Java.hashMap("diFactory",
-								new DiFactory(
-										Stream.concat(
-												Stream.of("fullstack", "backend")
-														.map(x -> WebsiteBackend.class.getPackageName()
-																.replace(".backend", "." + x)),
-												Stream.of("com.janilla.web"))
-												.flatMap(x -> Java.getPackageClasses(x).stream()).toList(),
-										WebsiteBackend.INSTANCE::get, "backend"),
-								"configurationFile", cf));
-		frontend = diFactory
-				.create(WebsiteFrontend.class,
-						Java.hashMap("diFactory",
-								new DiFactory(
-										Stream.concat(
-												Stream.of("fullstack", "frontend")
-														.map(x -> WebsiteFrontend.class.getPackageName()
-																.replace(".frontend", "." + x)),
-												Stream.of("com.janilla.web"))
-												.flatMap(x -> Java.getPackageClasses(x).stream()).toList(),
-										WebsiteFrontend.INSTANCE::get, "frontend"),
-								"configurationFile", cf));
+		backend = ScopedValue.where(INSTANCE, this).call(() -> {
+			var f = new DiFactory(backendTypes(), // WebsiteBackend.INSTANCE::get,
+					"backend");
+			return f.create(WebsiteBackend.class,
+					Java.hashMap("diFactory", f, "configurationFile", cf, "configurationKey", configurationKey));
+		});
+		frontend = ScopedValue.where(INSTANCE, this).call(() -> {
+			var f = new DiFactory(frontendTypes(), // WebsiteFrontend.INSTANCE::get,
+					"frontend");
+			return f.create(WebsiteFrontend.class,
+					Java.hashMap("diFactory", f, "configurationFile", cf, "configurationKey", configurationKey));
+		});
 
-		handler = x -> {
-			var h = x instanceof BackendExchange ? backend.handler() : frontend.handler();
-			return h.handle(x);
-		};
+		handler = this::handle;
 	}
 
 	public WebsiteBackend backend() {
@@ -139,6 +138,10 @@ public class WebsiteFullstack {
 
 	public Properties configuration() {
 		return configuration;
+	}
+
+	public String configurationKey() {
+		return configurationKey;
 	}
 
 	public DiFactory diFactory() {
@@ -151,5 +154,22 @@ public class WebsiteFullstack {
 
 	public HttpHandler handler() {
 		return handler;
+	}
+
+	protected List<Class<?>> backendTypes() {
+		return Stream
+				.of("com.janilla.web", WebsiteBackend.class.getPackageName(), WebsiteFullstack.class.getPackageName())
+				.flatMap(x -> Java.getPackageClasses(x).stream()).toList();
+	}
+
+	protected List<Class<?>> frontendTypes() {
+		return Stream
+				.of("com.janilla.web", WebsiteFrontend.class.getPackageName(), WebsiteFullstack.class.getPackageName())
+				.flatMap(x -> Java.getPackageClasses(x).stream()).toList();
+	}
+
+	protected boolean handle(HttpExchange exchange) {
+		var h = exchange instanceof BackendExchange ? backend.handler() : frontend.handler();
+		return h.handle(exchange);
 	}
 }
