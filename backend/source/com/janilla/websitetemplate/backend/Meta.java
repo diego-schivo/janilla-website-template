@@ -25,6 +25,7 @@
 package com.janilla.websitetemplate.backend;
 
 import com.janilla.backend.cms.Types;
+import com.janilla.blanktemplate.backend.Media;
 
 public record Meta(String title, String description, @Types(Media.class) Long image) {
 }

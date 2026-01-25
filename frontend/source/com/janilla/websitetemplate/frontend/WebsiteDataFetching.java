@@ -28,19 +28,15 @@ import java.net.URI;
 import java.util.List;
 import java.util.Properties;
 
+import com.janilla.blanktemplate.frontend.BlankDataFetching;
 import com.janilla.http.HttpClient;
 import com.janilla.http.HttpCookie;
 import com.janilla.java.UriQueryBuilder;
 
-public class DataFetching {
+public class WebsiteDataFetching extends BlankDataFetching {
 
-	protected final String apiUrl;
-
-	protected final HttpClient httpClient;
-
-	public DataFetching(Properties configuration, String configurationKey, HttpClient httpClient) {
-		apiUrl = configuration.getProperty(configurationKey + ".api.url");
-		this.httpClient = httpClient;
+	public WebsiteDataFetching(Properties configuration, String configurationKey, HttpClient httpClient) {
+		super(configuration, configurationKey, httpClient);
 	}
 
 	public Object footer() {
@@ -64,15 +60,5 @@ public class DataFetching {
 	public List<?> searchResults(String query) {
 		return (List<?>) httpClient
 				.getJson(URI.create(apiUrl + "/search-results?" + new UriQueryBuilder().append("query", query)));
-	}
-
-	public Object sessionUser(HttpCookie token) {
-		return httpClient.getJson(URI.create(apiUrl + "/users/me"), token != null ? token.format() : null);
-	}
-
-	public List<?> users(Long skip, Long limit) {
-		return (List<?>) httpClient.getJson(URI
-				.create(apiUrl + "/users?" + new UriQueryBuilder().append("skip", skip != null ? skip.toString() : null)
-						.append("limit", limit != null ? limit.toString() : null)));
 	}
 }

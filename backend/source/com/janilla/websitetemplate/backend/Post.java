@@ -32,13 +32,15 @@ import com.janilla.backend.cms.Types;
 import com.janilla.backend.cms.Versions;
 import com.janilla.backend.persistence.Index;
 import com.janilla.backend.persistence.Store;
+import com.janilla.blanktemplate.backend.Media;
+import com.janilla.blanktemplate.backend.BlankUser;
 
 @Store
 @Versions(drafts = true)
 public record Post(Long id, String title, @Types(Media.class) Long heroImage, List<@Types( {
 		Banner.class, MediaBlock.class, RichText.class }) Object> content, List<@Types(Post.class) Long> relatedPosts,
 		List<@Types(Category.class) Long> categories, Meta meta, @Index String slug,
-		List<@Types(User.class) Long> authors, Instant createdAt, Instant updatedAt, DocumentStatus documentStatus,
+		List<@Types(BlankUser.class) Long> authors, Instant createdAt, Instant updatedAt, DocumentStatus documentStatus,
 		Instant publishedAt) implements Post0{
 
 	@Override

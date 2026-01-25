@@ -24,45 +24,29 @@
  */
 package com.janilla.websitetemplate.frontend;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.lang.reflect.Modifier;
 import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Properties;
 import java.util.stream.Stream;
 
 import javax.net.ssl.SSLContext;
 
-import com.janilla.http.HttpClient;
-import com.janilla.http.HttpHandler;
+import com.janilla.blanktemplate.frontend.BlankFrontend;
 import com.janilla.http.HttpServer;
 import com.janilla.ioc.DiFactory;
 import com.janilla.java.Java;
 import com.janilla.net.SecureServer;
-import com.janilla.web.ApplicationHandlerFactory;
-import com.janilla.web.Invocable;
-import com.janilla.web.NotFoundException;
-import com.janilla.web.RenderableFactory;
-import com.janilla.web.ResourceMap;
 
-public class WebsiteFrontend {
-
-//	public static final AtomicReference<WebsiteFrontend> INSTANCE = new AtomicReference<>();
+public class WebsiteFrontend extends BlankFrontend {
 
 	public static void main(String[] args) {
 		try {
 			WebsiteFrontend a;
 			{
 				var f = new DiFactory(Stream.of("com.janilla.web", WebsiteFrontend.class.getPackageName())
-						.flatMap(x -> Java.getPackageClasses(x).stream()).toList());//, INSTANCE::get);
+						.flatMap(x -> Java.getPackageClasses(x).stream()).toList());
 				a = f.create(WebsiteFrontend.class,
 						Java.hashMap("diFactory", f, "configurationFile",
 								args.length > 0 ? Path.of(
@@ -87,115 +71,18 @@ public class WebsiteFrontend {
 		}
 	}
 
-	protected final Properties configuration;
-
-	protected final String configurationKey;
-
-	protected final DataFetching dataFetching;
-
-	protected final DiFactory diFactory;
-
-	protected final HttpHandler handler;
-
-	protected final HttpClient httpClient;
-
-	protected final IndexFactory indexFactory;
-
-	protected final List<Invocable> invocables;
-
-	protected final RenderableFactory renderableFactory;
-
-	protected final ResourceMap resourceMap;
-
 	public WebsiteFrontend(DiFactory diFactory, Path configurationFile) {
 		this(diFactory, configurationFile, "website-template");
 	}
 
 	public WebsiteFrontend(DiFactory diFactory, Path configurationFile, String configurationKey) {
-		this.diFactory = diFactory;
-		this.configurationKey = configurationKey;
-//		if (!INSTANCE.compareAndSet(null, this))
-//			throw new IllegalStateException();
-		diFactory.context(this);
-		configuration = diFactory.create(Properties.class, Collections.singletonMap("file", configurationFile));
-
-		{
-			SSLContext c;
-			try (var x = SecureServer.class.getResourceAsStream("localhost")) {
-				c = Java.sslContext(x, "passphrase".toCharArray());
-			} catch (IOException e) {
-				throw new UncheckedIOException(e);
-			}
-			httpClient = diFactory.create(HttpClient.class, Map.of("sslContext", c));
-		}
-		dataFetching = diFactory.create(DataFetching.class);
-
-		resourceMap = diFactory.create(ResourceMap.class, Map.of("paths", resourcePaths()));
-		indexFactory = diFactory.create(IndexFactory.class);
-
-		invocables = types().stream()
-				.flatMap(x -> Arrays.stream(x.getMethods())
-						.filter(y -> !Modifier.isStatic(y.getModifiers()) && !y.isBridge())
-						.map(y -> new Invocable(x, y)))
-				.toList();
-		renderableFactory = diFactory.create(RenderableFactory.class);
-		{
-			var f = diFactory.create(ApplicationHandlerFactory.class);
-			handler = x -> {
-				var h = f.createHandler(Objects.requireNonNullElse(x.exception(), x.request()));
-				if (h == null)
-					throw new NotFoundException(x.request().getMethod() + " " + x.request().getTarget());
-				return h.handle(x);
-			};
-		}
+		super(diFactory, configurationFile, configurationKey);
 	}
 
-	public Properties configuration() {
-		return configuration;
-	}
-
-	public String configurationKey() {
-		return configurationKey;
-	}
-
-	public DataFetching dataFetching() {
-		return dataFetching;
-	}
-
-	public DiFactory diFactory() {
-		return diFactory;
-	}
-
-	public HttpHandler handler() {
-		return handler;
-	}
-
-	public HttpClient httpClient() {
-		return httpClient;
-	}
-
-	public IndexFactory indexFactory() {
-		return indexFactory;
-	}
-
-	public List<Invocable> invocables() {
-		return invocables;
-	}
-
-	public RenderableFactory renderableFactory() {
-		return renderableFactory;
-	}
-
-	public ResourceMap resourceMap() {
-		return resourceMap;
-	}
-
+	@Override
 	protected List<Path> resourcePaths() {
-		return Stream.of("com.janilla.frontend", WebsiteFrontend.class.getPackageName())
-				.flatMap(x -> Java.getPackagePaths(x).stream().filter(Files::isRegularFile)).toList();
-	}
-
-	public Collection<Class<?>> types() {
-		return diFactory.types();
+		return Stream.concat(super.resourcePaths().stream(),
+				Java.getPackagePaths(WebsiteFrontend.class.getPackageName()).stream().filter(Files::isRegularFile))
+				.toList();
 	}
 }

@@ -50,6 +50,7 @@ import com.janilla.backend.sqlite.SqliteDatabase;
 import com.janilla.ioc.DiFactory;
 import com.janilla.java.Converter;
 import com.janilla.java.Java;
+import com.janilla.java.Property;
 import com.janilla.java.Reflection;
 import com.janilla.java.TypeResolver;
 import com.janilla.json.Json;
@@ -92,7 +93,8 @@ public class WebsitePersistence extends CmsPersistence {
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void seed() throws IOException {
-		Reflection.properties(seedDataClass()).forEach(x -> database.perform(() -> {
+		var pp = properties();
+		pp.forEach(x -> database.perform(() -> {
 			var t = x.genericType() instanceof ParameterizedType pt ? (Class<?>) pt.getActualTypeArguments()[0]
 					: x.type();
 			var c = crud((Class) t);
@@ -107,7 +109,6 @@ public class WebsitePersistence extends CmsPersistence {
 			sd = diFactory.create(Converter.class).convert(o, seedDataClass());
 		}
 
-		var pp = Reflection.properties(seedDataClass()).collect(Collectors.toCollection(ArrayList::new));
 //		IO.println("pp=" + pp);
 		pp.stream().forEach(x -> database.perform(() -> {
 			var t = x.genericType() instanceof ParameterizedType pt ? (Class<?>) pt.getActualTypeArguments()[0]
@@ -145,5 +146,9 @@ public class WebsitePersistence extends CmsPersistence {
 
 	protected Class<?> seedDataClass() {
 		return SeedData.class;
+	}
+
+	protected List<Property> properties() {
+		return Reflection.properties(seedDataClass()).collect(Collectors.toCollection(ArrayList::new));
 	}
 }

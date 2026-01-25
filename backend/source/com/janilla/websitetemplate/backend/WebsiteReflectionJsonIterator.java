@@ -22,45 +22,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.janilla.websitetemplate.frontend;
+package com.janilla.websitetemplate.backend;
 
 import java.util.List;
-import java.util.Map;
 
-import com.janilla.ioc.DiFactory;
-import com.janilla.json.Json;
-import com.janilla.json.ReflectionJsonIterator;
-import com.janilla.web.Render;
-import com.janilla.web.Renderer;
+import com.janilla.backend.cms.CmsReflectionJsonIterator;
+import com.janilla.backend.persistence.Persistence;
 
-@Render(template = "index.html")
-public record Index(String title, @Render(renderer = JsonRenderer.class) Map<String, String> imports, String apiUrl,
-		@Render(renderer = StateRenderer.class) Map<String, Object> state, List<Template> templates) {
+public class WebsiteReflectionJsonIterator extends CmsReflectionJsonIterator {
 
-	public static class JsonRenderer<T> extends Renderer<T> {
-
-		@Override
-		public String apply(T value) {
-			return Json.format(value);
-		}
+	public WebsiteReflectionJsonIterator(Object object, boolean includeType, Persistence persistence) {
+		super(object, includeType, persistence);
 	}
 
-	public static class StateRenderer<T> extends Renderer<T> {
-
-		protected final DiFactory diFactory;
-
-		public StateRenderer(DiFactory diFactory) {
-			this.diFactory = diFactory;
-		}
-
-		@Override
-		public String apply(T value) {
-			return Json.format(
-					diFactory.create(ReflectionJsonIterator.class, Map.of("object", value, "includeType", true)));
-		}
-	}
-
-	@Render(template = "template")
-	public record Template(String id, String content) {
+	@Override
+	protected List<?> list(List<?> list) {
+		return super.list(list).stream()
+				.map(x -> x instanceof Post0 y && y.relatedPosts() != null ? y.withRelatedPosts(null) : x).toList();
 	}
 }

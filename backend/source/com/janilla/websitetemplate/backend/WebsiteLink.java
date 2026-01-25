@@ -24,39 +24,10 @@
  */
 package com.janilla.websitetemplate.backend;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Properties;
+import com.janilla.backend.cms.DocumentReference;
+import com.janilla.backend.cms.Types;
 
-import com.janilla.backend.persistence.ApplicationPersistenceBuilder;
-import com.janilla.backend.persistence.Persistence;
-import com.janilla.ioc.DiFactory;
-
-public class CustomPersistenceBuilder extends ApplicationPersistenceBuilder {
-
-	protected final Properties configuration;
-
-	protected final String configurationKey;
-
-	public CustomPersistenceBuilder(Path databaseFile, DiFactory diFactory, Properties configuration,
-			String configurationKey) {
-		super(databaseFile, diFactory);
-		this.configuration = configuration;
-		this.configurationKey = configurationKey;
-	}
-
-	@Override
-	public Persistence build() {
-		var fe = Files.exists(databaseFile);
-		var p = super.build();
-		if (!fe && Boolean.parseBoolean(configuration.getProperty(configurationKey + ".live-demo")))
-			try {
-				((WebsitePersistence) persistence).seed();
-			} catch (IOException e) {
-				throw new UncheckedIOException(e);
-			}
-		return p;
-	}
+public record WebsiteLink(LinkType type, Boolean newTab, @Types( {
+		Page.class, Post.class }) DocumentReference<?, ?> document, String uri, String text, LinkAppearance appearance)
+		implements Link{
 }

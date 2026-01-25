@@ -25,44 +25,26 @@
 package com.janilla.websitetemplate.backend;
 
 import java.io.IOException;
-import java.lang.reflect.Modifier;
 import java.net.InetSocketAddress;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Properties;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.net.ssl.SSLContext;
 
-import com.janilla.backend.cms.Cms;
-import com.janilla.backend.persistence.ApplicationPersistenceBuilder;
-import com.janilla.backend.persistence.Persistence;
-import com.janilla.backend.persistence.Store;
 import com.janilla.backend.smtp.SmtpClient;
+import com.janilla.blanktemplate.backend.BlankBackendHttpExchange;
+import com.janilla.blanktemplate.backend.BlankBackend;
+import com.janilla.blanktemplate.backend.BlankUser;
+import com.janilla.blanktemplate.backend.BlankUserRole;
 import com.janilla.http.HttpExchange;
-import com.janilla.http.HttpHandler;
 import com.janilla.http.HttpServer;
 import com.janilla.ioc.DiFactory;
-import com.janilla.java.DollarTypeResolver;
 import com.janilla.java.Java;
-import com.janilla.java.TypeResolver;
 import com.janilla.net.SecureServer;
-import com.janilla.web.ApplicationHandlerFactory;
 import com.janilla.web.Handle;
-import com.janilla.web.Invocable;
-import com.janilla.web.NotFoundException;
-import com.janilla.web.RenderableFactory;
 
-public class WebsiteBackend {
-
-	public static final ScopedValue<WebsiteBackend> INSTANCE = ScopedValue.newInstance();
+public class WebsiteBackend extends BlankBackend {
 
 	public static void main(String[] args) {
 		try {
@@ -94,136 +76,23 @@ public class WebsiteBackend {
 		}
 	}
 
-	protected final Properties configuration;
-
-	protected final String configurationKey;
-
-	protected final Predicate<HttpExchange> drafts = x -> {
-		var u = x instanceof BackendExchange y ? y.sessionUser() : null;
-		return u != null && u.hasRole(UserRole.ADMIN);
-	};
-
-	protected final DiFactory diFactory;
-
-	protected final HttpHandler handler;
-
-	protected final List<Invocable> invocables;
-
-	protected final Persistence persistence;
-
-	protected final RenderableFactory renderableFactory;
-
-	protected final List<Class<?>> resolvables;
-
 	protected final SmtpClient smtpClient;
-
-	protected final List<Class<?>> storables;
-
-	protected final TypeResolver typeResolver;
 
 	public WebsiteBackend(DiFactory diFactory, Path configurationFile) {
 		this(diFactory, configurationFile, "website-template");
 	}
 
 	public WebsiteBackend(DiFactory diFactory, Path configurationFile, String configurationKey) {
-		this.diFactory = diFactory;
-		this.configurationKey = configurationKey;
-		diFactory.context(this);
-		configuration = diFactory.create(Properties.class, Collections.singletonMap("file", configurationFile));
-
-		{
-			Map<String, Class<?>> m = diFactory.types().stream()
-					.collect(Collectors.toMap(x -> x.getSimpleName(), x -> x, (_, x) -> x, LinkedHashMap::new));
-			resolvables = m.values().stream().toList();
-		}
-		typeResolver = diFactory.create(DollarTypeResolver.class);
-
-		storables = resolvables.stream().filter(x -> x.isAnnotationPresent(Store.class)).toList();
-		{
-			var f = configuration.getProperty(configurationKey + ".database.file");
-			if (f.startsWith("~"))
-				f = System.getProperty("user.home") + f.substring(1);
-			var b = diFactory.create(ApplicationPersistenceBuilder.class, Map.of("databaseFile", Path.of(f)));
-			persistence = b.build();
-		}
-
-		invocables = diFactory.types().stream()
-				.flatMap(x -> Arrays.stream(x.getMethods())
-						.filter(y -> !Modifier.isStatic(y.getModifiers()) && !y.isBridge())
-						.map(y -> new Invocable(x, y)))
-				.toList();
-		renderableFactory = diFactory.create(RenderableFactory.class);
+		super(diFactory, configurationFile, configurationKey);
 		smtpClient = diFactory.create(SmtpClient.class,
 				Map.of("host", configuration.getProperty(configurationKey + ".mail.host"), "port",
 						Integer.parseInt(configuration.getProperty(configurationKey + ".mail.port")), "username",
 						configuration.getProperty(configurationKey + ".mail.username"), "password",
 						configuration.getProperty(configurationKey + ".mail.password")));
-		{
-			var f = diFactory.create(ApplicationHandlerFactory.class);
-			handler = x -> ScopedValue.where(INSTANCE, this).call(() -> {
-				var h = f.createHandler(Objects.requireNonNullElse(x.exception(), x.request()));
-				if (h == null)
-					throw new NotFoundException(x.request().getMethod() + " " + x.request().getTarget());
-				return h.handle(x);
-			});
-		}
-	}
-
-	public Properties configuration() {
-		return configuration;
-	}
-
-	public String configurationKey() {
-		return configurationKey;
-	}
-
-	public Predicate<HttpExchange> drafts() {
-		return drafts;
-	}
-
-	public DiFactory diFactory() {
-		return diFactory;
-	}
-
-	public HttpHandler handler() {
-		return handler;
-	}
-
-	public List<Invocable> invocables() {
-		return invocables;
-	}
-
-	public Persistence persistence() {
-		return persistence;
-	}
-
-	public RenderableFactory renderableFactory() {
-		return renderableFactory;
-	}
-
-	public List<Class<?>> resolvables() {
-		return resolvables;
 	}
 
 	public SmtpClient smtpClient() {
 		return smtpClient;
-	}
-
-	public List<Class<?>> storables() {
-		return storables;
-	}
-
-	public TypeResolver typeResolver() {
-		return typeResolver;
-	}
-
-//	public Collection<Class<?>> types() {
-//		return diFactory.types();
-//	}
-
-	@Handle(method = "GET", path = "/api/schema")
-	public Map<String, Map<String, Map<String, Object>>> schema() {
-		return Cms.schema(dataClass(), diFactory);
 	}
 
 	@Handle(method = "POST", path = "/api/seed")
@@ -231,7 +100,13 @@ public class WebsiteBackend {
 		((WebsitePersistence) persistence).seed();
 	}
 
+	@Override
 	protected Class<?> dataClass() {
 		return Data.class;
+	}
+
+	@Override
+	protected boolean testDrafts(HttpExchange x) {
+		return super.testDrafts(x) && ((BlankUser) ((BlankBackendHttpExchange) x).sessionUser()).hasRole(BlankUserRole.ADMIN);
 	}
 }

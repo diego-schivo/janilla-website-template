@@ -26,7 +26,10 @@ package com.janilla.websitetemplate.backend;
 
 import java.util.List;
 
+import com.janilla.blanktemplate.backend.Media;
+import com.janilla.blanktemplate.backend.BlankUser;
+
 public record SeedData(List<Category> categories, Footer footer, List<FormSubmission> formSubmissions, List<Form> forms,
 		Header header, List<Media> media, List<Page> pages, List<Post> posts, List<Redirect> redirects,
-		List<SearchResult> searchResults, List<User> users) {
+		List<SearchResult> searchResults, List<BlankUser> users) {
 }

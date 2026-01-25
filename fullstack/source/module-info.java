@@ -28,6 +28,7 @@ module com.janilla.websitetemplate.fullstack {
 
 	opens com.janilla.websitetemplate.fullstack;
 
+	requires transitive com.janilla.blanktemplate.fullstack;
 	requires transitive com.janilla.websitetemplate.backend;
 	requires transitive com.janilla.websitetemplate.frontend;
 }

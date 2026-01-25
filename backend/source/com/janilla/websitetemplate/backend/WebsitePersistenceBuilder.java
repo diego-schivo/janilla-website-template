@@ -24,40 +24,39 @@
  */
 package com.janilla.websitetemplate.backend;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
-import java.util.function.Predicate;
 
-import com.janilla.backend.cms.CollectionApi;
+import com.janilla.backend.persistence.ApplicationPersistenceBuilder;
 import com.janilla.backend.persistence.Persistence;
-import com.janilla.http.HttpExchange;
-import com.janilla.http.HttpResponse;
-import com.janilla.web.Handle;
+import com.janilla.ioc.DiFactory;
 
-@Handle(path = "/api/media")
-public class MediaApi extends CollectionApi<Long, Media> {
+public class WebsitePersistenceBuilder extends ApplicationPersistenceBuilder {
 
 	protected final Properties configuration;
 
 	protected final String configurationKey;
 
-	public MediaApi(Predicate<HttpExchange> drafts, Persistence persistence, Properties configuration,
+	public WebsitePersistenceBuilder(Path databaseFile, DiFactory diFactory, Properties configuration,
 			String configurationKey) {
-		super(Media.class, drafts, persistence);
+		super(databaseFile, diFactory);
 		this.configuration = configuration;
 		this.configurationKey = configurationKey;
 	}
 
-	@Handle(method = "GET", path = "file/(.+)")
-	public void file(Path path, HttpResponse response) {
-		Path d;
-		{
-			var x = configuration.getProperty(configurationKey + ".upload.directory");
-			if (x.startsWith("~"))
-				x = System.getProperty("user.home") + x.substring(1);
-			d = Path.of(x);
-		}
-		var f = d.resolve(path.getFileName());
-		CmsFileHandlerFactory.handle(f, response);
+	@Override
+	public Persistence build() {
+		var fe = Files.exists(databaseFile);
+		var p = super.build();
+		if (!fe && Boolean.parseBoolean(configuration.getProperty(configurationKey + ".live-demo")))
+			try {
+				((WebsitePersistence) persistence).seed();
+			} catch (IOException e) {
+				throw new UncheckedIOException(e);
+			}
+		return p;
 	}
 }

@@ -29,29 +29,29 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import com.janilla.blanktemplate.frontend.BlankDataFetching;
+import com.janilla.blanktemplate.frontend.BlankFrontendHttpExchange;
+import com.janilla.blanktemplate.frontend.BlankIndexFactory;
+import com.janilla.blanktemplate.frontend.BlankWebHandling;
+import com.janilla.http.HttpExchange;
 import com.janilla.web.Bind;
 import com.janilla.web.Handle;
 import com.janilla.web.NotFoundException;
 
-public class WebHandling {
+public class WebsiteWebHandling extends BlankWebHandling {
 
-	protected final DataFetching dataFetching;
-
-	protected final IndexFactory indexFactory;
-
-	public WebHandling(DataFetching dataFetching, IndexFactory indexFactory) {
-		this.dataFetching = dataFetching;
-		this.indexFactory = indexFactory;
+	public WebsiteWebHandling(BlankDataFetching dataFetching, BlankIndexFactory indexFactory) {
+		super(dataFetching, indexFactory);
 	}
 
 	@Handle(method = "GET", path = "/admin(/[\\w\\d/-]*)?")
-	public Object admin(String path, FrontendExchange exchange) {
+	public Object admin(String path, HttpExchange exchange) {
 //		IO.println("WebHandling.admin, path=" + path);
 		if (path == null || path.isEmpty())
 			path = "/";
 		switch (path) {
 		case "/":
-			if (exchange.sessionUser() == null)
+			if (((BlankFrontendHttpExchange) exchange).sessionUser() == null)
 				return URI.create("/admin/login");
 			break;
 		case "/login":
@@ -63,11 +63,11 @@ public class WebHandling {
 	}
 
 	@Handle(method = "GET", path = "/([\\w\\d-]*)")
-	public Object page(String slug, FrontendExchange exchange) {
+	public Object page(String slug, HttpExchange exchange) {
 //		IO.println("WebHandling.page, slug=" + slug);
 		if (slug == null || slug.isEmpty())
 			slug = "home";
-		var pp = dataFetching.pages(slug, exchange.tokenCookie());
+		var pp = ((WebsiteDataFetching) dataFetching).pages(slug, ((BlankFrontendHttpExchange) exchange).tokenCookie());
 		if (pp.isEmpty()) {
 			if (slug.equals("home"))
 				pp = List.of(Map.of("slug", "home"));
@@ -86,7 +86,8 @@ public class WebHandling {
 			}
 		}
 		if (A.pageLayoutContains(p, "Archive"))
-			i.state().put("posts", dataFetching.posts(null, exchange.tokenCookie()));
+			i.state().put("posts", ((WebsiteDataFetching) dataFetching).posts(null,
+					((BlankFrontendHttpExchange) exchange).tokenCookie()));
 
 		Stream.of("archive", "call-to-action", "content", "form-block", "hero", "media-block", "page")
 				.map(indexFactory::template).forEach(i.templates()::add);
@@ -94,9 +95,9 @@ public class WebHandling {
 	}
 
 	@Handle(method = "GET", path = "/posts/([\\w\\d-]+)")
-	public Index post(String slug, FrontendExchange exchange) {
+	public Object post(String slug, HttpExchange exchange) {
 //		IO.println("WebHandling.post, slug=" + slug);
-		var pp = dataFetching.posts(slug, exchange.tokenCookie());
+		var pp = ((WebsiteDataFetching) dataFetching).posts(slug, ((BlankFrontendHttpExchange) exchange).tokenCookie());
 		if (pp.isEmpty())
 			throw new NotFoundException("slug=" + slug);
 		var i = indexFactory.index(exchange);
@@ -107,19 +108,20 @@ public class WebHandling {
 	}
 
 	@Handle(method = "GET", path = "/posts")
-	public Index posts(FrontendExchange exchange) {
+	public Object posts(HttpExchange exchange) {
 //		IO.println("WebHandling.posts");
 		var i = indexFactory.index(exchange);
-		i.state().put("posts", dataFetching.posts(null, exchange.tokenCookie()));
+		i.state().put("posts",
+				((WebsiteDataFetching) dataFetching).posts(null, ((BlankFrontendHttpExchange) exchange).tokenCookie()));
 		Stream.of("card", "posts").map(indexFactory::template).forEach(i.templates()::add);
 		return i;
 	}
 
 	@Handle(method = "GET", path = "/search")
-	public Index search(@Bind("q") String query, FrontendExchange exchange) {
+	public Object search(@Bind("q") String query, HttpExchange exchange) {
 //		IO.println("WebHandling.search, query=" + query);
 		var i = indexFactory.index(exchange);
-		i.state().put("results", dataFetching.searchResults(query));
+		i.state().put("results", ((WebsiteDataFetching) dataFetching).searchResults(query));
 		Stream.of("card", "search").map(indexFactory::template).forEach(i.templates()::add);
 		return i;
 	}
