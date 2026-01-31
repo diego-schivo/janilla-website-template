@@ -26,24 +26,35 @@ import WebComponent from "web-component";
 
 export default class Footer extends WebComponent {
 
+    static get moduleUrl() {
+        return import.meta.url;
+    }
+
     static get templateNames() {
         return ["footer"];
     }
 
     async updateDisplay() {
-        const a = this.closest("app-element");
         this.appendChild(this.interpolateDom({
             $template: "",
+            content: this.contentData()
+        }));
+    }
+
+    contentData() {
+        const a = this.closest("app-element");
+        return {
+            $template: "logo",
             navigation: a.customState.footer?.navItems?.length ? {
                 $template: "navigation",
                 items: a.customState.footer.navItems.map(x => ({
-                    $template: "list-item",
+                    $template: "link",
                     ...x,
                     document: x.type.name === "REFERENCE" ? `${x.document.$type}:${x.document.slug}` : null,
                     href: x.type.name === "CUSTOM" ? x.uri : null,
                     target: x.newTab ? "_blank" : null
                 }))
             } : null
-        }));
+        };
     }
 }

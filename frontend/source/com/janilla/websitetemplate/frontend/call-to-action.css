@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-call-to-action {
+:where(call-to-action) {
   article,
   section {
     display: flex;
@@ -33,7 +33,6 @@ call-to-action {
     background: light-dark(rgb(244, 244, 245), rgb(10, 10, 10));
     border: 1px solid light-dark(rgb(201, 201, 207), rgba(38, 38, 38, 0.8));
     border-radius: 0.2rem;
-    /*gap: 1rem;*/
     gap: 2rem;
     padding: 1rem;
 
@@ -43,16 +42,6 @@ call-to-action {
       justify-content: space-between;
     }
   }
-
-  /*
-  p {
-    color: rgb(209, 213, 219);
-
-    a {
-      color: rgb(255, 255, 255);
-    }
-  }
-  */
 
   section {
     > .button {

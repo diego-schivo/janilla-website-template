@@ -33,10 +33,10 @@ import java.util.stream.Stream;
 import javax.net.ssl.SSLContext;
 
 import com.janilla.backend.smtp.SmtpClient;
-import com.janilla.blanktemplate.backend.BlankBackendHttpExchange;
 import com.janilla.blanktemplate.backend.BlankBackend;
-import com.janilla.blanktemplate.backend.BlankUser;
-import com.janilla.blanktemplate.backend.BlankUserRole;
+import com.janilla.blanktemplate.backend.BackendHttpExchange;
+import com.janilla.blanktemplate.backend.UserImpl;
+import com.janilla.blanktemplate.backend.UserRoleImpl;
 import com.janilla.http.HttpExchange;
 import com.janilla.http.HttpServer;
 import com.janilla.ioc.DiFactory;
@@ -51,7 +51,7 @@ public class WebsiteBackend extends BlankBackend {
 			WebsiteBackend a;
 			{
 				var f = new DiFactory(Stream.of("com.janilla.web", WebsiteBackend.class.getPackageName())
-						.flatMap(x -> Java.getPackageClasses(x).stream()).toList());
+						.flatMap(x -> Java.getPackageClasses(x, true).stream()).toList());
 				a = f.create(WebsiteBackend.class,
 						Java.hashMap("diFactory", f, "configurationFile",
 								args.length > 0 ? Path.of(
@@ -84,11 +84,12 @@ public class WebsiteBackend extends BlankBackend {
 
 	public WebsiteBackend(DiFactory diFactory, Path configurationFile, String configurationKey) {
 		super(diFactory, configurationFile, configurationKey);
-		smtpClient = diFactory.create(SmtpClient.class,
-				Map.of("host", configuration.getProperty(configurationKey + ".mail.host"), "port",
-						Integer.parseInt(configuration.getProperty(configurationKey + ".mail.port")), "username",
-						configuration.getProperty(configurationKey + ".mail.username"), "password",
-						configuration.getProperty(configurationKey + ".mail.password")));
+		var h = configuration.getProperty(configurationKey + ".mail.host");
+		smtpClient = h != null && !h.isEmpty() ? diFactory.create(SmtpClient.class,
+				Map.of("host", h, "port", Integer.parseInt(configuration.getProperty(configurationKey + ".mail.port")),
+						"username", configuration.getProperty(configurationKey + ".mail.username"), "password",
+						configuration.getProperty(configurationKey + ".mail.password")))
+				: null;
 	}
 
 	public SmtpClient smtpClient() {
@@ -107,6 +108,7 @@ public class WebsiteBackend extends BlankBackend {
 
 	@Override
 	protected boolean testDrafts(HttpExchange x) {
-		return super.testDrafts(x) && ((BlankUser) ((BlankBackendHttpExchange) x).sessionUser()).hasRole(BlankUserRole.ADMIN);
+		return super.testDrafts(x)
+				&& ((UserImpl) ((BackendHttpExchange) x).sessionUser()).hasRole(UserRoleImpl.ADMIN);
 	}
 }

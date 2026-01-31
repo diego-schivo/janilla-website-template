@@ -26,15 +26,19 @@ import WebComponent from "web-component";
 
 export default class Banner extends WebComponent {
 
-	static get templateNames() {
-		return ["banner"];
-	}
+    static get moduleUrl() {
+        return import.meta.url;
+    }
 
-	async updateDisplay() {
-		const d = this.closest("post-element").data(this.dataset.path);
-		this.appendChild(this.interpolateDom({
-			$template: "",
-			...d
-		}));
-	}
+    static get templateNames() {
+        return ["banner"];
+    }
+
+    async updateDisplay() {
+        const d = this.closest("[data-slug]").data(this.dataset.path);
+        this.appendChild(this.interpolateDom({
+            $template: "",
+            ...d
+        }));
+    }
 }

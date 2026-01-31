@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-banner-element {
+:where(banner-element) {
   article {
     border: 1px solid rgba(38, 38, 38, 0.8);
     border-radius: 0.25rem;

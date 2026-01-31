@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-page-element {
+:where(page-element) {
   .placeholder {
     padding-top: 4rem;
 

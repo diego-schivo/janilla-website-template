@@ -26,58 +26,62 @@ import WebComponent from "web-component";
 
 export default class Search extends WebComponent {
 
-	static get observedAttributes() {
-		return ["data-query"];
-	}
+    static get moduleUrl() {
+        return import.meta.url;
+    }
 
-	static get templateNames() {
-		return ["search"];
-	}
+    static get observedAttributes() {
+        return ["data-query"];
+    }
 
-	connectedCallback() {
-		super.connectedCallback();
-		this.addEventListener("input", this.handleInput);
-	}
+    static get templateNames() {
+        return ["search"];
+    }
 
-	disconnectedCallback() {
-		super.disconnectedCallback();
-		this.removeEventListener("input", this.handleInput);
-	}
+    connectedCallback() {
+        super.connectedCallback();
+        this.addEventListener("input", this.handleInput);
+    }
 
-	handleInput = async event => {
-		const el = event.target.closest("input");
-		if (el?.name === "q") {
-			event.stopPropagation();
-			const { results, ...hs } = history.state;
-			const u = new URL(location.pathname, location.href);
-			if (el.value)
-				u.searchParams.append("q", el.value);
-			history.pushState(hs, "", u.pathname + u.search);
-			dispatchEvent(new CustomEvent("popstate"));
-		}
-	}
+    disconnectedCallback() {
+        super.disconnectedCallback();
+        this.removeEventListener("input", this.handleInput);
+    }
 
-	async updateDisplay() {
-		let hs = history.state;
+    handleInput = async event => {
+        const el = event.target.closest("input");
+        if (el?.name === "q") {
+            event.stopPropagation();
+            const { results, ...hs } = history.state;
+            const u = new URL(location.pathname, location.href);
+            if (el.value)
+                u.searchParams.append("q", el.value);
+            history.pushState(hs, "", u.pathname + u.search);
+            dispatchEvent(new CustomEvent("popstate"));
+        }
+    }
 
-		if (!hs.results) {
-			const a = this.closest("app-element");
-			const u = new URL(`${a.dataset.apiUrl}/search-results`, location.href);
-			if (this.dataset.query)
-				u.searchParams.append("query", this.dataset.query);
-			history.replaceState(hs = {
-				...hs,
-				results: await (await fetch(u)).json()
-			}, "");
-		}
+    async updateDisplay() {
+        let hs = history.state;
 
-		this.appendChild(this.interpolateDom({
-			$template: "",
-			...this.dataset,
-			cards: hs.results.map(x => ({
-				$template: "card",
-				...x
-			}))
-		}));
-	}
+        if (!hs.results) {
+            const a = this.closest("app-element");
+            const u = new URL(`${a.dataset.apiUrl}/search-results`, location.href);
+            if (this.dataset.query)
+                u.searchParams.append("query", this.dataset.query);
+            history.replaceState(hs = {
+                ...hs,
+                results: await (await fetch(u)).json()
+            }, "");
+        }
+
+        this.appendChild(this.interpolateDom({
+            $template: "",
+            ...this.dataset,
+            cards: hs.results.map(x => ({
+                $template: "card",
+                ...x
+            }))
+        }));
+    }
 }

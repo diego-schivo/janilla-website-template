@@ -22,20 +22,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-@import "website-base.css";
+@import "site-base.css";
 
 @import "archive.css";
 @import "banner.css";
 @import "call-to-action.css";
 @import "card.css";
 @import "content.css";
-@import "rich-text.css";
 @import "footer.css";
 @import "form-block.css";
 @import "header.css";
 @import "hero.css";
-@import "link.css";
-@import "lucide-icon.css";
 @import "media-block.css";
 @import "not-found.css";
 @import "page.css";
@@ -43,4 +40,3 @@
 @import "posts.css";
 @import "search.css";
 @import "theme-selector.css";
-@import "website-app.css";

@@ -36,7 +36,7 @@ import com.janilla.backend.persistence.Store;
 
 @Store
 public record SearchResult(Long id, @Index @Types( {
-		Post.class }) DocumentReference<?, ?> document, String title, String slug, Meta meta,
+		PostImpl.class }) DocumentReference<?, ?> document, String title, String slug, Meta meta,
 		List<@Types(Category.class) Long> categories, Instant createdAt, Instant updatedAt,
 		DocumentStatus documentStatus, Instant publishedAt) implements Document<Long>{
 }

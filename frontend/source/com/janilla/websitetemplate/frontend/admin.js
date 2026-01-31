@@ -22,12 +22,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import Admin from "./admin.js";
+import CmsAdmin from "cms/admin";
 
-export default class CustomAdmin extends Admin {
+export default class Admin extends CmsAdmin {
+
+    static get moduleUrl() {
+        return import.meta.url;
+    }
 
     static get templateNames() {
-        return ["admin"];
+        return ["/cms/admin"];
     }
 
     static get observedAttributes() {
@@ -82,7 +86,7 @@ export default class CustomAdmin extends Admin {
                     case "richText":
                         return "rich-text";
                     case "confirmationType":
-                    //case "type":
+                        //case "type":
                         return field.options.length <= 2 ? "radio-group" : "select";
                 }
                 break;

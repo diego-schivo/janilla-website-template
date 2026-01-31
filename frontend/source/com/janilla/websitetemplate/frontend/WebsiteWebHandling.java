@@ -62,11 +62,14 @@ public class WebsiteWebHandling extends BlankWebHandling {
 		return indexFactory.index(exchange);
 	}
 
-	@Handle(method = "GET", path = "/([\\w\\d-]*)")
+	@Override
+	public Object page(HttpExchange exchange) {
+		return page("home", exchange);
+	}
+
+	@Handle(method = "GET", path = "/([\\w\\d-]+)")
 	public Object page(String slug, HttpExchange exchange) {
 //		IO.println("WebHandling.page, slug=" + slug);
-		if (slug == null || slug.isEmpty())
-			slug = "home";
 		var pp = ((WebsiteDataFetching) dataFetching).pages(slug, ((BlankFrontendHttpExchange) exchange).tokenCookie());
 		if (pp.isEmpty()) {
 			if (slug.equals("home"))
@@ -90,7 +93,7 @@ public class WebsiteWebHandling extends BlankWebHandling {
 					((BlankFrontendHttpExchange) exchange).tokenCookie()));
 
 		Stream.of("archive", "call-to-action", "content", "form-block", "hero", "media-block", "page")
-				.map(indexFactory::template).forEach(i.templates()::add);
+				.map(((WebsiteIndexFactory) indexFactory)::websiteTemplate).forEach(i.templates()::add);
 		return i;
 	}
 
@@ -102,8 +105,8 @@ public class WebsiteWebHandling extends BlankWebHandling {
 			throw new NotFoundException("slug=" + slug);
 		var i = indexFactory.index(exchange);
 		i.state().put("post", pp.getFirst());
-		Stream.of("banner", "card", "media-block", "post", "rich-text").map(indexFactory::template)
-				.forEach(i.templates()::add);
+		Stream.of("banner", "card", "media-block", "post", "rich-text")
+				.map(((WebsiteIndexFactory) indexFactory)::websiteTemplate).forEach(i.templates()::add);
 		return i;
 	}
 
@@ -113,7 +116,8 @@ public class WebsiteWebHandling extends BlankWebHandling {
 		var i = indexFactory.index(exchange);
 		i.state().put("posts",
 				((WebsiteDataFetching) dataFetching).posts(null, ((BlankFrontendHttpExchange) exchange).tokenCookie()));
-		Stream.of("card", "posts").map(indexFactory::template).forEach(i.templates()::add);
+		Stream.of("card", "posts").map(((WebsiteIndexFactory) indexFactory)::websiteTemplate)
+				.forEach(i.templates()::add);
 		return i;
 	}
 
@@ -122,7 +126,8 @@ public class WebsiteWebHandling extends BlankWebHandling {
 //		IO.println("WebHandling.search, query=" + query);
 		var i = indexFactory.index(exchange);
 		i.state().put("results", ((WebsiteDataFetching) dataFetching).searchResults(query));
-		Stream.of("card", "search").map(indexFactory::template).forEach(i.templates()::add);
+		Stream.of("card", "search").map(((WebsiteIndexFactory) indexFactory)::websiteTemplate)
+				.forEach(i.templates()::add);
 		return i;
 	}
 }

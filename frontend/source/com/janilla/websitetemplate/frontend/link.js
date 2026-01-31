@@ -26,17 +26,23 @@ import WebComponent from "web-component";
 
 export default class Link extends WebComponent {
 
+    static get moduleUrl() {
+        return import.meta.url;
+    }
+
     static get templateNames() {
         return ["link"];
     }
 
-    static get observedAttributes() {
-        return ["data-document", "data-href", "data-target"];
-    }
+	static get observedAttributes() {
+		return ["data-document", "data-href", "data-target", "data-class", "data-text"];
+	}
 
     async updateDisplay() {
         const o = { ...this.dataset };
-        o.href = this.href();
+        const h = this.href();
+		if (h)
+			o.href = h;
         this.appendChild(this.interpolateDom({
             $template: "",
             ...o
@@ -50,8 +56,6 @@ export default class Link extends WebComponent {
                 return `/${s}`;
             case "Product":
                 return `/products/${s}`;
-            default:
-                return this.dataset.href;
         }
     }
 }

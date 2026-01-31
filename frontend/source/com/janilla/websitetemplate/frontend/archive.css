@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-archive-element {
+:where(archive-element) {
   > article {
     display: flex;
     flex-direction: column;

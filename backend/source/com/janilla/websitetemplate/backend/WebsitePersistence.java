@@ -67,10 +67,10 @@ public class WebsitePersistence extends CmsPersistence {
 
 	public WebsitePersistence(SqliteDatabase database, List<Class<? extends Entity<?>>> storables,
 			TypeResolver typeResolver, DiFactory diFactory, Properties configuration, String configurationKey) {
-		super(database, storables, typeResolver);
 		this.diFactory = diFactory;
 		this.configuration = configuration;
 		this.configurationKey = configurationKey;
+		super(database, storables, typeResolver);
 	}
 
 	protected SearchObserver<?> searchObserver() {

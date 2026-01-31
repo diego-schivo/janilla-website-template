@@ -26,18 +26,22 @@ import WebComponent from "web-component";
 
 export default class Content extends WebComponent {
 
-	static get templateNames() {
-		return ["content"];
-	}
+    static get moduleUrl() {
+        return import.meta.url;
+    }
 
-	async updateDisplay() {
-		const d = this.closest("page-element").data(this.dataset.path);
-		this.appendChild(this.interpolateDom({
-			$template: "",
-			sections: d.columns.map(x => ({
-				$template: "section",
-				...x
-			}))
-		}));
-	}
+    static get templateNames() {
+        return ["content"];
+    }
+
+    async updateDisplay() {
+        const d = this.closest("[data-slug]").data(this.dataset.path);
+        this.appendChild(this.interpolateDom({
+            $template: "",
+            sections: d.columns.map(x => ({
+                $template: "section",
+                ...x
+            }))
+        }));
+    }
 }

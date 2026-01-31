@@ -43,6 +43,19 @@ public class WebsiteIndexFactory extends BlankIndexFactory {
 	}
 
 	@Override
+	public Template blankTemplate(String name) {
+		return template("blank/" + name);
+	}
+
+	public Template frontendTemplate(String name) {
+		return template(name);
+	}
+
+	public Template websiteTemplate(String name) {
+		return template(name);
+	}
+
+	@Override
 	protected Map<String, Object> state(HttpExchange exchange) {
 		var x = super.state(exchange);
 		x.put("header", ((WebsiteDataFetching) dataFetching).header());
@@ -53,15 +66,31 @@ public class WebsiteIndexFactory extends BlankIndexFactory {
 	@Override
 	protected void putImports(Map<String, String> map) {
 		super.putImports(map);
-		Stream.of("admin", "admin-bar", "admin-dashboard").forEach(x -> map.put(x, "/custom-" + x + ".js"));
-		Stream.of("archive", "banner", "call-to-action", "card", "content", "footer", "form-block", "header", "hero",
-				"link", "media-block", "post", "posts", "rich-text", "search", "theme-selector", "website-app")
-				.forEach(x -> map.put(x, "/" + x + ".js"));
+		Stream.of("admin", "admin-bar", "admin-create-first-user", "admin-dashboard", "app", "archive", "banner",
+				"call-to-action", "card", "content", "footer", "form-block", "header", "hero", "link", "media-block",
+				"not-found", "page", "post", "posts", "rich-text", "search", "theme-selector")
+				.map(this::websiteImportKey).forEach(x -> map.put(x, "/" + x + ".js"));
+	}
+
+	@Override
+	protected String cmsImportKey(String name) {
+		return "cms/" + name;
+	}
+
+	@Override
+	protected String blankImportKey(String name) {
+		return "blank/" + name;
+	}
+
+	protected String websiteImportKey(String name) {
+		return name;
 	}
 
 	@Override
 	protected void addTemplates(List<Template> list) {
 		super.addTemplates(list);
-		Stream.of("footer", "header", "janilla-logo", "link").map(this::template).forEach(list::add);
+		Stream.of("janilla-logo").map(this::frontendTemplate).forEach(list::add);
+		Stream.of("app", "footer", "header", "link", "not-found", "page", "theme-selector").map(this::websiteTemplate)
+				.forEach(list::add);
 	}
 }

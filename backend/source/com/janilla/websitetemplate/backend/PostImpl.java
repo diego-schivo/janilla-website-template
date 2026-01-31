@@ -22,67 +22,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-app-element {
-  > div {
-    display: flex;
-    flex-direction: column;
-    gap: 4rem;
-    min-height: 100vh;
+package com.janilla.websitetemplate.backend;
 
-    > header {
-      align-items: center;
-      display: flex;
-      justify-content: space-between;
-      padding: 2rem 1rem;
-      position: relative;
-      z-index: 20;
+import java.time.Instant;
+import java.util.List;
 
-      @media (min-width: 1441px) {
-        padding: 2rem;
-      }
+import com.janilla.backend.cms.DocumentStatus;
+import com.janilla.backend.cms.Types;
+import com.janilla.backend.cms.Versions;
+import com.janilla.backend.persistence.Index;
+import com.janilla.backend.persistence.Store;
+import com.janilla.blanktemplate.backend.Media;
+import com.janilla.blanktemplate.backend.UserImpl;
 
-      a {
-        color: rgb(255, 255, 255);
-        font-size: 0.875rem;
-        font-weight: 500;
-        line-height: 1.25rem;
-      }
+@Store
+@Versions(drafts = true)
+public record PostImpl(Long id, String title, @Types(Media.class) Long heroImage, List<@Types( {
+		Banner.class, MediaBlock.class, RichText.class }) Object> content, List<@Types(PostImpl.class) Long> relatedPosts,
+		List<@Types(Category.class) Long> categories, Meta meta, @Index String slug,
+		List<@Types(UserImpl.class) Long> authors, Instant createdAt, Instant updatedAt, DocumentStatus documentStatus,
+		Instant publishedAt) implements Post{
 
-      img {
-        height: 34px;
-      }
-
-      nav {
-        align-items: center;
-        display: flex;
-        gap: 0.75rem;
-      }
-
-      lucide-icon {
-        width: 1.25rem;
-      }
-    }
-
-    main {
-      display: flex;
-      flex-direction: column;
-      font-size: 1rem;
-      gap: 4rem;
-      line-height: 1.75;
-
-      > :not(.hero) {
-        padding: 0 1rem;
-
-        @media (min-width: 1441px) {
-          box-sizing: border-box;
-          margin-left: auto;
-          margin-right: auto;
-          max-width: 86rem;
-          padding-left: 2rem;
-          padding-right: 2rem;
-          width: 100%;
-        }
-      }
-    }
-  }
+	@Override
+	public PostImpl withRelatedPosts(List<Long> relatedPosts) {
+		return new PostImpl(id, title, heroImage, content, relatedPosts, categories, meta, slug, authors, createdAt,
+				updatedAt, documentStatus, publishedAt);
+	}
 }

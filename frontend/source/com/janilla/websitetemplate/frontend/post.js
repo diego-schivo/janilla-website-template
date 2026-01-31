@@ -26,47 +26,51 @@ import WebComponent from "web-component";
 
 export default class Post extends WebComponent {
 
-	static get observedAttributes() {
-		return ["data-slug"];
-	}
+    static get moduleUrl() {
+        return import.meta.url;
+    }
 
-	static get templateNames() {
-		return ["post"];
-	}
+    static get observedAttributes() {
+        return ["data-slug"];
+    }
 
-	async updateDisplay() {
-		let hs = history.state;
-		const a = this.closest("app-element");
-		if (this.dataset.slug != hs.post?.slug) {
-			const u = new URL(`${a.dataset.apiUrl}/posts`, location.href);
-			u.searchParams.append("slug", this.dataset.slug);
-			const p = (await (await fetch(u)).json())[0];
-			history.replaceState(hs = {
-				...hs,
-				post: p
-			}, "");
-		}
+    static get templateNames() {
+        return ["post"];
+    }
 
-		a.updateSeo(hs.post?.meta);
-		this.appendChild(this.interpolateDom({
-			$template: "",
-			...hs.post,
-			content: hs.post?.content?.map((x, i) => ({
-				$template: x.$type.split(/(?=[A-Z])/).map(x => x.toLowerCase()).join("-"),
-				path: `content.${i}`
-			})),
-			cards: hs.post?.relatedPosts?.map(x => ({
-				$template: "card",
-				...x
-			}))
-		}));
-	}
+    async updateDisplay() {
+        let hs = history.state;
+        const a = this.closest("app-element");
+        if (this.dataset.slug != hs.post?.slug) {
+            const u = new URL(`${a.dataset.apiUrl}/posts`, location.href);
+            u.searchParams.append("slug", this.dataset.slug);
+            const p = (await (await fetch(u)).json())[0];
+            history.replaceState(hs = {
+                ...hs,
+                post: p
+            }, "");
+        }
 
-	data(path) {
-		return path.split(".").reduce((x, n) => Array.isArray(x)
-			? x[parseInt(n)]
-			: typeof x === "object" && x !== null
-				? x[n]
-				: null, history.state.post);
-	}
+        a.updateSeo(hs.post?.meta);
+        this.appendChild(this.interpolateDom({
+            $template: "",
+            ...hs.post,
+            content: hs.post?.content?.map((x, i) => ({
+                $template: x.$type.split(/(?=[A-Z])/).map(x => x.toLowerCase()).join("-"),
+                path: `content.${i}`
+            })),
+            cards: hs.post?.relatedPosts?.map(x => ({
+                $template: "card",
+                ...x
+            }))
+        }));
+    }
+
+    data(path) {
+        return path.split(".").reduce((x, n) => Array.isArray(x)
+            ? x[parseInt(n)]
+            : typeof x === "object" && x !== null
+                ? x[n]
+                : null, history.state.post);
+    }
 }

@@ -26,6 +26,10 @@ import WebComponent from "web-component";
 
 export default class Archive extends WebComponent {
 
+    static get moduleUrl() {
+        return import.meta.url;
+    }
+
     static get templateNames() {
         return ["archive"];
     }
@@ -35,14 +39,14 @@ export default class Archive extends WebComponent {
         const a = this.closest("app-element");
 
         if (!Object.hasOwn(hs, "posts")) {
-			const pp = a.serverState?.posts ?? await (await fetch(`${a.dataset.apiUrl}/posts`)).json();
+            const pp = a.serverState?.posts ?? await (await fetch(`${a.dataset.apiUrl}/posts`)).json();
             history.replaceState(hs = {
                 ...hs,
                 posts: pp
             }, "");
         }
 
-        const d = this.closest("page-element").data(this.dataset.path);
+        const d = this.closest("[data-slug]").data(this.dataset.path);
         this.appendChild(this.interpolateDom({
             $template: "",
             ...d,

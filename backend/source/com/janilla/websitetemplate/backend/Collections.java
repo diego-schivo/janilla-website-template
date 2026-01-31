@@ -27,9 +27,9 @@ package com.janilla.websitetemplate.backend;
 import java.util.List;
 
 import com.janilla.blanktemplate.backend.Media;
-import com.janilla.blanktemplate.backend.BlankUser;
+import com.janilla.blanktemplate.backend.UserImpl;
 
-public record Collections(List<Page> pages, List<Post> posts, List<Media> media, List<Category> categories,
-		List<BlankUser> users, List<Redirect> redirects, List<Form> forms, List<FormSubmission> formSubmissions,
+public record Collections(List<Page> pages, List<PostImpl> posts, List<Media> media, List<Category> categories,
+		List<UserImpl> users, List<Redirect> redirects, List<Form> forms, List<FormSubmission> formSubmissions,
 		List<SearchResult> searchResults) {
 }

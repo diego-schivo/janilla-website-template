@@ -42,19 +42,19 @@
 		"id": 1,
 		"navItems": [
 			{
-				"$type": "Link1",
+				"$type": "LinkImpl",
 				"type": "CUSTOM",
 				"uri": "/admin",
 				"text": "Admin"
 			},
 			{
-				"$type": "Link1",
+				"$type": "LinkImpl",
 				"type": "CUSTOM",
 				"uri": "https://github.com/diego-schivo/website-template",
 				"text": "Source Code"
 			},
 			{
-				"$type": "Link1",
+				"$type": "LinkImpl",
 				"type": "CUSTOM",
 				"uri": "https://janilla.com/",
 				"text": "Janilla"
@@ -119,13 +119,13 @@
 		"id": 1,
 		"navItems": [
 			{
-				"$type": "Link1",
+				"$type": "LinkImpl",
 				"type": "CUSTOM",
 				"uri": "/posts",
 				"text": "Posts"
 			},
 			{
-				"$type": "Link1",
+				"$type": "LinkImpl",
 				"type": "REFERENCE",
 				"document": {
 					"$type": "DocumentReference",
@@ -189,14 +189,14 @@
 				"richText": "<h1>Janilla Website Template</h1><p><a href=\"/admin\">Visit the admin dashboard</a> to begin managing this site's content. The code for this template is completely open-source and can be found <a href=\"https://github.com/diego-schivo/janilla-templates/tree/main/website\" rel=\"noopener noreferrer\" target=\"_blank\">on our Github</a>. </p>",
 				"links": [
 					{
-						"$type": "Link1",
+						"$type": "LinkImpl",
 						"type": "CUSTOM",
 						"uri": "/posts",
 						"text": "All posts",
 						"appearance": "DEFAULT"
 					},
 					{
-						"$type": "Link1",
+						"$type": "LinkImpl",
 						"type": "CUSTOM",
 						"uri": "/contact",
 						"text": "Contact",
@@ -254,7 +254,7 @@
 					"richText": "<h3>This is a call to action</h3><p>This is a custom layout building block <a href=\"/admin\">configured in the admin dashboard</a>.</p>",
 					"links": [
 						{
-							"$type": "Link1",
+							"$type": "LinkImpl",
 							"type": "CUSTOM",
 							"uri": "/posts",
 							"text": "All posts",
@@ -302,7 +302,7 @@
 	],
 	"posts": [
 		{
-			"$type": "Post",
+			"$type": "PostImpl",
 			"id": 1,
 			"title": "Digital Horizons: A Glimpse into Tomorrow",
 			"heroImage": 1,
@@ -355,7 +355,7 @@
 			}
 		},
 		{
-			"$type": "Post",
+			"$type": "PostImpl",
 			"id": 2,
 			"title": "Global Gaze: Beyond the Headlines",
 			"heroImage": 2,
@@ -408,7 +408,7 @@
 			}
 		},
 		{
-			"$type": "Post",
+			"$type": "PostImpl",
 			"id": 3,
 			"title": "Dollar and Sense: The Financial Forecast",
 			"heroImage": 3,
@@ -461,7 +461,7 @@
 	"searchResults": [],
 	"users": [
 		{
-			"$type": "BlankUser",
+			"$type": "UserImpl",
 			"id": 1,
 			"name": "Demo Author",
 			"email": "demo-author@janilla.com",
@@ -469,7 +469,7 @@
 			"hash": "c73c5f4d61cf1f9ef10ec1a0eb7b4d49ddd8ad2bf6815b2b3bf0a07dfb795d1e32eb7a89565bb8f844f85d5cb08b400fe8ea925a1b05f6720453d766a1a6941d",
 			"roles": [
 				{
-					"$type": "BlankUserRole",
+					"$type": "UserRoleImpl",
 					"name": "ADMIN"
 				}
 			]

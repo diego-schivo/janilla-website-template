@@ -31,9 +31,9 @@ import com.janilla.http.HttpExchange;
 import com.janilla.web.Handle;
 
 @Handle(path = "/api/posts")
-public class PostApi extends PostApi0<Post> {
+public class PostApi extends PostApi0<PostImpl> {
 
 	public PostApi(Predicate<HttpExchange> drafts, Persistence persistence) {
-		super(Post.class, drafts, persistence);
+		super(PostImpl.class, drafts, persistence);
 	}
 }

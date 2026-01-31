@@ -26,28 +26,32 @@ import WebComponent from "web-component";
 
 export default class Posts extends WebComponent {
 
-	static get templateNames() {
-		return ["posts"];
-	}
+    static get moduleUrl() {
+        return import.meta.url;
+    }
 
-	async updateDisplay() {
-		let hs = history.state;
-		const a = this.closest("app-element");
-		if (!hs.posts) {
-			history.replaceState(hs = {
-				...hs,
-				posts: await (await fetch(`${a.dataset.apiUrl}/posts`)).json()
-			}, "");
-		}
+    static get templateNames() {
+        return ["posts"];
+    }
 
-		a.updateSeo(null);
-		this.appendChild(this.interpolateDom({
-			$template: "",
-			total: hs.posts?.length ?? 0,
-			cards: hs.posts?.map(x => ({
-				$template: "card",
-				...x
-			}))
-		}));
-	}
+    async updateDisplay() {
+        let hs = history.state;
+        const a = this.closest("app-element");
+        if (!hs.posts) {
+            history.replaceState(hs = {
+                ...hs,
+                posts: await (await fetch(`${a.dataset.apiUrl}/posts`)).json()
+            }, "");
+        }
+
+        a.updateSeo(null);
+        this.appendChild(this.interpolateDom({
+            $template: "",
+            total: hs.posts?.length ?? 0,
+            cards: hs.posts?.map(x => ({
+                $template: "card",
+                ...x
+            }))
+        }));
+    }
 }

@@ -1,4 +1,8 @@
 <footer>
+  <!--${content}-->
+</footer>
+
+<template id="logo">
   <div class="logo">
     <a href="/">
       <janilla-logo></janilla-logo>
@@ -6,7 +10,7 @@
     <theme-selector></theme-selector>
     <!--${navigation}-->
   </div>
-</footer>
+</template>
 
 <template id="navigation">
   <nav>
@@ -16,8 +20,8 @@
   </nav>
 </template>
 
-<template id="list-item">
-  <li>
+<template id="link">
+  <li class="link">
     <link-element data-document="${document}" data-href="${href}" data-target="${target}" data-class="${class}" data-text="${text}"></link-element>
   </li>
 </template>

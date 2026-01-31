@@ -26,24 +26,31 @@ import WebComponent from "web-component";
 
 export default class Hero extends WebComponent {
 
-	static get templateNames() {
-		return ["hero"];
-	}
+    static get moduleUrl() {
+        return import.meta.url;
+    }
 
-	async updateDisplay() {
-		const d = this.closest("page-element").data(this.dataset.path);
-		this.appendChild(this.interpolateDom({
-			$template: "",
-			backgroundImage: d.media ? `url("${d.media.uri}")` : "none",
-			...d,
-			links: d.links?.map(x => ({
-			    $template: "link",
-			    ...x,
-			    document: x.type.name === "REFERENCE" ? `${x.document.$type}:${x.document.slug}` : null,
-			    href: x.type.name === "CUSTOM" ? x.uri : null,
-			    target: x.newTab ? "_blank" : null,
-				class: `button ${x.appearance?.name === "OUTLINE" ? "secondary" : "primary"}`
-			}))
-		}));
-	}
+    static get templateNames() {
+        return ["hero"];
+    }
+
+    async updateDisplay() {
+        const d = this.closest("[data-slug]").data(this.dataset.path);
+        this.appendChild(this.interpolateDom({
+            $template: "",
+            backgroundImage: d.media ? `url("${d.media.uri}")` : "none",
+            ...d,
+            links: d.links?.length ? {
+                $template: "links",
+                items: d.links.map(x => ({
+                    $template: "link",
+                    ...x,
+                    document: x.type.name === "REFERENCE" ? `${x.document.$type}:${x.document.slug}` : null,
+                    href: x.type.name === "CUSTOM" ? x.uri : null,
+                    target: x.newTab ? "_blank" : null,
+                    class: `button ${x.appearance?.name === "OUTLINE" ? "secondary" : "primary"}`
+                }))
+            } : null
+        }));
+    }
 }

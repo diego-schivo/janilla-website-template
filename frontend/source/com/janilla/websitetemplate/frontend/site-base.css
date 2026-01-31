@@ -22,9 +22,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-@import "blank-base.css";
+@import "/blank/site-base.css";
 
 :where(:root:not(:has(.admin)), :host:not(:has(.admin))) {
+  line-height: 1.5;
+  text-size-adjust: 100%;
+
   a,
   button,
   input,
@@ -36,6 +39,12 @@
   body {
     color: light-dark(rgb(2, 8, 23), rgb(209, 213, 219));
     font-family: Geist;
+  }
+
+  button {
+    background: transparent;
+    border: none;
+    padding: 0;
   }
 
   dd,
@@ -118,7 +127,7 @@
     resize: none;
   }
 
-  &:where(.button) {
+  .button {
     align-items: center;
     border: none;
     display: inline-flex;

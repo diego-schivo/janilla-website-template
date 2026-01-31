@@ -22,15 +22,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import AdminDashboard from "./admin-dashboard.js";
+package com.janilla.websitetemplate.backend;
 
-export default class CustomAdminDashboard extends AdminDashboard {
+import com.janilla.backend.cms.DocumentReference;
+import com.janilla.backend.cms.Types;
 
-    static get templateNames() {
-        return ["custom-admin-dashboard", "admin-dashboard"];
-    }
-
-    constructor() {
-        super();
-    }
+public record LinkImpl(LinkType type, Boolean newTab, @Types( {
+		Page.class, PostImpl.class }) DocumentReference<?, ?> document, String uri, String text,
+		LinkAppearance appearance) implements Link{
 }

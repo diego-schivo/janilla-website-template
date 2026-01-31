@@ -22,5 +22,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-link-element {
+@import "/cms/admin-dashboard.css";
+
+.admin admin-dashboard {
+  header {
+    button {
+      text-decoration: underline;
+    }
+
+    h4 {
+      background: light-dark(rgb(218, 237, 248), rgb(19, 44, 58));
+      border-radius: 0.25rem;
+      color: light-dark(rgb(11, 110, 153), rgb(36, 164, 223));
+      letter-spacing: -0.375px;
+      margin-bottom: 1.1538rem;
+      padding: 0.625rem;
+    }
+
+    ul {
+      line-height: 1.6666;
+      list-style: decimal outside;
+      margin-bottom: 0.625rem;
+      padding-left: 1.1538rem;
+    }
+  }
 }

@@ -26,6 +26,10 @@ import WebComponent from "web-component";
 
 export default class FormBlock extends WebComponent {
 
+    static get moduleUrl() {
+        return import.meta.url;
+    }
+
     static get templateNames() {
         return ["form-block"];
     }
@@ -42,7 +46,7 @@ export default class FormBlock extends WebComponent {
 
     async updateDisplay() {
         const s = this.customState;
-        s.data = this.closest("page-element").data(this.dataset.path);
+        s.data = this.closest("[data-slug]").data(this.dataset.path);
         if (s.submission && s.data.form?.confirmationType?.name === "REDIRECT") {
             this.closest("app-element").navigate(new URL(s.data.form.redirect, location.href));
             return;
@@ -81,7 +85,7 @@ export default class FormBlock extends WebComponent {
         event.preventDefault();
 
         const a = this.closest("app-element");
-		const s = this.customState;
+        const s = this.customState;
         const ee = [...new FormData(el).entries()];
         this.customState.submission = await (await fetch(`${a.dataset.apiUrl}/form-submissions`, {
             method: "POST",

@@ -22,26 +22,70 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-.admin admin-dashboard {
-  header {
-    button {
-      text-decoration: underline;
+@import "admin.css";
+@import "site.css";
+
+:where(app-element) {
+  > div {
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+    min-height: 100vh;
+
+    > header {
+      align-items: center;
+      display: flex;
+      justify-content: space-between;
+      padding: 2rem 1rem;
+      position: relative;
+      z-index: 20;
+
+      @media (min-width: 1441px) {
+        padding: 2rem;
+      }
+
+      a {
+        color: rgb(255, 255, 255);
+        font-size: 0.875rem;
+        font-weight: 500;
+        line-height: 1.25rem;
+      }
+
+      img {
+        height: 34px;
+      }
+
+      nav {
+        align-items: center;
+        display: flex;
+        gap: 0.75rem;
+      }
+
+      lucide-icon {
+        width: 1.25rem;
+      }
     }
 
-    h4 {
-      background: rgb(19, 44, 58);
-      border-radius: 0.25rem;
-      color: rgb(36, 164, 223);
-      letter-spacing: -0.375px;
-      margin-bottom: 1.1538rem;
-      padding: 0.625rem;
-    }
+    main {
+      display: flex;
+      flex-direction: column;
+      font-size: 1rem;
+      gap: 4rem;
+      line-height: 1.75;
 
-    ul {
-      line-height: 1.6666;
-      list-style: decimal outside;
-      margin-bottom: 0.625rem;
-      padding-left: 1.1538rem;
+      > :not(.hero) {
+        padding: 0 1rem;
+
+        @media (min-width: 1441px) {
+          box-sizing: border-box;
+          margin-left: auto;
+          margin-right: auto;
+          max-width: 86rem;
+          padding-left: 2rem;
+          padding-right: 2rem;
+          width: 100%;
+        }
+      }
     }
   }
 }

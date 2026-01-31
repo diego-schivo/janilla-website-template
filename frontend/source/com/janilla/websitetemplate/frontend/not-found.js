@@ -22,21 +22,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import AdminBar from "./admin-bar.js";
+import BlankNotFound from "blank/not-found";
 
-export default class CustomAdminBar extends AdminBar {
+export default class NotFound extends BlankNotFound {
 
-    static get templateNames() {
-        return ["admin-bar"];
+    static get moduleUrl() {
+        return import.meta.url;
     }
 
-    links() {
-        const x = super.links();
-        x.splice(2, 0, {
-            href: "/admin/collections/pages/create",
-            target: "_blank",
-            text: "New Page"
-        });
-        return x;
+    static get templateNames() {
+        return ["not-found"];
     }
 }

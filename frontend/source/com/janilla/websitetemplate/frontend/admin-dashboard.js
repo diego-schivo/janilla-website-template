@@ -22,5 +22,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-rich-text {
+import CmsAdminDashboard from "cms/admin-dashboard";
+
+export default class AdminDashboard extends CmsAdminDashboard {
+
+    static get moduleUrl() {
+        return import.meta.url;
+    }
+
+    static get templateNames() {
+        return ["admin-dashboard", "/cms/admin-dashboard"];
+    }
 }

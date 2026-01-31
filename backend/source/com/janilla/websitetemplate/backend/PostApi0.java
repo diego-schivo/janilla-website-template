@@ -35,7 +35,7 @@ import com.janilla.http.HttpExchange;
 import com.janilla.web.Bind;
 import com.janilla.web.Handle;
 
-public abstract class PostApi0<P extends Post0> extends CollectionApi<Long, P> {
+public abstract class PostApi0<P extends Post> extends CollectionApi<Long, P> {
 
 	public PostApi0(Class<P> type, Predicate<HttpExchange> drafts, Persistence persistence) {
 		super(type, drafts, persistence);

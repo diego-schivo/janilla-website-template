@@ -22,8 +22,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-post-element {
+:where(post-element) {
+  /*
   padding: 0 1rem;
+  */
 
   main {
     > article {

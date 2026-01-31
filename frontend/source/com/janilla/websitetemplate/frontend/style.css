@@ -22,7 +22,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-@import "admin.css";
-@import "custom-admin-dashboard.css";
+@import "app.css";
 @import "geist-font.css";
-@import "site.css";
+@import "janilla-logo.css";
+@import "lucide-icon.css";
+@import "toaster.css";

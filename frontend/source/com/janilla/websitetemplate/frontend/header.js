@@ -26,24 +26,36 @@ import WebComponent from "web-component";
 
 export default class Header extends WebComponent {
 
-    static get templateNames() {
-        return ["header"];
+    static get moduleUrl() {
+        return import.meta.url;
     }
 
-    static get observedAttributes() {
-        return [];
+    static get templateNames() {
+        return ["header"];
     }
 
     async updateDisplay() {
         this.appendChild(this.interpolateDom({
             $template: "",
-            navItems: this.closest("app-element").customState.header?.navItems?.map(x => ({
-                $template: "link",
-                ...x,
-                document: x.type.name === "REFERENCE" ? `${x.document.$type}:${x.document.slug}` : null,
-                href: x.type.name === "CUSTOM" ? x.uri : null,
-                target: x.newTab ? "_blank" : null
-            }))
+            content: this.contentData()
         }));
+    }
+
+    contentData() {
+        return {
+            $template: "navigation",
+            navItems: [
+                { $template: "logo" },
+                ...(this.closest("app-element").customState.header?.navItems ?? []).map(x => ({
+                    $template: "link",
+                    ...x,
+                    document: x.type.name === "REFERENCE" ? `${x.document.$type}:${x.document.slug}` : null,
+                    href: x.type.name === "CUSTOM" ? x.uri : null,
+                    target: x.newTab ? "_blank" : null
+                    //class: this.dataset.path === x.uri || this.dataset.path.startsWith(x.uri + "/") ? "active" : null
+                })),
+                { $template: "search" }
+            ]
+        };
     }
 }

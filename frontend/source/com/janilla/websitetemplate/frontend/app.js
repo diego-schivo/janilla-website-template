@@ -22,18 +22,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import BlankApp from "/blank-app.js";
+import BlankApp from "blank/app";
 
 const postsRegex = /^\/posts(\/.*)?$/;
 
-export default class WebsiteApp extends BlankApp {
+export default class App extends BlankApp {
 
-    static get templateNames() {
-        return ["blank-app", "website-app"];
+    static get moduleUrl() {
+        return import.meta.url;
     }
 
-    static get observedAttributes() {
-        return ["data-api-url"];
+    static get templateNames() {
+        return ["/blank/app", "app"];
     }
 
     get colorScheme() {
@@ -42,13 +42,13 @@ export default class WebsiteApp extends BlankApp {
 
     set colorScheme(colorScheme) {
         if (colorScheme)
-            localStorage.setItem("janilla-website-template.color-scheme", colorScheme);
+            localStorage.setItem(`${this.dataset.key}.color-scheme`, colorScheme);
         else
-            localStorage.removeItem("janilla-website-template.color-scheme");
+            localStorage.removeItem(`${this.dataset.key}.color-scheme`);
         this.requestDisplay();
     }
 
-    async site() {
+    async updateDisplaySite() {
         const s = this.customState;
         const ss = this.serverState;
         if (!Object.hasOwn(s, "header"))
@@ -59,30 +59,38 @@ export default class WebsiteApp extends BlankApp {
             s.footer = ss && Object.hasOwn(ss, "footer")
                 ? ss.footer
                 : await (await fetch(`${this.dataset.apiUrl}/footer`)).json();
-        s.colorScheme = localStorage.getItem("janilla-website-template.color-scheme");
+        s.colorScheme = localStorage.getItem(`${this.dataset.key}.color-scheme`);
 
+        this.appendChild(this.interpolateDom({
+            $template: "",
+            site: {
+                $template: "site",
+                colorScheme: this.colorScheme ?? "light dark",
+                adminBar: this.currentUser?.roles?.some(x => x.name === "ADMIN") ? { $template: "admin-bar" } : null,
+                header: { $template: "header" },
+                content: this.contentData(),
+                footer: { $template: "footer" }
+            }
+        }));
+    }
+
+    contentData() {
+        const s = this.customState;
+        if (s.notFound)
+            return { $template: "not-found" };
         const p = this.currentPath;
-        return {
-            $template: "site",
-            colorScheme: this.colorScheme ?? "light dark",
-            adminBar: this.currentUser?.roles?.some(x => x.name === "ADMIN") ? { $template: "admin-bar" } : null,
-            header: { $template: "header" },
-            content: s.notFound ? { $template: "not-found" } : (() => {
-                const m2 = p.match(postsRegex);
-                if (m2)
-                    return m2[1] ? {
-                        $template: "post",
-                        slug: m2[1].substring(1)
-                    } : { $template: "posts" };
-                return p === "/search" ? {
-                    $template: "search",
-                    query: new URLSearchParams(location.search).get("q")
-                } : {
-                    $template: "page",
-                    slug: p.split("/").map(x => x === "" ? "home" : x)[1]
-                };
-            })(),
-            footer: { $template: "footer" }
+        const m = p.match(postsRegex);
+        if (m)
+            return m[1] ? {
+                $template: "post",
+                slug: m[1].substring(1)
+            } : { $template: "posts" };
+        return p === "/search" ? {
+            $template: "search",
+            query: new URLSearchParams(location.search).get("q")
+        } : {
+            $template: "page",
+            slug: p.split("/").map(x => x === "" ? "home" : x)[1]
         };
     }
 }

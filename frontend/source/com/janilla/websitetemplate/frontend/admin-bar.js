@@ -22,12 +22,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.janilla.websitetemplate.backend;
+import DefaultAdminBar from "cms/admin-bar";
 
-import com.janilla.backend.cms.DocumentReference;
-import com.janilla.backend.cms.Types;
+export default class AdminBar extends DefaultAdminBar {
 
-public record WebsiteLink(LinkType type, Boolean newTab, @Types( {
-		Page.class, Post.class }) DocumentReference<?, ?> document, String uri, String text, LinkAppearance appearance)
-		implements Link{
+    static get moduleUrl() {
+        return import.meta.url;
+    }
+
+    static get templateNames() {
+        return ["cms/admin-bar"];
+    }
+
+    links() {
+        const x = super.links();
+        x.splice(2, 0, {
+            href: "/admin/collections/pages/create",
+            target: "_blank",
+            text: "New Page"
+        });
+        return x;
+    }
 }
