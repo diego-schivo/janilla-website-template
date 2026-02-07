@@ -113,8 +113,10 @@
       line-height: 1.75;
 
       > :not(.cards) {
-        margin: 0 auto;
-        max-width: 48rem;
+        @media (min-width: 1441px) {
+          margin: 0 auto;
+          max-width: 48rem;
+        }
       }
 
       h2 {

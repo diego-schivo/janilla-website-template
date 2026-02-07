@@ -130,7 +130,7 @@
   .button {
     align-items: center;
     border: none;
-    display: inline-flex;
+    /*display: inline-flex;*/
     font-size: 0.875rem;
     font-weight: 500;
 

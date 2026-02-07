@@ -39,7 +39,7 @@ public class WebsiteFullstack extends BlankFullstack {
 	public static void main(String[] args) {
 		IO.println(ProcessHandle.current().pid());
 		var f = new DiFactory(Stream.of(BlankFullstack.class.getPackageName(), WebsiteFullstack.class.getPackageName())
-				.flatMap(x -> Java.getPackageClasses(x, true).stream()).toList(), "fullstack");
+				.flatMap(x -> Java.getPackageClasses(x, false).stream()).toList(), "fullstack");
 		serve(f, WebsiteFullstack.class, args.length > 0 ? args[0] : null);
 	}
 
@@ -55,7 +55,7 @@ public class WebsiteFullstack extends BlankFullstack {
 	protected List<Class<?>> backendTypes() {
 		return Stream.concat(super.backendTypes().stream(),
 				Stream.of(WebsiteBackend.class.getPackageName(), WebsiteFullstack.class.getPackageName())
-						.flatMap(x -> Java.getPackageClasses(x, true).stream()))
+						.flatMap(x -> Java.getPackageClasses(x, false).stream()))
 				.toList();
 	}
 
@@ -63,7 +63,7 @@ public class WebsiteFullstack extends BlankFullstack {
 	protected List<Class<?>> frontendTypes() {
 		return Stream.concat(super.frontendTypes().stream(),
 				Stream.of(WebsiteFrontend.class.getPackageName(), WebsiteFullstack.class.getPackageName())
-						.flatMap(x -> Java.getPackageClasses(x, true).stream()))
+						.flatMap(x -> Java.getPackageClasses(x, false).stream()))
 				.toList();
 	}
 }

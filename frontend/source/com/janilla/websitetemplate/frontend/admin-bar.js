@@ -31,7 +31,7 @@ export default class AdminBar extends DefaultAdminBar {
     }
 
     static get templateNames() {
-        return ["cms/admin-bar"];
+        return ["/cms/admin-bar"];
     }
 
     links() {

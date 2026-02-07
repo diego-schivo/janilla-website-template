@@ -67,8 +67,8 @@ public class WebsiteIndexFactory extends BlankIndexFactory {
 	protected void putImports(Map<String, String> map) {
 		super.putImports(map);
 		Stream.of("admin", "admin-bar", "admin-create-first-user", "admin-dashboard", "app", "archive", "banner",
-				"call-to-action", "card", "content", "footer", "form-block", "header", "hero", "link", "media-block",
-				"not-found", "page", "post", "posts", "rich-text", "search", "theme-selector")
+				"call-to-action", "card", "content", "footer", "form-block", "header", "hero", "intl-format", "link",
+				"media-block", "not-found", "page", "post", "posts", "rich-text", "search", "theme-selector")
 				.map(this::websiteImportKey).forEach(x -> map.put(x, "/" + x + ".js"));
 	}
 

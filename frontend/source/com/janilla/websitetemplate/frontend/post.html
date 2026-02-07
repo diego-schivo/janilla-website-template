@@ -4,16 +4,7 @@
     <section>
       <div>
         <h1>${title}</h1>
-        <dl>
-          <div>
-            <dt>Author</dt>
-            <dd>Demo Author</dd>
-          </div>
-          <div>
-            <dt>Date Published</dt>
-            <dd>02/06/2025</dd>
-          </div>
-        </dl>
+        <!--${metadata}-->
       </div>
     </section>
   </article>
@@ -24,6 +15,27 @@
     </div>
   </div>
 </main>
+
+<template id="metadata">
+  <dl>
+    <!--${items}-->
+  </dl>
+</template>
+
+<template id="metadatum">
+  <div>
+    <dt>${term}</dt>
+    <dd>
+      <!--${description}-->
+    </dd>
+  </div>
+</template>
+
+<template id="date">
+  <time datetime="${value}">
+    <intl-format data-type="date" data-value="${value}"></intl-format>
+  </time>
+</template>
 
 <template id="banner">
   <banner-element data-path="${path}"></banner-element>

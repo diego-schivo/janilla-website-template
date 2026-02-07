@@ -51,10 +51,27 @@ export default class Post extends WebComponent {
             }, "");
         }
 
-        a.updateSeo(hs.post?.meta);
+        const p = hs.post ?? {};
+        a.updateSeo(p.meta);
         this.appendChild(this.interpolateDom({
             $template: "",
-            ...hs.post,
+            ...p,
+            metadata: {
+                $template: "metadata",
+                items: [p.authors?.length ? {
+                    term: "Author",
+                    description: p.authors.map(x => x.name).join(", ")
+                } : null, p.publishedAt ? {
+                    term: "Date Published",
+                    description: {
+                        $template: "date",
+                        value: p.publishedAt
+                    }
+                } : null].filter(x => x).map(x => ({
+                    $template: "metadatum",
+                    ...x
+                }))
+            },
             content: hs.post?.content?.map((x, i) => ({
                 $template: x.$type.split(/(?=[A-Z])/).map(x => x.toLowerCase()).join("-"),
                 path: `content.${i}`

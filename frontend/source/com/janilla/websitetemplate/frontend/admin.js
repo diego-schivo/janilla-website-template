@@ -102,7 +102,7 @@ export default class Admin extends CmsAdmin {
                     Content: ["layout"],
                     SEO: ["meta"]
                 };
-            case "Post":
+            case "PostImpl":
                 return {
                     Content: ["heroImage", "content"],
                     Meta: ["relatedPosts", "categories"],
@@ -116,7 +116,7 @@ export default class Admin extends CmsAdmin {
         switch (entity.$type) {
             case "Page":
                 return `/${entity.slug}`;
-            case "Post":
+            case "PostImpl":
                 return `/posts/${entity.slug}`;
         }
         return super.preview(entity);
@@ -126,7 +126,7 @@ export default class Admin extends CmsAdmin {
         switch (type) {
             case "Page":
                 return ["publishedAt", "slug"];
-            case "Post":
+            case "PostImpl":
                 return ["publishedAt", "slug", "authors"];
             case "SearchResult":
                 return ["document"];

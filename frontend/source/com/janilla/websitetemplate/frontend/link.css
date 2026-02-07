@@ -22,22 +22,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-@import "site-base.css";
-
-@import "archive.css";
-@import "banner.css";
-@import "call-to-action.css";
-@import "card.css";
-@import "content.css";
-@import "footer.css";
-@import "form-block.css";
-@import "header.css";
-@import "hero.css";
-@import "link.css";
-@import "media-block.css";
-@import "not-found.css";
-@import "page.css";
-@import "post.css";
-@import "posts.css";
-@import "search.css";
-@import "theme-selector.css";
+:where(link-element) {
+  a {
+    display: block;
+  }
+}

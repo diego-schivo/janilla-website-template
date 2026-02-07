@@ -30,30 +30,30 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
 
-import com.janilla.backend.persistence.ApplicationPersistenceBuilder;
+import com.janilla.backend.persistence.PersistenceBuilder;
 import com.janilla.backend.persistence.Persistence;
 import com.janilla.ioc.DiFactory;
 
-public class WebsitePersistenceBuilder extends ApplicationPersistenceBuilder {
+public class WebsitePersistenceBuilder extends PersistenceBuilder {
 
 	protected final Properties configuration;
 
 	protected final String configurationKey;
 
-	public WebsitePersistenceBuilder(Path databaseFile, DiFactory diFactory, Properties configuration,
+	public WebsitePersistenceBuilder(Path databaseFile, Properties configuration,
 			String configurationKey) {
-		super(databaseFile, diFactory);
+		super(databaseFile);
 		this.configuration = configuration;
 		this.configurationKey = configurationKey;
 	}
 
 	@Override
-	public Persistence build() {
+	public Persistence build(DiFactory diFactory) {
 		var fe = Files.exists(databaseFile);
-		var p = super.build();
+		var p = super.build(diFactory);
 		if (!fe && Boolean.parseBoolean(configuration.getProperty(configurationKey + ".live-demo")))
 			try {
-				((WebsitePersistence) persistence).seed();
+				((WebsitePersistence) p).seed();
 			} catch (IOException e) {
 				throw new UncheckedIOException(e);
 			}
