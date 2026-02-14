@@ -51,7 +51,8 @@ public abstract class PostApi0<P extends Post> extends CollectionApi<Long, P> {
 //		IO.println("PostApi.read, slug=" + slug);
 		var d = drafts.test(exchange);
 		var ll = new ArrayList<>(
-				slug != null && !slug.isBlank() ? crud().filter(d ? "slugDraft" : "slug", slug) : crud().list());
+				slug != null && !slug.isBlank() ? crud().filter(d ? "slugDraft" : "slug", new Object[] { slug })
+						: crud().list());
 		Collections.reverse(ll);
 		return crud().read(ll, d);
 	}

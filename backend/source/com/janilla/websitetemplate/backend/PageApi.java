@@ -47,7 +47,8 @@ public class PageApi extends CollectionApi<Long, Page> {
 
 	public List<Page> read(String slug, boolean draft) {
 		return crud().read(
-				slug != null && !slug.isBlank() ? crud().filter(draft ? "slugDraft" : "slug", slug) : crud().list(),
+				slug != null && !slug.isBlank() ? crud().filter(draft ? "slugDraft" : "slug", new Object[] { slug })
+						: crud().list(),
 				draft);
 	}
 }

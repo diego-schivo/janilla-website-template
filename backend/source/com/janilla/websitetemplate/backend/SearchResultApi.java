@@ -30,8 +30,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.janilla.backend.cms.CollectionApi;
-import com.janilla.http.HttpExchange;
 import com.janilla.backend.persistence.Persistence;
+import com.janilla.http.HttpExchange;
 import com.janilla.web.Bind;
 import com.janilla.web.Handle;
 
@@ -44,7 +44,8 @@ public class SearchResultApi extends CollectionApi<Long, SearchResult> {
 
 	@Handle(method = "GET")
 	public List<SearchResult> read(@Bind("slug") String slug, @Bind("query") String query) {
-		var pp = crud().read(slug != null && !slug.isBlank() ? crud().filter("slug", slug) : crud().list());
+		var pp = crud()
+				.read(slug != null && !slug.isBlank() ? crud().filter("slug", new Object[] { slug }) : crud().list());
 		return query != null && !query.isBlank() ? pp.stream().filter(x -> {
 			var m = x.meta();
 			var s = Stream.of(m != null ? m.title() : null, m != null ? m.description() : null)
