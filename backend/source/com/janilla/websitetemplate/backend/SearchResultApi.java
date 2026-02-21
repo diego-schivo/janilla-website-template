@@ -29,14 +29,14 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.janilla.backend.cms.CollectionApi;
+import com.janilla.backend.cms.AbstractCollectionApi;
 import com.janilla.backend.persistence.Persistence;
 import com.janilla.http.HttpExchange;
 import com.janilla.web.Bind;
 import com.janilla.web.Handle;
 
 @Handle(path = "/api/search-results")
-public class SearchResultApi extends CollectionApi<Long, SearchResult> {
+public class SearchResultApi extends AbstractCollectionApi<Long, SearchResult> {
 
 	public SearchResultApi(Predicate<HttpExchange> drafts, Persistence persistence) {
 		super(SearchResult.class, drafts, persistence);

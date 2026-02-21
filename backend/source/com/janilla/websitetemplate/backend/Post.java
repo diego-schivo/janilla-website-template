@@ -26,7 +26,7 @@ package com.janilla.websitetemplate.backend;
 
 import java.util.List;
 
-import com.janilla.backend.cms.Document;
+import com.janilla.cms.Document;
 
 public interface Post extends Document<Long> {
 

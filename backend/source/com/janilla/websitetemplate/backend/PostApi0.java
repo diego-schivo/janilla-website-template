@@ -29,13 +29,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
-import com.janilla.backend.cms.CollectionApi;
+import com.janilla.backend.cms.AbstractCollectionApi;
 import com.janilla.backend.persistence.Persistence;
 import com.janilla.http.HttpExchange;
 import com.janilla.web.Bind;
 import com.janilla.web.Handle;
 
-public abstract class PostApi0<P extends Post> extends CollectionApi<Long, P> {
+public abstract class PostApi0<P extends Post> extends AbstractCollectionApi<Long, P> {
 
 	public PostApi0(Class<P> type, Predicate<HttpExchange> drafts, Persistence persistence) {
 		super(type, drafts, persistence);

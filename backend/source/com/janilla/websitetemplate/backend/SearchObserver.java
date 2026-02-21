@@ -27,12 +27,12 @@ package com.janilla.websitetemplate.backend;
 import java.util.List;
 import java.util.Set;
 
-import com.janilla.backend.cms.Document;
 import com.janilla.backend.cms.DocumentReference;
-import com.janilla.backend.cms.DocumentStatus;
 import com.janilla.backend.persistence.Crud;
 import com.janilla.backend.persistence.CrudObserver;
 import com.janilla.backend.persistence.Persistence;
+import com.janilla.cms.Document;
+import com.janilla.cms.DocumentStatus;
 import com.janilla.java.Reflection;
 
 public class SearchObserver<D extends Document<?>> implements CrudObserver<D> {

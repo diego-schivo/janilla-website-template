@@ -27,14 +27,14 @@ package com.janilla.websitetemplate.backend;
 import java.util.List;
 import java.util.function.Predicate;
 
-import com.janilla.backend.cms.CollectionApi;
+import com.janilla.backend.cms.AbstractCollectionApi;
 import com.janilla.backend.persistence.Persistence;
 import com.janilla.http.HttpExchange;
 import com.janilla.web.Bind;
 import com.janilla.web.Handle;
 
 @Handle(path = "/api/pages")
-public class PageApi extends CollectionApi<Long, Page> {
+public class PageApi extends AbstractCollectionApi<Long, Page> {
 
 	public PageApi(Predicate<HttpExchange> drafts, Persistence persistence) {
 		super(Page.class, drafts, persistence);

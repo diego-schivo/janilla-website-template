@@ -45,7 +45,6 @@ import com.janilla.backend.cms.CmsPersistence;
 import com.janilla.backend.cms.Types;
 import com.janilla.backend.persistence.Crud;
 import com.janilla.backend.persistence.CrudObserver;
-import com.janilla.backend.persistence.Entity;
 import com.janilla.backend.sqlite.SqliteDatabase;
 import com.janilla.ioc.DiFactory;
 import com.janilla.java.Converter;
@@ -54,6 +53,7 @@ import com.janilla.java.Property;
 import com.janilla.java.Reflection;
 import com.janilla.java.TypeResolver;
 import com.janilla.json.Json;
+import com.janilla.persistence.Entity;
 
 public class WebsitePersistence extends CmsPersistence {
 
@@ -105,8 +105,7 @@ public class WebsitePersistence extends CmsPersistence {
 		Object sd;
 		try (var is = getClass().getResourceAsStream("seed-data.json")) {
 			var s = new String(is.readAllBytes());
-			var o = Json.parse(s);
-			sd = diFactory.create(Converter.class).convert(o, seedDataClass());
+			sd = diFactory.create(diFactory.actualType(Converter.class)).convert(Json.parse(s), seedDataClass());
 		}
 
 //		IO.println("pp=" + pp);

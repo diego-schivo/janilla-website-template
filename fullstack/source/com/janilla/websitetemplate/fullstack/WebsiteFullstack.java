@@ -25,6 +25,7 @@
 package com.janilla.websitetemplate.fullstack;
 
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -53,17 +54,15 @@ public class WebsiteFullstack extends BlankFullstack {
 
 	@Override
 	protected List<Class<?>> backendTypes() {
-		return Stream.concat(super.backendTypes().stream(),
-				Stream.of(WebsiteBackend.class.getPackageName(), WebsiteFullstack.class.getPackageName())
-						.flatMap(x -> Java.getPackageClasses(x, false).stream()))
-				.toList();
+		return Stream
+				.concat(Arrays.stream(WebsiteBackend.DI_PACKAGES), Stream.of("com.janilla.websitetemplate.fullstack"))
+				.flatMap(x -> Java.getPackageClasses(x, false).stream()).toList();
 	}
 
 	@Override
 	protected List<Class<?>> frontendTypes() {
-		return Stream.concat(super.frontendTypes().stream(),
-				Stream.of(WebsiteFrontend.class.getPackageName(), WebsiteFullstack.class.getPackageName())
-						.flatMap(x -> Java.getPackageClasses(x, false).stream()))
-				.toList();
+		return Stream
+				.concat(Arrays.stream(WebsiteFrontend.DI_PACKAGES), Stream.of("com.janilla.websitetemplate.fullstack"))
+				.flatMap(x -> Java.getPackageClasses(x, false).stream()).toList();
 	}
 }

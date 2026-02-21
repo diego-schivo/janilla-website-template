@@ -78,7 +78,7 @@ export default class App extends BlankApp {
         const s = this.customState;
         if (s.notFound)
             return { $template: "not-found" };
-        const p = this.currentPath;
+        const p = location.pathname;
         const m = p.match(postsRegex);
         if (m)
             return m[1] ? {

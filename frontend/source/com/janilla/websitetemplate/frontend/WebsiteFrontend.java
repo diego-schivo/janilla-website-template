@@ -26,6 +26,7 @@ package com.janilla.websitetemplate.frontend;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -36,11 +37,14 @@ import com.janilla.java.Java;
 
 public class WebsiteFrontend extends BlankFrontend {
 
+	public static final String[] DI_PACKAGES = Stream
+			.concat(Arrays.stream(BlankFrontend.DI_PACKAGES), Stream.of("com.janilla.websitetemplate.frontend"))
+			.toArray(String[]::new);
+
 	public static void main(String[] args) {
 		IO.println(ProcessHandle.current().pid());
-		var f = new DiFactory(Stream
-				.of("com.janilla.web", BlankFrontend.class.getPackageName(), WebsiteFrontend.class.getPackageName())
-				.flatMap(x -> Java.getPackageClasses(x, false).stream()).toList());
+		var f = new DiFactory(
+				Arrays.stream(DI_PACKAGES).flatMap(x -> Java.getPackageClasses(x, false).stream()).toList());
 		serve(f, WebsiteFrontend.class, args.length > 0 ? args[0] : null);
 	}
 
@@ -54,12 +58,12 @@ public class WebsiteFrontend extends BlankFrontend {
 
 	@Override
 	protected Map<String, List<Path>> resourcePaths() {
-		var pp1 = Java.getPackagePaths("com.janilla.frontend.cms", false).filter(Files::isRegularFile).toList();
-		var pp2 = Java.getPackagePaths(BlankFrontend.class.getPackageName(), false).filter(Files::isRegularFile)
+		var pp1 = Java.getPackagePaths("com.janilla.frontend", false).filter(Files::isRegularFile).toList();
+		var pp2 = Java.getPackagePaths("com.janilla.frontend.cms", false).filter(Files::isRegularFile).toList();
+		var pp3 = Java.getPackagePaths(BlankFrontend.class.getPackageName(), false).filter(Files::isRegularFile)
 				.toList();
-		var pp3 = Stream
-				.of("com.janilla.frontend", "com.janilla.frontend.resources", WebsiteFrontend.class.getPackageName())
-				.flatMap(x -> Java.getPackagePaths(x, false).filter(Files::isRegularFile)).toList();
-		return Map.of("/cms", pp1, "/blank", pp2, "", pp3);
+		var pp4 = Java.getPackagePaths(WebsiteFrontend.class.getPackageName(), false).filter(Files::isRegularFile)
+				.toList();
+		return Map.of("/base", pp1, "/cms", pp2, "/blank", pp3, "", pp4);
 	}
 }

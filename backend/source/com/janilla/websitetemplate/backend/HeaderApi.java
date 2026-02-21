@@ -26,13 +26,13 @@ package com.janilla.websitetemplate.backend;
 
 import java.util.function.Predicate;
 
-import com.janilla.backend.cms.GlobalApi;
+import com.janilla.backend.cms.AbstractGlobalApi;
 import com.janilla.backend.persistence.Persistence;
 import com.janilla.http.HttpExchange;
 import com.janilla.web.Handle;
 
 @Handle(path = "/api/header")
-public class HeaderApi extends GlobalApi<Long, Header> {
+public class HeaderApi extends AbstractGlobalApi<Long, Header> {
 
 //	public static final AtomicReference<HeaderApi> INSTANCE = new AtomicReference<>();
 

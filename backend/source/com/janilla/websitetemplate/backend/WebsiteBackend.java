@@ -26,6 +26,7 @@ package com.janilla.websitetemplate.backend;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -41,11 +42,14 @@ import com.janilla.web.Handle;
 
 public class WebsiteBackend extends BlankBackend {
 
+	public static final String[] DI_PACKAGES = Stream
+			.concat(Arrays.stream(BlankBackend.DI_PACKAGES), Stream.of("com.janilla.websitetemplate.backend"))
+			.toArray(String[]::new);
+
 	public static void main(String[] args) {
 		IO.println(ProcessHandle.current().pid());
 		var f = new DiFactory(
-				Stream.of("com.janilla.web", BlankBackend.class.getPackageName(), WebsiteBackend.class.getPackageName())
-						.flatMap(x -> Java.getPackageClasses(x, false).stream()).toList());
+				Arrays.stream(DI_PACKAGES).flatMap(x -> Java.getPackageClasses(x, false).stream()).toList());
 		serve(f, WebsiteBackend.class, args.length > 0 ? args[0] : null);
 	}
 
@@ -58,7 +62,7 @@ public class WebsiteBackend extends BlankBackend {
 	public WebsiteBackend(DiFactory diFactory, Path configurationFile, String configurationKey) {
 		super(diFactory, configurationFile, configurationKey);
 		var h = configuration.getProperty(configurationKey + ".mail.host");
-		smtpClient = h != null && !h.isEmpty() ? diFactory.create(SmtpClient.class,
+		smtpClient = h != null && !h.isEmpty() ? diFactory.create(diFactory.actualType(SmtpClient.class),
 				Map.of("host", h, "port", Integer.parseInt(configuration.getProperty(configurationKey + ".mail.port")),
 						"username", configuration.getProperty(configurationKey + ".mail.username"), "password",
 						configuration.getProperty(configurationKey + ".mail.password")))

@@ -30,14 +30,14 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import com.janilla.backend.cms.CollectionApi;
+import com.janilla.backend.cms.AbstractCollectionApi;
 import com.janilla.backend.persistence.Persistence;
 import com.janilla.backend.smtp.SmtpClient;
 import com.janilla.http.HttpExchange;
 import com.janilla.web.Handle;
 
 @Handle(path = "/api/form-submissions")
-public class FormSubmissionApi extends CollectionApi<Long, FormSubmission> {
+public class FormSubmissionApi extends AbstractCollectionApi<Long, FormSubmission> {
 
 	protected final SmtpClient smtpClient;
 
