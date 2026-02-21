@@ -4,7 +4,7 @@ This is a porting of [Payload Website Template](https://github.com/payloadcms/pa
 
 ### View a live demo
 
-Open a browser and navigate to <https://website-template.janilla.com/>.
+Open a browser and navigate to <https://websitetemplate.janilla.com/>.
 
 ### How you can get started
 
