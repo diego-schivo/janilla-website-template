@@ -30,25 +30,37 @@ import java.util.function.Predicate;
 import com.janilla.backend.cms.AbstractCollectionApi;
 import com.janilla.backend.persistence.Persistence;
 import com.janilla.http.HttpExchange;
-import com.janilla.web.Bind;
+import com.janilla.persistence.ListPortion;
 import com.janilla.web.Handle;
+import com.janilla.websitetemplate.Page;
 
 @Handle(path = "/api/pages")
 public class PageApi extends AbstractCollectionApi<Long, Page> {
 
 	public PageApi(Predicate<HttpExchange> drafts, Persistence persistence) {
-		super(Page.class, drafts, persistence);
+		super(Page.class, drafts, persistence, "title");
 	}
+
+//	@Handle(method = "GET")
+//	public List<Page> read(@Bind("slug") String slug, HttpExchange exchange) {
+//		return read(slug, drafts.test(exchange));
+//	}
+//
+//	public List<Page> read(String slug, boolean draft) {
+//		return crud().read(
+//				slug != null && !slug.isBlank() ? crud().filter(draft ? "slugDraft" : "slug", new Object[] { slug })
+//						: crud().list(),
+//				draft);
+//	}
 
 	@Handle(method = "GET")
-	public List<Page> read(@Bind("slug") String slug, HttpExchange exchange) {
-		return read(slug, drafts.test(exchange));
-	}
-
-	public List<Page> read(String slug, boolean draft) {
-		return crud().read(
-				slug != null && !slug.isBlank() ? crud().filter(draft ? "slugDraft" : "slug", new Object[] { slug })
-						: crud().list(),
-				draft);
+	public ListPortion<Page> read(String search, Boolean reverse, Long skip, Long limit, Integer depth, String slug,
+			HttpExchange exchange) {
+		if (slug != null && !slug.isEmpty()) {
+			var p = crud().read(crud().find(drafts.test(exchange) ? "slugDraft" : "slug", new Object[] { slug }),
+					depth != null ? depth : 0);
+			return p != null ? ListPortion.of(List.of(p)) : ListPortion.empty();
+		}
+		return super.read(search, reverse, skip, limit, depth);
 	}
 }

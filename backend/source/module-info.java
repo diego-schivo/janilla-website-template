@@ -29,4 +29,5 @@ module com.janilla.websitetemplate.backend {
 	opens com.janilla.websitetemplate.backend;
 
 	requires transitive com.janilla.blanktemplate.backend;
+	requires transitive com.janilla.websitetemplate.base;
 }

@@ -26,8 +26,15 @@ package com.janilla.websitetemplate.backend;
 
 import java.util.List;
 
-import com.janilla.blanktemplate.backend.Media;
-import com.janilla.blanktemplate.backend.UserImpl;
+import com.janilla.blanktemplate.Media;
+import com.janilla.blanktemplate.UserImpl;
+import com.janilla.websitetemplate.Category;
+import com.janilla.websitetemplate.Footer;
+import com.janilla.websitetemplate.Form;
+import com.janilla.websitetemplate.Header;
+import com.janilla.websitetemplate.Page;
+import com.janilla.websitetemplate.PostImpl;
+import com.janilla.websitetemplate.SearchResult;
 
 public record SeedData(List<Category> categories, Footer footer, List<FormSubmission> formSubmissions, List<Form> forms,
 		Header header, List<Media> media, List<Page> pages, List<PostImpl> posts, List<Redirect> redirects,

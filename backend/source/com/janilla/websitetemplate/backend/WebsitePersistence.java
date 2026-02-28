@@ -42,10 +42,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.janilla.backend.cms.CmsPersistence;
-import com.janilla.backend.cms.Types;
 import com.janilla.backend.persistence.Crud;
 import com.janilla.backend.persistence.CrudObserver;
 import com.janilla.backend.sqlite.SqliteDatabase;
+import com.janilla.cms.Types;
 import com.janilla.ioc.DiFactory;
 import com.janilla.java.Converter;
 import com.janilla.java.Java;
@@ -54,6 +54,7 @@ import com.janilla.java.Reflection;
 import com.janilla.java.TypeResolver;
 import com.janilla.json.Json;
 import com.janilla.persistence.Entity;
+import com.janilla.websitetemplate.SearchResult;
 
 public class WebsitePersistence extends CmsPersistence {
 

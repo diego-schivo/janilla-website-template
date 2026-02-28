@@ -28,6 +28,7 @@ import java.util.List;
 
 import com.janilla.backend.cms.CmsReflectionJsonIterator;
 import com.janilla.backend.persistence.Persistence;
+import com.janilla.websitetemplate.Post;
 
 public class WebsiteReflectionJsonIterator extends CmsReflectionJsonIterator {
 

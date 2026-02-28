@@ -35,6 +35,6 @@ import com.janilla.web.Handle;
 public class RedirectApi extends AbstractCollectionApi<Long, Redirect> {
 
 	public RedirectApi(Predicate<HttpExchange> drafts, Persistence persistence) {
-		super(Redirect.class, drafts, persistence);
+		super(Redirect.class, drafts, persistence, "title");
 	}
 }

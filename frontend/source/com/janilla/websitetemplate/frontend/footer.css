@@ -30,15 +30,15 @@
     background: light-dark(rgb(0, 0, 0), rgb(10, 10, 10));
     */
     background: light-dark(rgb(0, 0, 0), oklch(0.17 0 0));
-	border-top: 1px solid light-dark(rgb(201, 201, 207), rgba(38, 38, 38, 0.8));
+      border-top: 1px solid light-dark(rgb(201, 201, 207), rgba(38, 38, 38, 0.8));
     color: rgb(255, 255, 255);
   }
 
   .logo {
     align-items: start;
-	display: flex;
-	gap: 1rem;
-	padding: 2rem 1rem;
+      display: flex;
+      gap: 3rem;
+      padding: 2rem 1rem;
 
     @media (max-width: 1440px) {
       flex-direction: column;

@@ -58,8 +58,12 @@ public class WebsiteIndexFactory extends BlankIndexFactory {
 	@Override
 	protected Map<String, Object> state(HttpExchange exchange) {
 		var x = super.state(exchange);
-		x.put("header", ((WebsiteDataFetching) dataFetching).header());
-		x.put("footer", ((WebsiteDataFetching) dataFetching).footer());
+
+		if (!exchange.request().getPath().startsWith("/admin/")) {
+			x.put("header", ((WebsiteDataFetching) dataFetching).header(1));
+			x.put("footer", ((WebsiteDataFetching) dataFetching).footer());
+		}
+
 		return x;
 	}
 

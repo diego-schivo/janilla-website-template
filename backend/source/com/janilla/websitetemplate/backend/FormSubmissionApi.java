@@ -35,6 +35,8 @@ import com.janilla.backend.persistence.Persistence;
 import com.janilla.backend.smtp.SmtpClient;
 import com.janilla.http.HttpExchange;
 import com.janilla.web.Handle;
+import com.janilla.websitetemplate.Form;
+import com.janilla.websitetemplate.FormConfirmationType;
 
 @Handle(path = "/api/form-submissions")
 public class FormSubmissionApi extends AbstractCollectionApi<Long, FormSubmission> {
@@ -42,7 +44,7 @@ public class FormSubmissionApi extends AbstractCollectionApi<Long, FormSubmissio
 	protected final SmtpClient smtpClient;
 
 	public FormSubmissionApi(Predicate<HttpExchange> drafts, Persistence persistence, SmtpClient smtpClient) {
-		super(FormSubmission.class, drafts, persistence);
+		super(FormSubmission.class, drafts, persistence, "title");
 		this.smtpClient = smtpClient;
 	}
 

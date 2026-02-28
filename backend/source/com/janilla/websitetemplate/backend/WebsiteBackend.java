@@ -31,10 +31,10 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import com.janilla.backend.smtp.SmtpClient;
+import com.janilla.blanktemplate.UserImpl;
+import com.janilla.blanktemplate.UserRoleImpl;
 import com.janilla.blanktemplate.backend.BackendHttpExchange;
 import com.janilla.blanktemplate.backend.BlankBackend;
-import com.janilla.blanktemplate.backend.UserImpl;
-import com.janilla.blanktemplate.backend.UserRoleImpl;
 import com.janilla.http.HttpExchange;
 import com.janilla.ioc.DiFactory;
 import com.janilla.java.Java;
@@ -43,7 +43,8 @@ import com.janilla.web.Handle;
 public class WebsiteBackend extends BlankBackend {
 
 	public static final String[] DI_PACKAGES = Stream
-			.concat(Arrays.stream(BlankBackend.DI_PACKAGES), Stream.of("com.janilla.websitetemplate.backend"))
+			.concat(Arrays.stream(BlankBackend.DI_PACKAGES),
+					Stream.of("com.janilla.websitetemplate", "com.janilla.websitetemplate.backend"))
 			.toArray(String[]::new);
 
 	public static void main(String[] args) {

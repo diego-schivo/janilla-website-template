@@ -34,12 +34,13 @@ import com.janilla.backend.persistence.Persistence;
 import com.janilla.http.HttpExchange;
 import com.janilla.web.Bind;
 import com.janilla.web.Handle;
+import com.janilla.websitetemplate.SearchResult;
 
 @Handle(path = "/api/search-results")
 public class SearchResultApi extends AbstractCollectionApi<Long, SearchResult> {
 
 	public SearchResultApi(Predicate<HttpExchange> drafts, Persistence persistence) {
-		super(SearchResult.class, drafts, persistence);
+		super(SearchResult.class, drafts, persistence, "title");
 	}
 
 	@Handle(method = "GET")

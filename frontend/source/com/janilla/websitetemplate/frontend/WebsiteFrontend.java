@@ -38,7 +38,8 @@ import com.janilla.java.Java;
 public class WebsiteFrontend extends BlankFrontend {
 
 	public static final String[] DI_PACKAGES = Stream
-			.concat(Arrays.stream(BlankFrontend.DI_PACKAGES), Stream.of("com.janilla.websitetemplate.frontend"))
+			.concat(Arrays.stream(BlankFrontend.DI_PACKAGES),
+					Stream.of("com.janilla.websitetemplate", "com.janilla.websitetemplate.frontend"))
 			.toArray(String[]::new);
 
 	public static void main(String[] args) {

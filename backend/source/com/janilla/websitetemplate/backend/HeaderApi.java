@@ -30,20 +30,12 @@ import com.janilla.backend.cms.AbstractGlobalApi;
 import com.janilla.backend.persistence.Persistence;
 import com.janilla.http.HttpExchange;
 import com.janilla.web.Handle;
+import com.janilla.websitetemplate.Header;
 
 @Handle(path = "/api/header")
 public class HeaderApi extends AbstractGlobalApi<Long, Header> {
 
-//	public static final AtomicReference<HeaderApi> INSTANCE = new AtomicReference<>();
-
 	public HeaderApi(Predicate<HttpExchange> drafts, Persistence persistence) {
-		super(Header.class, drafts, persistence);
-//		if (!INSTANCE.compareAndSet(null, this))
-//			throw new IllegalStateException();
-	}
-
-	@Override
-	protected Long id() {
-		return 1L;
+		super(Header.class, drafts, persistence, 1L);
 	}
 }

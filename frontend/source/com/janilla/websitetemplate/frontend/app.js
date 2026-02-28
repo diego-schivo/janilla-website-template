@@ -63,15 +63,19 @@ export default class App extends BlankApp {
 
         this.appendChild(this.interpolateDom({
             $template: "",
-            site: {
-                $template: "site",
-                colorScheme: this.colorScheme ?? "light dark",
-                adminBar: this.currentUser?.roles?.some(x => x.name === "ADMIN") ? { $template: "admin-bar" } : null,
-                header: { $template: "header" },
-                content: this.contentData(),
-                footer: { $template: "footer" }
-            }
+            site: this.siteData()
         }));
+    }
+
+    siteData() {
+        return {
+            $template: "site",
+            colorScheme: this.colorScheme ?? "light dark",
+            before: this.currentUser?.roles?.some(x => x.name === "ADMIN") ? { $template: "admin-bar" } : null,
+            header: { $template: "header" },
+            content: this.contentData(),
+            footer: { $template: "footer" }
+        };
     }
 
     contentData() {

@@ -30,20 +30,12 @@ import com.janilla.backend.cms.AbstractGlobalApi;
 import com.janilla.backend.persistence.Persistence;
 import com.janilla.http.HttpExchange;
 import com.janilla.web.Handle;
+import com.janilla.websitetemplate.Footer;
 
 @Handle(path = "/api/footer")
 public class FooterApi extends AbstractGlobalApi<Long, Footer> {
 
-//	public static final AtomicReference<FooterApi> INSTANCE = new AtomicReference<>();
-
 	public FooterApi(Predicate<HttpExchange> drafts, Persistence persistence) {
-		super(Footer.class, drafts, persistence);
-//		if (!INSTANCE.compareAndSet(null, this))
-//			throw new IllegalStateException();
-	}
-
-	@Override
-	protected Long id() {
-		return 1L;
+		super(Footer.class, drafts, persistence, 1L);
 	}
 }

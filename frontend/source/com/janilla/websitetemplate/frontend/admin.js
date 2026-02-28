@@ -35,7 +35,7 @@ export default class Admin extends CmsAdmin {
     }
 
     static get observedAttributes() {
-        return ["data-user", "data-path"];
+        return ["data-user", "data-uri"];
     }
 
     cell(object, key) {

@@ -25,7 +25,6 @@
 package com.janilla.websitetemplate.frontend;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 
 import com.janilla.blanktemplate.frontend.BlankDataFetching;
@@ -33,33 +32,18 @@ import com.janilla.blanktemplate.frontend.BlankFrontendHttpExchange;
 import com.janilla.blanktemplate.frontend.BlankIndexFactory;
 import com.janilla.blanktemplate.frontend.BlankWebHandling;
 import com.janilla.http.HttpExchange;
+import com.janilla.persistence.ListPortion;
 import com.janilla.web.Bind;
 import com.janilla.web.Handle;
 import com.janilla.web.NotFoundException;
+import com.janilla.websitetemplate.Archive;
+import com.janilla.websitetemplate.Page;
 
 public class WebsiteWebHandling extends BlankWebHandling {
 
 	public WebsiteWebHandling(BlankDataFetching dataFetching, BlankIndexFactory indexFactory) {
 		super(dataFetching, indexFactory);
 	}
-
-//	@Handle(method = "GET", path = "/admin(/[\\w\\d/-]*)?")
-//	public Object admin(String path, HttpExchange exchange) {
-	//// IO.println("WebHandling.admin, path=" + path);
-//		if (path == null || path.isEmpty())
-//			path = "/";
-//		switch (path) {
-//		case "/":
-//			if (((BlankFrontendHttpExchange) exchange).sessionUser() == null)
-//				return URI.create("/admin/login");
-//			break;
-//		case "/login":
-//			if (((List<?>) dataFetching.users(0l, 1l)).isEmpty())
-//				return URI.create("/admin/create-first-user");
-//			break;
-//		}
-//		return indexFactory.index(exchange);
-//	}
 
 	@Override
 	public Object page(HttpExchange exchange) {
@@ -69,27 +53,21 @@ public class WebsiteWebHandling extends BlankWebHandling {
 	@Handle(method = "GET", path = "/([\\w\\d-]+)")
 	public Object page(String slug, HttpExchange exchange) {
 //		IO.println("WebHandling.page, slug=" + slug);
-		var pp = ((WebsiteDataFetching) dataFetching).pages(slug, ((BlankFrontendHttpExchange) exchange).tokenCookie());
-		if (pp.isEmpty()) {
+		var pp = ((WebsiteDataFetching) dataFetching).pages(slug, 1,
+				((BlankFrontendHttpExchange) exchange).tokenCookie());
+		if (pp.totalSize() == 0) {
 			if (slug.equals("home"))
-				pp = List.of(Map.of("slug", "home"));
+				pp = ListPortion.of(List.of(Page.EMPTY.withSlug("home")));
 			else
 				throw new NotFoundException("slug=" + slug);
 		}
 		var i = indexFactory.index(exchange);
-		Object p = pp.getFirst();
+		var p = pp.elements().getFirst();
 		i.state().put("page", p);
 
-		class A {
-			@SuppressWarnings("unchecked")
-			private static boolean pageLayoutContains(Object page, String component) {
-				var l = (List<Object>) ((Map<String, Object>) page).get("layout");
-				return l != null && l.stream().anyMatch(x -> ((Map<String, Object>) x).get("$type").equals(component));
-			}
-		}
-		if (A.pageLayoutContains(p, "Archive"))
-			i.state().put("posts", ((WebsiteDataFetching) dataFetching).posts(null,
-					((BlankFrontendHttpExchange) exchange).tokenCookie()));
+		if (p.layout() != null && p.layout().stream().anyMatch(x -> x instanceof Archive))
+			i.state().put("posts", ((WebsiteDataFetching) dataFetching)
+					.posts(null, 1, ((BlankFrontendHttpExchange) exchange).tokenCookie()).elements());
 
 		Stream.of("archive", "call-to-action", "content", "form-block", "hero", "media-block", "page")
 				.map(((WebsiteIndexFactory) indexFactory)::websiteTemplate).forEach(i.templates()::add);
@@ -99,11 +77,12 @@ public class WebsiteWebHandling extends BlankWebHandling {
 	@Handle(method = "GET", path = "/posts/([\\w\\d-]+)")
 	public Object post(String slug, HttpExchange exchange) {
 //		IO.println("WebHandling.post, slug=" + slug);
-		var pp = ((WebsiteDataFetching) dataFetching).posts(slug, ((BlankFrontendHttpExchange) exchange).tokenCookie());
-		if (pp.isEmpty())
+		var pp = ((WebsiteDataFetching) dataFetching).posts(slug, 1,
+				((BlankFrontendHttpExchange) exchange).tokenCookie());
+		if (pp.totalSize() == 0)
 			throw new NotFoundException("slug=" + slug);
 		var i = indexFactory.index(exchange);
-		i.state().put("post", pp.getFirst());
+		i.state().put("post", pp.elements().getFirst());
 		Stream.of("banner", "card", "media-block", "post", "rich-text")
 				.map(((WebsiteIndexFactory) indexFactory)::websiteTemplate).forEach(i.templates()::add);
 		return i;
@@ -113,8 +92,8 @@ public class WebsiteWebHandling extends BlankWebHandling {
 	public Object posts(HttpExchange exchange) {
 //		IO.println("WebHandling.posts");
 		var i = indexFactory.index(exchange);
-		i.state().put("posts",
-				((WebsiteDataFetching) dataFetching).posts(null, ((BlankFrontendHttpExchange) exchange).tokenCookie()));
+		i.state().put("posts", ((WebsiteDataFetching) dataFetching).posts(null, 1,
+				((BlankFrontendHttpExchange) exchange).tokenCookie()));
 		Stream.of("card", "posts").map(((WebsiteIndexFactory) indexFactory)::websiteTemplate)
 				.forEach(i.templates()::add);
 		return i;
