@@ -41,10 +41,10 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.janilla.backend.cms.CmsPersistence;
 import com.janilla.backend.persistence.Crud;
 import com.janilla.backend.persistence.CrudObserver;
 import com.janilla.backend.sqlite.SqliteDatabase;
+import com.janilla.blanktemplate.backend.BlankPersistence;
 import com.janilla.cms.Types;
 import com.janilla.ioc.DiFactory;
 import com.janilla.java.Converter;
@@ -56,11 +56,9 @@ import com.janilla.json.Json;
 import com.janilla.persistence.Entity;
 import com.janilla.websitetemplate.SearchResult;
 
-public class WebsitePersistence extends CmsPersistence {
+public class WebsitePersistence extends BlankPersistence {
 
 	private SearchObserver<?> searchObserver;
-
-	protected final DiFactory diFactory;
 
 	protected final Properties configuration;
 
@@ -68,10 +66,9 @@ public class WebsitePersistence extends CmsPersistence {
 
 	public WebsitePersistence(SqliteDatabase database, List<Class<? extends Entity<?>>> storables,
 			TypeResolver typeResolver, DiFactory diFactory, Properties configuration, String configurationKey) {
-		this.diFactory = diFactory;
 		this.configuration = configuration;
 		this.configurationKey = configurationKey;
-		super(database, storables, typeResolver);
+		super(database, storables, typeResolver, diFactory);
 	}
 
 	protected SearchObserver<?> searchObserver() {
