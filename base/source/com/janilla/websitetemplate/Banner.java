@@ -24,5 +24,9 @@
  */
 package com.janilla.websitetemplate;
 
-public record Banner(BannerStyle style, String content) {
+public interface Banner {
+
+	BannerStyle style();
+
+	String content();
 }

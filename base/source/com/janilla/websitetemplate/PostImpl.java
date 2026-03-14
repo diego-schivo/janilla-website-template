@@ -28,25 +28,10 @@ import java.time.Instant;
 import java.util.List;
 
 import com.janilla.blanktemplate.Media;
-import com.janilla.blanktemplate.UserImpl;
 import com.janilla.cms.DocumentStatus;
-import com.janilla.cms.Types;
 import com.janilla.cms.User;
-import com.janilla.cms.Versions;
-import com.janilla.persistence.Index;
-import com.janilla.persistence.Store;
 
-@Store
-@Versions(drafts = true)
-public record PostImpl(Long id, String title, Media heroImage, List<@Types( {
-		Banner.class, MediaBlock.class, RichText.class }) Object> content,
-		List<@Types(PostImpl.class) Post> relatedPosts, List<Category> categories, Meta meta, @Index String slug,
-		List<@Types(UserImpl.class) User<?, ?>> authors, Instant createdAt, Instant updatedAt,
-		DocumentStatus documentStatus, Instant publishedAt) implements Post{
-
-	@Override
-	public PostImpl withRelatedPosts(List<Post> relatedPosts) {
-		return new PostImpl(id, title, heroImage, content, relatedPosts, categories, meta, slug, authors, createdAt,
-				updatedAt, documentStatus, publishedAt);
-	}
+record PostImpl(Long id, String title, Media heroImage, List<?> content, List<Post> relatedPosts,
+		List<Category> categories, Meta meta, String slug, List<User<?>> authors, Instant createdAt, Instant updatedAt,
+		DocumentStatus documentStatus, Instant publishedAt) implements Post {
 }

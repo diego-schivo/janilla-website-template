@@ -24,7 +24,5 @@
  */
 package com.janilla.websitetemplate;
 
-public enum ColumnSize {
-
-	ONE_THIRD, HALF, TWO_THIRDS, FULL
+public interface ColumnSize {
 }

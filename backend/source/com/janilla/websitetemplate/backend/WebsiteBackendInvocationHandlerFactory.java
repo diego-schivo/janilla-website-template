@@ -35,9 +35,9 @@ import com.janilla.web.RenderableFactory;
 public class WebsiteBackendInvocationHandlerFactory extends BlankBackendInvocationHandlerFactory {
 
 	public WebsiteBackendInvocationHandlerFactory(InvocationResolver invocationResolver,
-			RenderableFactory renderableFactory, HttpHandlerFactory rootFactory, Properties configuration,
-			String configurationKey, DiFactory diFactory) {
-		super(invocationResolver, renderableFactory, rootFactory, configuration, configurationKey, diFactory);
+			RenderableFactory renderableFactory, HttpHandlerFactory rootFactory, DiFactory diFactory,
+			Properties configuration, String configurationKey) {
+		super(invocationResolver, renderableFactory, rootFactory, diFactory, configuration, configurationKey);
 		guestPost.add("/api/form-submissions");
 	}
 }

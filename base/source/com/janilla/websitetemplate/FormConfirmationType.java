@@ -24,7 +24,5 @@
  */
 package com.janilla.websitetemplate;
 
-public enum FormConfirmationType {
-
-	MESSAGE, REDIRECT
+public interface FormConfirmationType {
 }

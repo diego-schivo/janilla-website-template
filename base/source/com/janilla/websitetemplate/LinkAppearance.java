@@ -24,7 +24,5 @@
  */
 package com.janilla.websitetemplate;
 
-public enum LinkAppearance {
-
-	DEFAULT, OUTLINE
+public interface LinkAppearance {
 }

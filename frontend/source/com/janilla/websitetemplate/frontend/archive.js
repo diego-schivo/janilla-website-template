@@ -40,7 +40,7 @@ export default class Archive extends WebComponent {
 
         if (!Object.hasOwn(hs, "posts")) {
             const pp = a.serverState?.posts ?? (await (await fetch(`${a.dataset.apiUrl}/posts`)).json()).elements;
-            console.log("pp=", pp);
+            //console.log("pp=", pp);
             history.replaceState(hs = {
                 ...hs,
                 posts: pp

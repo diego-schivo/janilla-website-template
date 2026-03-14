@@ -26,5 +26,9 @@ package com.janilla.websitetemplate;
 
 import java.util.List;
 
-public record CallToAction(String richText, List<Link> links) {
+public interface CallToAction {
+
+	String richText();
+
+	List<Link> links();
 }

@@ -26,5 +26,7 @@ package com.janilla.websitetemplate;
 
 import com.janilla.blanktemplate.Media;
 
-public record MediaBlock(Media media) {
+public interface MediaBlock {
+
+	Media media();
 }

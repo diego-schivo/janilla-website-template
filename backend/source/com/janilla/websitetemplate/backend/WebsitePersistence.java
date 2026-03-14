@@ -49,9 +49,8 @@ import com.janilla.cms.Types;
 import com.janilla.ioc.DiFactory;
 import com.janilla.java.Converter;
 import com.janilla.java.Java;
+import com.janilla.java.JavaReflect;
 import com.janilla.java.Property;
-import com.janilla.java.Reflection;
-import com.janilla.java.TypeResolver;
 import com.janilla.json.Json;
 import com.janilla.persistence.Entity;
 import com.janilla.websitetemplate.SearchResult;
@@ -65,15 +64,16 @@ public class WebsitePersistence extends BlankPersistence {
 	protected final String configurationKey;
 
 	public WebsitePersistence(SqliteDatabase database, List<Class<? extends Entity<?>>> storables,
-			TypeResolver typeResolver, DiFactory diFactory, Properties configuration, String configurationKey) {
+//			TypeResolver typeResolver,
+			Converter converter, DiFactory diFactory, Properties configuration, String configurationKey) {
 		this.configuration = configuration;
 		this.configurationKey = configurationKey;
-		super(database, storables, typeResolver, diFactory);
+		super(database, storables, converter, diFactory);
 	}
 
 	protected SearchObserver<?> searchObserver() {
 		if (searchObserver == null)
-			searchObserver = new SearchObserver<>(Arrays.stream(Reflection.property(SearchResult.class, "document")
+			searchObserver = new SearchObserver<>(Arrays.stream(JavaReflect.property(SearchResult.class, "document")
 					.annotatedType().getAnnotation(Types.class).value()).toList(), this);
 		return searchObserver;
 	}
@@ -93,9 +93,9 @@ public class WebsitePersistence extends BlankPersistence {
 	public void seed() throws IOException {
 		var pp = properties();
 		pp.forEach(x -> database.perform(() -> {
-			var t = x.genericType() instanceof ParameterizedType pt ? (Class<?>) pt.getActualTypeArguments()[0]
-					: x.type();
-			var c = crud((Class) t);
+//			IO.println("WebsitePersistence.seed, x=" + x);
+			var t = x.genericType() instanceof ParameterizedType pt ? pt.getActualTypeArguments()[0] : x.type();
+			var c = crud((Class) Java.toClass(t));
 			c.delete(c.list());
 			return null;
 		}, true));
@@ -103,14 +103,13 @@ public class WebsitePersistence extends BlankPersistence {
 		Object sd;
 		try (var is = getClass().getResourceAsStream("seed-data.json")) {
 			var s = new String(is.readAllBytes());
-			sd = diFactory.create(diFactory.actualType(Converter.class)).convert(Json.parse(s), seedDataClass());
+			sd = diFactory.newInstance(diFactory.classFor(Converter.class)).convert(Json.parse(s), seedDataClass());
 		}
 
 //		IO.println("pp=" + pp);
 		pp.stream().forEach(x -> database.perform(() -> {
-			var t = x.genericType() instanceof ParameterizedType pt ? (Class<?>) pt.getActualTypeArguments()[0]
-					: x.type();
-			var c = crud((Class) t);
+			var t = x.genericType() instanceof ParameterizedType pt ? pt.getActualTypeArguments()[0] : x.type();
+			var c = crud((Class) Java.toClass(t));
 			var o = x.get(sd);
 			(o instanceof List<?> oo ? oo.stream() : Stream.of(o)).forEach(y -> c.create((Entity) y));
 			return null;
@@ -146,6 +145,6 @@ public class WebsitePersistence extends BlankPersistence {
 	}
 
 	protected List<Property> properties() {
-		return Reflection.properties(seedDataClass()).collect(Collectors.toCollection(ArrayList::new));
+		return JavaReflect.properties(seedDataClass()).collect(Collectors.toCollection(ArrayList::new));
 	}
 }

@@ -31,11 +31,10 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import com.janilla.backend.smtp.SmtpClient;
-import com.janilla.blanktemplate.UserImpl;
-import com.janilla.blanktemplate.UserRoleImpl;
 import com.janilla.blanktemplate.backend.BackendHttpExchange;
 import com.janilla.blanktemplate.backend.BlankBackend;
 import com.janilla.http.HttpExchange;
+import com.janilla.ioc.DefaultDiFactory;
 import com.janilla.ioc.DiFactory;
 import com.janilla.java.Java;
 import com.janilla.web.Handle;
@@ -49,7 +48,7 @@ public class WebsiteBackend extends BlankBackend {
 
 	public static void main(String[] args) {
 		IO.println(ProcessHandle.current().pid());
-		var f = new DiFactory(
+		var f = new DefaultDiFactory(
 				Arrays.stream(DI_PACKAGES).flatMap(x -> Java.getPackageClasses(x, false).stream()).toList());
 		serve(f, WebsiteBackend.class, args.length > 0 ? args[0] : null);
 	}
@@ -63,7 +62,7 @@ public class WebsiteBackend extends BlankBackend {
 	public WebsiteBackend(DiFactory diFactory, Path configurationFile, String configurationKey) {
 		super(diFactory, configurationFile, configurationKey);
 		var h = configuration.getProperty(configurationKey + ".mail.host");
-		smtpClient = h != null && !h.isEmpty() ? diFactory.create(diFactory.actualType(SmtpClient.class),
+		smtpClient = h != null && !h.isEmpty() ? diFactory.newInstance(diFactory.classFor(SmtpClient.class),
 				Map.of("host", h, "port", Integer.parseInt(configuration.getProperty(configurationKey + ".mail.port")),
 						"username", configuration.getProperty(configurationKey + ".mail.username"), "password",
 						configuration.getProperty(configurationKey + ".mail.password")))
@@ -80,12 +79,12 @@ public class WebsiteBackend extends BlankBackend {
 	}
 
 	@Override
-	protected Class<?> dataClass() {
+	protected Class<?> dataType() {
 		return Data.class;
 	}
 
 	@Override
 	protected boolean testDrafts(HttpExchange x) {
-		return super.testDrafts(x) && ((UserImpl) ((BackendHttpExchange) x).sessionUser()).hasRole(UserRoleImpl.ADMIN);
+		return super.testDrafts(x) && ((BackendHttpExchange) x).sessionUser().hasRole(constants.adminRole());
 	}
 }

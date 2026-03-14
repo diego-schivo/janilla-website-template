@@ -42,20 +42,29 @@
 		"id": 1,
 		"navItems": [
 			{
-				"$type": "LinkImpl",
-				"type": "CUSTOM",
+				"$type": "Link",
+				"type": {
+					"$type": "LinkType",
+					"name": "CUSTOM"
+				},
 				"uri": "/admin",
 				"text": "Admin"
 			},
 			{
-				"$type": "LinkImpl",
-				"type": "CUSTOM",
+				"$type": "Link",
+				"type": {
+					"$type": "LinkType",
+					"name": "CUSTOM"
+				},
 				"uri": "https://github.com/diego-schivo/website-template",
 				"text": "Source Code"
 			},
 			{
-				"$type": "LinkImpl",
-				"type": "CUSTOM",
+				"$type": "Link",
+				"type": {
+					"$type": "LinkType",
+					"name": "CUSTOM"
+				},
 				"uri": "https://janilla.com/",
 				"text": "Janilla"
 			}
@@ -98,7 +107,10 @@
 				}
 			],
 			"submitButtonLabel": "Submit",
-			"confirmationType": "MESSAGE",
+			"confirmationType": {
+				"$type": "FormConfirmationType",
+				"name": "MESSAGE"
+			},
 			"confirmationMessage": "<h2>The contact form has been submitted successfully.</h2>",
 			"emails": [
 				{
@@ -119,14 +131,20 @@
 		"id": 1,
 		"navItems": [
 			{
-				"$type": "LinkImpl",
-				"type": "CUSTOM",
+				"$type": "Link",
+				"type": {
+					"$type": "LinkType",
+					"name": "CUSTOM"
+				},
 				"uri": "/posts",
 				"text": "Posts"
 			},
 			{
-				"$type": "LinkImpl",
-				"type": "REFERENCE",
+				"$type": "Link",
+				"type": {
+					"$type": "LinkType",
+					"name": "REFERENCE"
+				},
 				"document": {
 					"$type": "Page",
 					"id": 2
@@ -184,22 +202,37 @@
 			"title": "Home",
 			"hero": {
 				"$type": "Hero",
-				"type": "HIGH_IMPACT",
+				"type": {
+					"$type": "HeroType",
+					"name": "HIGH_IMPACT"
+				},
 				"richText": "<h1>Janilla Website Template</h1><p><a href=\"/admin\">Visit the admin dashboard</a> to begin managing this site's content. The code for this template is completely open-source and can be found <a href=\"https://github.com/diego-schivo/janilla-templates/tree/main/website\" rel=\"noopener noreferrer\" target=\"_blank\">on our Github</a>. </p>",
 				"links": [
 					{
-						"$type": "LinkImpl",
-						"type": "CUSTOM",
+						"$type": "Link",
+						"type": {
+							"$type": "LinkType",
+							"name": "CUSTOM"
+						},
 						"uri": "/posts",
 						"text": "All posts",
-						"appearance": "DEFAULT"
+						"appearance": {
+							"$type": "LinkAppearance",
+							"name": "DEFAULT"
+						}
 					},
 					{
-						"$type": "LinkImpl",
-						"type": "CUSTOM",
+						"$type": "Link",
+						"type": {
+							"$type": "LinkType",
+							"name": "CUSTOM"
+						},
 						"uri": "/contact",
 						"text": "Contact",
-						"appearance": "OUTLINE"
+						"appearance": {
+							"$type": "LinkAppearance",
+							"name": "OUTLINE"
+						}
 					}
 				],
 				"media": {
@@ -213,32 +246,50 @@
 					"columns": [
 						{
 							"$type": "Column",
-							"size": "FULL",
+							"size": {
+								"$type": "ColumnSize",
+								"name": "FULL"
+							},
 							"richText": "<h2>Core features</h2>"
 						},
 						{
 							"$type": "Column",
-							"size": "ONE_THIRD",
+							"size": {
+								"$type": "ColumnSize",
+								"name": "ONE_THIRD"
+							},
 							"richText": "<h3>Admin Dashboard</h3><p>Manage this site's pages and posts from the <a href=\"/admin\">admin dashboard</a>.</p>"
 						},
 						{
 							"$type": "Column",
-							"size": "ONE_THIRD",
+							"size": {
+								"$type": "ColumnSize",
+								"name": "ONE_THIRD"
+							},
 							"richText": "<h3>Preview</h3><p>Using versions, drafts, and preview, editors can review and share their changes before publishing them.</p>"
 						},
 						{
 							"$type": "Column",
-							"size": "ONE_THIRD",
+							"size": {
+								"$type": "ColumnSize",
+								"name": "ONE_THIRD"
+							},
 							"richText": "<h3>Page Builder</h3><p>Custom page builder allows you to create unique page, post, and project layouts for any type of content.</p>"
 						},
 						{
 							"$type": "Column",
-							"size": "ONE_THIRD",
+							"size": {
+								"$type": "ColumnSize",
+								"name": "ONE_THIRD"
+							},
 							"richText": "<h3>SEO</h3><p>Editors have complete control over SEO data and site content directly from the <a href=\"/admin\">admin dashboard</a>.</p>"
 						},
 						{
 							"$type": "Column",
-							"size": "ONE_THIRD",
+							"size": {
+								"$type": "ColumnSize",
+								"name": "ONE_THIRD"
+							},
 							"richText": "<h3>Dark Mode</h3><p>Users will experience this site in their preferred color scheme and each block can be inverted.</p>"
 						}
 					]
@@ -259,11 +310,17 @@
 					"richText": "<h3>This is a call to action</h3><p>This is a custom layout building block <a href=\"/admin\">configured in the admin dashboard</a>.</p>",
 					"links": [
 						{
-							"$type": "LinkImpl",
-							"type": "CUSTOM",
+							"$type": "Link",
+							"type": {
+								"$type": "LinkType",
+								"name": "CUSTOM"
+							},
 							"uri": "/posts",
 							"text": "All posts",
-							"appearance": "DEFAULT"
+							"appearance": {
+								"$type": "LinkAppearance",
+								"name": "DEFAULT"
+							}
 						}
 					]
 				}
@@ -289,7 +346,10 @@
 			"title": "Contact",
 			"hero": {
 				"$type": "Hero",
-				"type": "NONE",
+				"type": {
+					"$type": "HeroType",
+					"name": "NONE"
+				},
 				"richText": "",
 				"links": []
 			},
@@ -313,7 +373,7 @@
 	],
 	"posts": [
 		{
-			"$type": "PostImpl",
+			"$type": "Post",
 			"id": 1,
 			"title": "Digital Horizons: A Glimpse into Tomorrow",
 			"heroImage": {
@@ -327,7 +387,10 @@
 				},
 				{
 					"$type": "Banner",
-					"style": "INFO",
+					"style": {
+						"$type": "BannerStyle",
+						"name": "INFO"
+					},
 					"content": "<p><strong>Disclaimer:</strong> This content is fabricated and for demonstration purposes only. To edit this post, <a href=\"/admin\" rel=\"noopener noreferrer\" target=\"_blank\">navigate to the admin dashboard</a>.</p>"
 				},
 				{
@@ -347,17 +410,20 @@
 				},
 				{
 					"$type": "Banner",
-					"style": "INFO",
+					"style": {
+						"$type": "BannerStyle",
+						"name": "INFO"
+					},
 					"content": "<p>This content above is completely dynamic using custom layout building blocks configured in the CMS. This can be anything you'd like from rich text and images, to highly designed, complex components.</p>"
 				}
 			],
 			"relatedPosts": [
 				{
-					"$type": "PostImpl",
+					"$type": "Post",
 					"id": 2
 				},
 				{
-					"$type": "PostImpl",
+					"$type": "Post",
 					"id": 3
 				}
 			],
@@ -373,7 +439,7 @@
 			"slug": "digital-horizons-a-glimpse-into-tomorrow",
 			"authors": [
 				{
-					"$type": "UserImpl",
+					"$type": "User",
 					"id": 1
 				}
 			],
@@ -384,7 +450,7 @@
 			}
 		},
 		{
-			"$type": "PostImpl",
+			"$type": "Post",
 			"id": 2,
 			"title": "Global Gaze: Beyond the Headlines",
 			"heroImage": {
@@ -398,7 +464,10 @@
 				},
 				{
 					"$type": "Banner",
-					"style": "INFO",
+					"style": {
+						"$type": "BannerStyle",
+						"name": "INFO"
+					},
 					"content": "<p><strong>Disclaimer:</strong> This content is fabricated and for demonstration purposes only. To edit this post, <a href=\"/admin\" rel=\"noopener noreferrer\" target=\"_blank\">navigate to the admin dashboard.</a></p>"
 				},
 				{
@@ -418,17 +487,20 @@
 				},
 				{
 					"$type": "Banner",
-					"style": "INFO",
+					"style": {
+						"$type": "BannerStyle",
+						"name": "INFO"
+					},
 					"content": "<p>This content above is completely dynamic using custom layout building blocks configured in the CMS. This can be anything you'd like from rich text and images, to highly designed, complex components.</p>"
 				}
 			],
 			"relatedPosts": [
 				{
-					"$type": "PostImpl",
+					"$type": "Post",
 					"id": 1
 				},
 				{
-					"$type": "PostImpl",
+					"$type": "Post",
 					"id": 3
 				}
 			],
@@ -444,7 +516,7 @@
 			"slug": "global-gaze-beyond-the-headlines",
 			"authors": [
 				{
-					"$type": "UserImpl",
+					"$type": "User",
 					"id": 1
 				}
 			],
@@ -455,7 +527,7 @@
 			}
 		},
 		{
-			"$type": "PostImpl",
+			"$type": "Post",
 			"id": 3,
 			"title": "Dollar and Sense: The Financial Forecast",
 			"heroImage": {
@@ -465,7 +537,10 @@
 			"content": [
 				{
 					"$type": "Banner",
-					"style": "INFO",
+					"style": {
+						"$type": "BannerStyle",
+						"name": "INFO"
+					},
 					"content": "<p><strong>Disclaimer: </strong>This content is fabricated and for demonstration purposes only. To edit this post, <a href=\"/admin\" rel=\"noopener noreferrer\" target=\"_blank\">navigate to the admin dashboard.</a></p>"
 				},
 				{
@@ -485,17 +560,20 @@
 				},
 				{
 					"$type": "Banner",
-					"style": "INFO",
+					"style": {
+						"$type": "BannerStyle",
+						"name": "INFO"
+					},
 					"content": "<p>This content above is completely dynamic using custom layout building blocks configured in the CMS. This can be anything you'd like from rich text and images, to highly designed, complex components.</p>"
 				}
 			],
 			"relatedPosts": [
 				{
-					"$type": "PostImpl",
+					"$type": "Post",
 					"id": 1
 				},
 				{
-					"$type": "PostImpl",
+					"$type": "Post",
 					"id": 2
 				}
 			],
@@ -511,7 +589,7 @@
 			"slug": "dollar-and-sense-the-financial-forecast",
 			"authors": [
 				{
-					"$type": "UserImpl",
+					"$type": "User",
 					"id": 1
 				}
 			],
@@ -526,7 +604,7 @@
 	"searchResults": [],
 	"users": [
 		{
-			"$type": "UserImpl",
+			"$type": "User",
 			"id": 1,
 			"name": "Demo Author",
 			"email": "demo-author@janilla.com",
@@ -534,7 +612,7 @@
 			"hash": "c73c5f4d61cf1f9ef10ec1a0eb7b4d49ddd8ad2bf6815b2b3bf0a07dfb795d1e32eb7a89565bb8f844f85d5cb08b400fe8ea925a1b05f6720453d766a1a6941d",
 			"roles": [
 				{
-					"$type": "UserRoleImpl",
+					"$type": "UserRole",
 					"name": "ADMIN"
 				}
 			]

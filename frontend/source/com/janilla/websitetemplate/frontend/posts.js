@@ -38,9 +38,11 @@ export default class Posts extends WebComponent {
         let hs = history.state;
         const a = this.closest("app-element");
         if (!hs.posts) {
+            const u = new URL(`${a.dataset.apiUrl}/posts`, location.href);
+            u.searchParams.append("depth", 1);
             history.replaceState(hs = {
                 ...hs,
-                posts: await (await fetch(`${a.dataset.apiUrl}/posts`)).json()
+                posts: (await (await fetch(u)).json()).elements
             }, "");
         }
 

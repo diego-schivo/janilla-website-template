@@ -26,5 +26,7 @@ package com.janilla.websitetemplate;
 
 import java.util.List;
 
-public record Content(List<Column> columns) {
+public interface Content {
+
+	List<Column> columns();
 }

@@ -28,7 +28,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Properties;
 
-import com.janilla.blanktemplate.frontend.BlankDataFetching;
+import com.janilla.frontend.cms.CmsDataFetching;
 import com.janilla.http.HttpClient;
 import com.janilla.http.HttpCookie;
 import com.janilla.ioc.DiFactory;
@@ -41,7 +41,7 @@ import com.janilla.websitetemplate.Page;
 import com.janilla.websitetemplate.Post;
 import com.janilla.websitetemplate.SearchResult;
 
-public class WebsiteDataFetching extends BlankDataFetching {
+public class WebsiteDataFetching extends CmsDataFetching {
 
 	public WebsiteDataFetching(Properties configuration, String configurationKey, HttpClient httpClient,
 			DiFactory diFactory) {

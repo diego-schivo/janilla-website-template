@@ -24,5 +24,9 @@
  */
 package com.janilla.websitetemplate;
 
-public record Column(ColumnSize size, String richText) {
+public interface Column {
+
+	ColumnSize size();
+
+	String richText();
 }

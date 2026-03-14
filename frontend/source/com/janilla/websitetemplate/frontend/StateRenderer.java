@@ -41,6 +41,6 @@ public class StateRenderer<T> extends Renderer<T> {
 
 	@Override
 	public String apply(T value) {
-		return Json.format(diFactory.create(diFactory.actualType(ReflectionJsonIterator.class), Map.of("object", value, "includeType", true)));
+		return Json.format(diFactory.newInstance(diFactory.classFor(ReflectionJsonIterator.class), Map.of("object", value, "includeType", true)));
 	}
 }

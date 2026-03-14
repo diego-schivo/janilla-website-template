@@ -28,5 +28,13 @@ import java.util.List;
 
 import com.janilla.blanktemplate.Media;
 
-public record Hero(HeroType type, String richText, List<Link> links, Media media) {
+public interface Hero {
+
+	HeroType type();
+
+	String richText();
+
+	List<Link> links();
+
+	Media media();
 }

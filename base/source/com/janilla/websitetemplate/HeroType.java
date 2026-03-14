@@ -24,7 +24,5 @@
  */
 package com.janilla.websitetemplate;
 
-public enum HeroType {
-
-	NONE, HIGH_IMPACT, MEDIUM_IMPACT, LOW_IMPACT
+public interface HeroType {
 }

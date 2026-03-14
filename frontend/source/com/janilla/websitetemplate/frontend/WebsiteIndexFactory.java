@@ -29,17 +29,26 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.stream.Stream;
 
-import com.janilla.blanktemplate.frontend.BlankDataFetching;
 import com.janilla.blanktemplate.frontend.BlankIndexFactory;
-import com.janilla.blanktemplate.frontend.Index.Template;
+import com.janilla.frontend.Index;
+import com.janilla.frontend.Template;
+import com.janilla.frontend.cms.CmsDataFetching;
 import com.janilla.http.HttpExchange;
 import com.janilla.web.ResourceMap;
 
 public class WebsiteIndexFactory extends BlankIndexFactory {
 
-	public WebsiteIndexFactory(Properties configuration, String configurationKey, BlankDataFetching dataFetching,
-			ResourceMap resourceMap) {
-		super(configuration, configurationKey, dataFetching, resourceMap);
+	public WebsiteIndexFactory(ResourceMap resourceMap, CmsDataFetching dataFetching, Properties configuration,
+			String configurationKey) {
+		super(resourceMap, dataFetching, configuration, configurationKey);
+	}
+
+	@Override
+	public Index newIndex(HttpExchange exchange) {
+		return new IndexImpl(configuration.getProperty(configurationKey + ".title"), imports(), scripts(),
+				new AppImpl(configurationKey, configuration.getProperty(configurationKey + ".api.url"),
+						state(exchange)),
+				templates());
 	}
 
 	@Override

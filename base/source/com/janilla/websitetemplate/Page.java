@@ -24,11 +24,9 @@
  */
 package com.janilla.websitetemplate;
 
-import java.time.Instant;
 import java.util.List;
 
 import com.janilla.cms.Document;
-import com.janilla.cms.DocumentStatus;
 import com.janilla.cms.Types;
 import com.janilla.cms.Versions;
 import com.janilla.persistence.Index;
@@ -36,14 +34,19 @@ import com.janilla.persistence.Store;
 
 @Store
 @Versions(drafts = true)
-public record Page(Long id, String title, Hero hero, List<@Types( {
-		Archive.class, CallToAction.class, Content.class, FormBlock.class, MediaBlock.class }) Object> layout,
-		Meta meta, @Index String slug, Instant createdAt, Instant updatedAt, DocumentStatus documentStatus,
-		Instant publishedAt) implements Document<Long>{
+public interface Page extends Document<Long> {
 
-	public static Page EMPTY = new Page(null, null, null, null, null, null, null, null, null, null);
+	String title();
 
-	public Page withSlug(String slug) {
-		return new Page(id, title, hero, layout, meta, slug, createdAt, updatedAt, documentStatus, publishedAt);
-	}
+	Hero hero();
+
+	List<@Types({ Archive.class, CallToAction.class, Content.class, FormBlock.class,
+			MediaBlock.class }) Object> layout();
+
+	Meta meta();
+
+	@Index
+	String slug();
+
+	Page withSlug(String slug);
 }

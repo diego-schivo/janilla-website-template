@@ -24,7 +24,7 @@
  */
 package com.janilla.websitetemplate;
 
-public sealed interface Field permits EmailField, NumberField, TextAreaField, TextField {
+public interface Field {
 
 	String name();
 

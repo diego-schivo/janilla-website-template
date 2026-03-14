@@ -24,6 +24,5 @@
  */
 package com.janilla.websitetemplate;
 
-public record TextField(String name, String label, Integer width, String defaultValue, Boolean required)
-		implements Field {
+public interface TextField extends Field {
 }

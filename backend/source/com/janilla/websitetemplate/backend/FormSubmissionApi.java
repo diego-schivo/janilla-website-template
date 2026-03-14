@@ -36,15 +36,19 @@ import com.janilla.backend.smtp.SmtpClient;
 import com.janilla.http.HttpExchange;
 import com.janilla.web.Handle;
 import com.janilla.websitetemplate.Form;
-import com.janilla.websitetemplate.FormConfirmationType;
+import com.janilla.websitetemplate.WebsiteConstants;
 
 @Handle(path = "/api/form-submissions")
 public class FormSubmissionApi extends AbstractCollectionApi<Long, FormSubmission> {
 
+	protected final WebsiteConstants constants;
+
 	protected final SmtpClient smtpClient;
 
-	public FormSubmissionApi(Predicate<HttpExchange> drafts, Persistence persistence, SmtpClient smtpClient) {
+	public FormSubmissionApi(Predicate<HttpExchange> drafts, Persistence persistence, WebsiteConstants constants,
+			SmtpClient smtpClient) {
 		super(FormSubmission.class, drafts, persistence, "title");
+		this.constants = constants;
 		this.smtpClient = smtpClient;
 	}
 
@@ -56,7 +60,7 @@ public class FormSubmissionApi extends AbstractCollectionApi<Long, FormSubmissio
 		var d = super.create(document);
 		var m = d.submissionData().stream().collect(Collectors.toMap(SubmissionDatum::field, SubmissionDatum::value));
 		var f = persistence.crud(Form.class).read(d.form());
-		if (f.confirmationType() == FormConfirmationType.MESSAGE)
+		if (f.confirmationType().equals(constants.messageFormConfirmationType()))
 			for (var e : f.emails()) {
 				var ss = List.of(e.emailFrom(), e.emailTo(), e.subject(), e.message()).stream()
 						.map(x -> PLACEHOLDER.matcher(x).replaceAll(y -> m.get(y.group(1)))).toList();

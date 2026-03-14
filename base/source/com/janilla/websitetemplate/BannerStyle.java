@@ -24,7 +24,5 @@
  */
 package com.janilla.websitetemplate;
 
-public enum BannerStyle {
-
-	INFO, WARNING, ERROR, SUCCESS
+public interface BannerStyle {
 }

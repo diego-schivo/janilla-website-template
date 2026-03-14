@@ -26,5 +26,11 @@ package com.janilla.websitetemplate;
 
 import com.janilla.blanktemplate.Media;
 
-public record Meta(String title, String description, Media image) {
+public interface Meta {
+
+	String title();
+
+	String description();
+
+	Media image();
 }

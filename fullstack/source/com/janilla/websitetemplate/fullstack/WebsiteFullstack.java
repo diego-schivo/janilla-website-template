@@ -26,10 +26,10 @@ package com.janilla.websitetemplate.fullstack;
 
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Stream;
 
 import com.janilla.blanktemplate.fullstack.BlankFullstack;
+import com.janilla.ioc.DefaultDiFactory;
 import com.janilla.ioc.DiFactory;
 import com.janilla.java.Java;
 import com.janilla.websitetemplate.backend.WebsiteBackend;
@@ -37,10 +37,23 @@ import com.janilla.websitetemplate.frontend.WebsiteFrontend;
 
 public class WebsiteFullstack extends BlankFullstack {
 
+	public static final String[] DI_BACKEND_PACKAGES = Stream
+			.concat(Arrays.stream(WebsiteBackend.DI_PACKAGES), Stream.of("com.janilla.websitetemplate.fullstack"))
+			.toArray(String[]::new);
+
+	public static final String[] DI_FRONTEND_PACKAGES = Stream
+			.concat(Arrays.stream(WebsiteFrontend.DI_PACKAGES), Stream.of("com.janilla.websitetemplate.fullstack"))
+			.toArray(String[]::new);
+
+	public static final String[] DI_PACKAGES = Stream
+			.concat(Arrays.stream(BlankFullstack.DI_PACKAGES), Stream.of("com.janilla.websitetemplate.fullstack"))
+			.toArray(String[]::new);
+
 	public static void main(String[] args) {
 		IO.println(ProcessHandle.current().pid());
-		var f = new DiFactory(Stream.of(BlankFullstack.class.getPackageName(), WebsiteFullstack.class.getPackageName())
-				.flatMap(x -> Java.getPackageClasses(x, false).stream()).toList(), "fullstack");
+		var f = new DefaultDiFactory(
+				Arrays.stream(DI_PACKAGES).flatMap(x -> Java.getPackageClasses(x, false).stream()).toList(),
+				"fullstack");
 		serve(f, WebsiteFullstack.class, args.length > 0 ? args[0] : null);
 	}
 
@@ -53,16 +66,12 @@ public class WebsiteFullstack extends BlankFullstack {
 	}
 
 	@Override
-	protected List<Class<?>> backendTypes() {
-		return Stream
-				.concat(Arrays.stream(WebsiteBackend.DI_PACKAGES), Stream.of("com.janilla.websitetemplate.fullstack"))
-				.flatMap(x -> Java.getPackageClasses(x, false).stream()).toList();
+	protected String[] diBackendPackages() {
+		return DI_BACKEND_PACKAGES;
 	}
 
 	@Override
-	protected List<Class<?>> frontendTypes() {
-		return Stream
-				.concat(Arrays.stream(WebsiteFrontend.DI_PACKAGES), Stream.of("com.janilla.websitetemplate.fullstack"))
-				.flatMap(x -> Java.getPackageClasses(x, false).stream()).toList();
+	protected String[] diFrontendPackages() {
+		return DI_FRONTEND_PACKAGES;
 	}
 }

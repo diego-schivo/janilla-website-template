@@ -33,7 +33,7 @@ export default class App extends BlankApp {
     }
 
     static get templateNames() {
-        return ["/blank/app", "app"];
+        return ["/base/app", "/blank/app", "app"];
     }
 
     get colorScheme() {
@@ -46,6 +46,12 @@ export default class App extends BlankApp {
         else
             localStorage.removeItem(`${this.dataset.key}.color-scheme`);
         this.requestDisplay();
+    }
+
+    connectedCallback() {
+        super.connectedCallback();
+
+        this.customState.title = document.title;
     }
 
     async updateDisplaySite() {

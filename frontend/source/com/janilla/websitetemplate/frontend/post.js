@@ -44,7 +44,7 @@ export default class Post extends WebComponent {
         if (this.dataset.slug != hs.post?.slug) {
             const u = new URL(`${a.dataset.apiUrl}/posts`, location.href);
             u.searchParams.append("slug", this.dataset.slug);
-            const p = (await (await fetch(u)).json())[0];
+            const p = (await (await fetch(u)).json()).elements[0];
             history.replaceState(hs = {
                 ...hs,
                 post: p

@@ -24,5 +24,11 @@
  */
 package com.janilla.websitetemplate;
 
-public record FormBlock(Form form, Boolean enableIntro, String introContent) {
+public interface FormBlock {
+
+	Form form();
+
+	Boolean enableIntro();
+
+	String introContent();
 }

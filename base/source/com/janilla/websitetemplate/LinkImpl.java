@@ -25,10 +25,7 @@
 package com.janilla.websitetemplate;
 
 import com.janilla.cms.Document;
-import com.janilla.cms.Types;
 
-public record LinkImpl(LinkType type, Boolean newTab, @Types( {
-//		Page.class, PostImpl.class }) DocumentReference<?, ?> document, String uri, String text,
-		Page.class, PostImpl.class }) Document<?> document, String uri, String text, LinkAppearance appearance)
-		implements Link{
+record LinkImpl(LinkType type, Boolean newTab, Document<?> document, String uri, String text, LinkAppearance appearance)
+		implements Link {
 }

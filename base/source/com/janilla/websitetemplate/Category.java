@@ -24,14 +24,16 @@
  */
 package com.janilla.websitetemplate;
 
-import java.time.Instant;
-
 import com.janilla.cms.Document;
-import com.janilla.cms.DocumentStatus;
 import com.janilla.persistence.Index;
 import com.janilla.persistence.Store;
 
 @Store
-public record Category(Long id, @Index String title, @Index String slug, Instant createdAt, Instant updatedAt,
-		DocumentStatus documentStatus, Instant publishedAt) implements Document<Long> {
+public interface Category extends Document<Long> {
+
+	@Index
+	String title();
+
+	@Index
+	String slug();
 }

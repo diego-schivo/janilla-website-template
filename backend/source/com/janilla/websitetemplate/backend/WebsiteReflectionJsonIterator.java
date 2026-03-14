@@ -24,11 +24,8 @@
  */
 package com.janilla.websitetemplate.backend;
 
-import java.util.List;
-
 import com.janilla.backend.cms.CmsReflectionJsonIterator;
 import com.janilla.backend.persistence.Persistence;
-import com.janilla.websitetemplate.Post;
 
 public class WebsiteReflectionJsonIterator extends CmsReflectionJsonIterator {
 
@@ -36,9 +33,9 @@ public class WebsiteReflectionJsonIterator extends CmsReflectionJsonIterator {
 		super(object, includeType, persistence);
 	}
 
-	@Override
-	protected List<?> list(List<?> list) {
-		return super.list(list).stream()
-				.map(x -> x instanceof Post y && y.relatedPosts() != null ? y.withRelatedPosts(null) : x).toList();
-	}
+//	@Override
+//	protected List<?> list(List<?> list) {
+//		return super.list(list).stream()
+//				.map(x -> x instanceof Post y && y.relatedPosts() != null ? y.withRelatedPosts(null) : x).toList();
+//	}
 }

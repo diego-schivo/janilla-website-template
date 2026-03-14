@@ -24,6 +24,19 @@
  */
 package com.janilla.websitetemplate;
 
-public record Email(String emailTo, String cc, String bcc, String replyTo, String emailFrom, String subject,
-		String message) {
+public interface Email {
+
+	String emailTo();
+
+	String cc();
+
+	String bcc();
+
+	String replyTo();
+
+	String emailFrom();
+
+	String subject();
+
+	String message();
 }

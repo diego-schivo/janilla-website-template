@@ -27,5 +27,9 @@ package com.janilla.websitetemplate.backend;
 import com.janilla.websitetemplate.Footer;
 import com.janilla.websitetemplate.Header;
 
-public record Globals(Header header, Footer footer) {
+public interface Globals {
+
+	Header header();
+
+	Footer footer();
 }

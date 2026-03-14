@@ -24,5 +24,7 @@
  */
 package com.janilla.websitetemplate;
 
-public record Archive(String introContent) {
+public interface Archive {
+
+	String introContent();
 }

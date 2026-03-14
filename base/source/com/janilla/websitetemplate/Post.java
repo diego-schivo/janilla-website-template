@@ -26,11 +26,32 @@ package com.janilla.websitetemplate;
 
 import java.util.List;
 
+import com.janilla.blanktemplate.Media;
 import com.janilla.cms.Document;
+import com.janilla.cms.Types;
+import com.janilla.cms.User;
+import com.janilla.cms.Versions;
+import com.janilla.persistence.Index;
+import com.janilla.persistence.Store;
 
+@Store
+@Versions(drafts = true)
 public interface Post extends Document<Long> {
+
+	String title();
+
+	Media heroImage();
+
+	List<@Types({ Banner.class, MediaBlock.class, RichText.class }) ?> content();
 
 	List<Post> relatedPosts();
 
-	Post withRelatedPosts(List<Post> relatedPosts);
+	List<Category> categories();
+
+	Meta meta();
+
+	@Index
+	String slug();
+
+	List<User<?>> authors();
 }

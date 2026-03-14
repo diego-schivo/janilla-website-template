@@ -24,5 +24,7 @@
  */
 package com.janilla.websitetemplate;
 
-public record RichText(String richText) {
+public interface RichText {
+
+	String richText();
 }

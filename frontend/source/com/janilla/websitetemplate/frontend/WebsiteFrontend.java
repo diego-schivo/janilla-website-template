@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import com.janilla.blanktemplate.frontend.BlankFrontend;
+import com.janilla.ioc.DefaultDiFactory;
 import com.janilla.ioc.DiFactory;
 import com.janilla.java.Java;
 
@@ -44,7 +45,7 @@ public class WebsiteFrontend extends BlankFrontend {
 
 	public static void main(String[] args) {
 		IO.println(ProcessHandle.current().pid());
-		var f = new DiFactory(
+		var f = new DefaultDiFactory(
 				Arrays.stream(DI_PACKAGES).flatMap(x -> Java.getPackageClasses(x, false).stream()).toList());
 		serve(f, WebsiteFrontend.class, args.length > 0 ? args[0] : null);
 	}

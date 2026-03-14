@@ -24,19 +24,25 @@
  */
 package com.janilla.websitetemplate;
 
-import java.time.Instant;
 import java.util.List;
 
 import com.janilla.cms.Document;
-import com.janilla.cms.DocumentStatus;
 import com.janilla.cms.Types;
 import com.janilla.persistence.Index;
 import com.janilla.persistence.Store;
 
 @Store
-public record SearchResult(Long id, @Index @Types( {
-//		PostImpl.class }) DocumentReference<?, ?> document, String title, String slug, Meta meta,
-		PostImpl.class }) Document<?> document, String title, String slug, Meta meta,
-		List<@Types(Category.class) Long> categories, Instant createdAt, Instant updatedAt,
-		DocumentStatus documentStatus, Instant publishedAt) implements Document<Long>{
+public interface SearchResult extends Document<Long> {
+
+	@Index
+	@Types({ PostImpl.class })
+	Document<?> document();
+
+	String title();
+
+	String slug();
+
+	Meta meta();
+
+	List<@Types(Category.class) Long> categories();
 }

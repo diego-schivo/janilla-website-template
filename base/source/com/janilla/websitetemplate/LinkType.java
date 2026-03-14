@@ -24,7 +24,5 @@
  */
 package com.janilla.websitetemplate;
 
-public enum LinkType {
-
-	REFERENCE, CUSTOM
+public interface LinkType {
 }

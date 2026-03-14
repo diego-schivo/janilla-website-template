@@ -24,6 +24,5 @@
  */
 package com.janilla.websitetemplate;
 
-public record NumberField(String name, String label, Integer width, String defaultValue, Boolean required)
-		implements Field {
+public interface NumberField extends Field {
 }
