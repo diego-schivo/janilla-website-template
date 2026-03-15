@@ -22,20 +22,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.janilla.websitetemplate.backend;
-
-import com.janilla.backend.cms.CmsReflectionJsonIterator;
-import com.janilla.backend.persistence.Persistence;
-
-public class WebsiteReflectionJsonIterator extends CmsReflectionJsonIterator {
-
-	public WebsiteReflectionJsonIterator(Object object, boolean includeType, Persistence persistence) {
-		super(object, includeType, persistence);
-	}
-
-//	@Override
-//	protected List<?> list(List<?> list) {
-//		return super.list(list).stream()
-//				.map(x -> x instanceof Post y && y.relatedPosts() != null ? y.withRelatedPosts(null) : x).toList();
+//package com.janilla.websitetemplate.backend;
+//
+//import com.janilla.backend.cms.CmsReflectionJsonIterator;
+//import com.janilla.backend.persistence.Persistence;
+//import com.janilla.java.TypeResolver;
+//
+//public class WebsiteReflectionJsonIterator extends CmsReflectionJsonIterator {
+//
+//	public WebsiteReflectionJsonIterator(Object object, TypeResolver typeResolver, Persistence persistence) {
+//		super(object, typeResolver, persistence);
 //	}
-}
+//}

@@ -36,17 +36,17 @@ import com.janilla.web.Bind;
 import com.janilla.web.Handle;
 import com.janilla.web.NotFoundException;
 import com.janilla.websitetemplate.Archive;
-import com.janilla.websitetemplate.WebsiteConstants;
+import com.janilla.websitetemplate.WebsiteDomain;
 
 public class WebsiteWebHandling extends BlankWebHandling {
 
-	protected final WebsiteConstants constants;
+	protected final WebsiteDomain domain;
 
 	protected final WebsiteDataFetching dataFetching;
 
-	public WebsiteWebHandling(IndexFactory indexFactory, WebsiteConstants constants, WebsiteDataFetching dataFetching) {
+	public WebsiteWebHandling(IndexFactory indexFactory, WebsiteDomain domain, WebsiteDataFetching dataFetching) {
 		super(indexFactory);
-		this.constants = constants;
+		this.domain = domain;
 		this.dataFetching = dataFetching;
 	}
 
@@ -61,7 +61,7 @@ public class WebsiteWebHandling extends BlankWebHandling {
 		var pp = dataFetching.pages(slug, 1, ((BlankFrontendHttpExchange) exchange).tokenCookie());
 		if (pp.totalSize() == 0) {
 			if (slug.equals("home"))
-				pp = ListPortion.of(List.of(constants.emptyPage().withSlug("home")));
+				pp = ListPortion.of(List.of(domain.emptyPage().withSlug("home")));
 			else
 				throw new NotFoundException("slug=" + slug);
 		}

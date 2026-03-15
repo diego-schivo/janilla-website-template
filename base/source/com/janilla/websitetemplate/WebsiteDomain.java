@@ -22,11 +22,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.janilla.websitetemplate.frontend;
+package com.janilla.websitetemplate;
 
-import java.util.Map;
+import com.janilla.blanktemplate.BlankDomain;
 
-import com.janilla.frontend.App;
+public class WebsiteDomain extends BlankDomain {
 
-record AppImpl(String key, String apiUrl, Map<String, Object> state) implements App {
+	public Page emptyPage() {
+		return PageImpl.EMPTY;
+	}
+
+	public FormConfirmationType formConfirmationType(String name) {
+		return FormConfirmationTypeImpl.valueOf(name);
+	}
 }

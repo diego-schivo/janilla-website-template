@@ -24,11 +24,8 @@
  */
 package com.janilla.websitetemplate.frontend;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 
 import com.janilla.blanktemplate.frontend.BlankFrontend;
@@ -58,14 +55,22 @@ public class WebsiteFrontend extends BlankFrontend {
 		super(diFactory, configurationFile, configurationKey);
 	}
 
+//	@Override
+//	protected Map<String, List<Path>> resourcePaths() {
+//		var pp1 = Java.getPackagePaths("com.janilla.frontend", false).filter(Files::isRegularFile).toList();
+//		var pp2 = Java.getPackagePaths("com.janilla.frontend.cms", false).filter(Files::isRegularFile).toList();
+//		var pp3 = Java.getPackagePaths(BlankFrontend.class.getPackageName(), false).filter(Files::isRegularFile)
+//				.toList();
+//		var pp4 = Java.getPackagePaths(WebsiteFrontend.class.getPackageName(), false).filter(Files::isRegularFile)
+//				.toList();
+//		return Map.of("/base", pp1, "/cms", pp2, "/blank", pp3, "", pp4);
+//	}
+
 	@Override
-	protected Map<String, List<Path>> resourcePaths() {
-		var pp1 = Java.getPackagePaths("com.janilla.frontend", false).filter(Files::isRegularFile).toList();
-		var pp2 = Java.getPackagePaths("com.janilla.frontend.cms", false).filter(Files::isRegularFile).toList();
-		var pp3 = Java.getPackagePaths(BlankFrontend.class.getPackageName(), false).filter(Files::isRegularFile)
-				.toList();
-		var pp4 = Java.getPackagePaths(WebsiteFrontend.class.getPackageName(), false).filter(Files::isRegularFile)
-				.toList();
-		return Map.of("/base", pp1, "/cms", pp2, "/blank", pp3, "", pp4);
+	protected void putResourcePrefixes() {
+		super.putResourcePrefixes();
+		resourcePrefixes.put("com.janilla.frontend.cms", "/cms");
+		resourcePrefixes.put("com.janilla.blanktemplate.frontend", "/blank");
+		resourcePrefixes.put("com.janilla.websitetemplate.frontend", "");
 	}
 }

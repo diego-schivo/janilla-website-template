@@ -49,7 +49,9 @@ export default class Header extends WebComponent {
                 ...(this.closest("app-element").customState.header?.navItems ?? []).map(x => ({
                     $template: "link",
                     ...x,
-                    document: x.type.name === "REFERENCE" ? `${x.document.$type}:${x.document.slug}` : null,
+                    document: x.type.name === "REFERENCE" && x.document
+                        ? `${x.document.$type}:${x.document.slug}`
+                        : null,
                     href: x.type.name === "CUSTOM" ? x.uri : null,
                     target: x.newTab ? "_blank" : null
                     //class: this.dataset.path === x.uri || this.dataset.path.startsWith(x.uri + "/") ? "active" : null

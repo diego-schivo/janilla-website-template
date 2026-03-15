@@ -31,7 +31,7 @@ import java.util.Properties;
 import com.janilla.frontend.cms.CmsDataFetching;
 import com.janilla.http.HttpClient;
 import com.janilla.http.HttpCookie;
-import com.janilla.ioc.DiFactory;
+import com.janilla.java.Converter;
 import com.janilla.java.SimpleParameterizedType;
 import com.janilla.java.UriQueryBuilder;
 import com.janilla.persistence.ListPortion;
@@ -44,8 +44,8 @@ import com.janilla.websitetemplate.SearchResult;
 public class WebsiteDataFetching extends CmsDataFetching {
 
 	public WebsiteDataFetching(Properties configuration, String configurationKey, HttpClient httpClient,
-			DiFactory diFactory) {
-		super(configuration, configurationKey, httpClient, diFactory);
+			Converter converter) {
+		super(configuration, configurationKey, httpClient, converter);
 	}
 
 	public Footer footer() {
