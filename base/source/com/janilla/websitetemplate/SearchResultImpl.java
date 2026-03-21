@@ -30,7 +30,7 @@ import java.util.List;
 import com.janilla.cms.Document;
 import com.janilla.cms.DocumentStatus;
 
-record SearchResultImpl(Long id, Document<?> document, String title, String slug, Meta meta, List<Long> categories,
+record SearchResultImpl(Long id, Document<?> document, String title, String slug, Meta meta, List<Category> categories,
 		Instant createdAt, Instant updatedAt, DocumentStatus documentStatus, Instant publishedAt)
 		implements SearchResult {
 }

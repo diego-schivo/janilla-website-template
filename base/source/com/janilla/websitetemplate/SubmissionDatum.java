@@ -22,18 +22,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.janilla.websitetemplate.backend;
+package com.janilla.websitetemplate;
 
-import java.time.Instant;
-import java.util.List;
+public interface SubmissionDatum {
 
-import com.janilla.cms.Document;
-import com.janilla.cms.DocumentStatus;
-import com.janilla.cms.Types;
-import com.janilla.persistence.Store;
-import com.janilla.websitetemplate.Form;
+	String field();
 
-@Store
-public record FormSubmission(Long id, @Types(Form.class) Long form, List<SubmissionDatum> submissionData,
-		Instant createdAt, Instant updatedAt, DocumentStatus documentStatus, Instant publishedAt) implements Document<Long> {
+	String value();
 }

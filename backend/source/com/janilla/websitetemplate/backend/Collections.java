@@ -30,6 +30,7 @@ import com.janilla.blanktemplate.Media;
 import com.janilla.cms.User;
 import com.janilla.websitetemplate.Category;
 import com.janilla.websitetemplate.Form;
+import com.janilla.websitetemplate.FormSubmission;
 import com.janilla.websitetemplate.Page;
 import com.janilla.websitetemplate.Post;
 import com.janilla.websitetemplate.SearchResult;
@@ -44,7 +45,7 @@ public interface Collections {
 
 	List<Category> categories();
 
-	List<User<?>> users();
+	List<User<Long>> users();
 
 	List<Redirect> redirects();
 

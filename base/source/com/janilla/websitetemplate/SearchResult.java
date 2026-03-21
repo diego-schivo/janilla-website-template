@@ -35,7 +35,7 @@ import com.janilla.persistence.Store;
 public interface SearchResult extends Document<Long> {
 
 	@Index
-	@Types({ PostImpl.class })
+	@Types({ Post.class })
 	Document<?> document();
 
 	String title();
@@ -44,5 +44,5 @@ public interface SearchResult extends Document<Long> {
 
 	Meta meta();
 
-	List<@Types(Category.class) Long> categories();
+	List<Category> categories();
 }

@@ -22,15 +22,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-//package com.janilla.websitetemplate.backend;
-//
-//import com.janilla.backend.cms.CmsReflectionJsonIterator;
-//import com.janilla.backend.persistence.Persistence;
-//import com.janilla.java.TypeResolver;
-//
-//public class WebsiteReflectionJsonIterator extends CmsReflectionJsonIterator {
-//
-//	public WebsiteReflectionJsonIterator(Object object, TypeResolver typeResolver, Persistence persistence) {
-//		super(object, typeResolver, persistence);
-//	}
-//}
+package com.janilla.websitetemplate;
+
+import java.util.List;
+
+import com.janilla.cms.Document;
+import com.janilla.persistence.Store;
+
+@Store
+public interface FormSubmission extends Document<Long> {
+
+	Form form();
+
+	List<SubmissionDatum> submissionData();
+}

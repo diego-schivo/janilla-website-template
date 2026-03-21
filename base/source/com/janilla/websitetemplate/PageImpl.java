@@ -29,13 +29,13 @@ import java.util.List;
 
 import com.janilla.cms.DocumentStatus;
 
-record PageImpl(Long id, String title, Hero hero, List<Object> layout, Meta meta, String slug, Instant createdAt,
-		Instant updatedAt, DocumentStatus documentStatus, Instant publishedAt) implements Page {
+record PageImpl(Long id, String title, Hero hero, List<Object> layout, Meta meta, Instant publishedAt, String slug,
+		Instant createdAt, Instant updatedAt, DocumentStatus documentStatus) implements Page {
 
 	public static PageImpl EMPTY = new PageImpl(null, null, null, null, null, null, null, null, null, null);
 
 	@Override
 	public Page withSlug(String slug) {
-		return new PageImpl(id, title, hero, layout, meta, slug, createdAt, updatedAt, documentStatus, publishedAt);
+		return new PageImpl(id, title, hero, layout, meta, publishedAt, slug, createdAt, updatedAt, documentStatus);
 	}
 }

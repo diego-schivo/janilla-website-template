@@ -85,6 +85,8 @@ public class WebsiteBackend extends BlankBackend {
 
 	@Override
 	protected boolean testDrafts(HttpExchange x) {
-		return super.testDrafts(x) && ((BackendHttpExchange) x).sessionUser().hasRole(domain.userRole("ADMIN"));
+		var u = super.testDrafts(x) ? ((BackendHttpExchange) x).sessionUser() : null;
+		var rr = u != null ? u.roles() : null;
+		return rr != null && rr.contains(domain.userRole("ADMIN"));
 	}
 }

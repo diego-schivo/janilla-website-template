@@ -31,6 +31,7 @@ import com.janilla.cms.User;
 import com.janilla.websitetemplate.Category;
 import com.janilla.websitetemplate.Footer;
 import com.janilla.websitetemplate.Form;
+import com.janilla.websitetemplate.FormSubmission;
 import com.janilla.websitetemplate.Header;
 import com.janilla.websitetemplate.Page;
 import com.janilla.websitetemplate.Post;

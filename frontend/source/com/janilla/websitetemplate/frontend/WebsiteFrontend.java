@@ -55,17 +55,6 @@ public class WebsiteFrontend extends BlankFrontend {
 		super(diFactory, configurationFile, configurationKey);
 	}
 
-//	@Override
-//	protected Map<String, List<Path>> resourcePaths() {
-//		var pp1 = Java.getPackagePaths("com.janilla.frontend", false).filter(Files::isRegularFile).toList();
-//		var pp2 = Java.getPackagePaths("com.janilla.frontend.cms", false).filter(Files::isRegularFile).toList();
-//		var pp3 = Java.getPackagePaths(BlankFrontend.class.getPackageName(), false).filter(Files::isRegularFile)
-//				.toList();
-//		var pp4 = Java.getPackagePaths(WebsiteFrontend.class.getPackageName(), false).filter(Files::isRegularFile)
-//				.toList();
-//		return Map.of("/base", pp1, "/cms", pp2, "/blank", pp3, "", pp4);
-//	}
-
 	@Override
 	protected void putResourcePrefixes() {
 		super.putResourcePrefixes();

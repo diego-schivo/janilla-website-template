@@ -66,7 +66,7 @@ export default class Admin extends CmsAdmin {
             case "redirects":
                 return ["from"];
             case "users":
-                return ["name", "email", "roles"];
+                return ["name", "email"];//, "roles"];
         }
         return super.headers(entitySlug);
     }
@@ -82,12 +82,16 @@ export default class Admin extends CmsAdmin {
                     case "confirmationMessage":
                     case "content":
                     case "description":
+                    case "introContent":
                     case "message":
                     case "richText":
                         return "rich-text";
                     case "confirmationType":
-                        //case "type":
                         return field.options.length <= 2 ? "radio-group" : "select";
+                    case "password":
+                        return "password";
+                    case "type":
+                        return field.parent.type === "Link" ? "radio-group" : "select";
                 }
                 break;
         }
@@ -102,7 +106,7 @@ export default class Admin extends CmsAdmin {
                     Content: ["layout"],
                     SEO: ["meta"]
                 };
-            case "PostImpl":
+            case "Post":
                 return {
                     Content: ["heroImage", "content"],
                     Meta: ["relatedPosts", "categories"],
@@ -116,7 +120,7 @@ export default class Admin extends CmsAdmin {
         switch (entity.$type) {
             case "Page":
                 return `/${entity.slug}`;
-            case "PostImpl":
+            case "Post":
                 return `/posts/${entity.slug}`;
         }
         return super.preview(entity);
@@ -126,7 +130,7 @@ export default class Admin extends CmsAdmin {
         switch (type) {
             case "Page":
                 return ["publishedAt", "slug"];
-            case "PostImpl":
+            case "Post":
                 return ["publishedAt", "slug", "authors"];
             case "SearchResult":
                 return ["document"];
@@ -142,7 +146,7 @@ export default class Admin extends CmsAdmin {
         //console.log("f", f);
         const x = super.formProperties(field);
         if (field.type === "User")
-            x.splice(x.findIndex(([k, _]) => k === "salt"), 4, ["password", null]);
+            x.splice(x.findIndex(([k, _]) => k === "salt"), 5, ["password", null]);
         //console.log("x", x);
         return x;
     }

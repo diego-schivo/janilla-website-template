@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.janilla.websitetemplate.backend;
+package com.janilla.websitetemplate;
 
-public record SubmissionDatum(String field, String value) {
+record SubmissionDatumImpl(String field, String value) implements SubmissionDatum {
 }

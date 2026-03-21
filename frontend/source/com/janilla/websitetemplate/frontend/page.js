@@ -51,6 +51,7 @@ export default class Page extends WebComponent {
         if (this.dataset.slug != hs.page?.slug) {
             const u = new URL(`${a.dataset.apiUrl}/pages`, location.href);
             u.searchParams.append("slug", this.dataset.slug);
+            u.searchParams.append("depth", 1);
             const p = (await (await fetch(u)).json())[0] ?? (this.dataset.slug === "home" ? { slug: "home" } : null);
             history.replaceState(hs = {
                 ...hs,

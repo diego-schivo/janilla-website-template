@@ -24,18 +24,14 @@
  */
 package com.janilla.websitetemplate.backend;
 
-import java.time.OffsetDateTime;
-import java.util.List;
 import java.util.function.Predicate;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import com.janilla.backend.cms.AbstractCollectionApi;
 import com.janilla.backend.persistence.Persistence;
 import com.janilla.backend.smtp.SmtpClient;
 import com.janilla.http.HttpExchange;
 import com.janilla.web.Handle;
-import com.janilla.websitetemplate.Form;
+import com.janilla.websitetemplate.FormSubmission;
 import com.janilla.websitetemplate.WebsiteDomain;
 
 @Handle(path = "/api/form-submissions")
@@ -52,20 +48,21 @@ public class FormSubmissionApi extends AbstractCollectionApi<Long, FormSubmissio
 		this.smtpClient = smtpClient;
 	}
 
-	private static final Pattern PLACEHOLDER = Pattern.compile("\\$\\{(.*?)\\}");
+//	private static final Pattern PLACEHOLDER = Pattern.compile("\\$\\{(.*?)\\}");
 
 	@Override
 	@Handle(method = "POST")
 	public FormSubmission create(FormSubmission document) {
-		var d = super.create(document);
-		var m = d.submissionData().stream().collect(Collectors.toMap(SubmissionDatum::field, SubmissionDatum::value));
-		var f = persistence.crud(Form.class).read(d.form());
-		if (f.confirmationType().equals(domain.formConfirmationType("MESSAGE")))
-			for (var e : f.emails()) {
-				var ss = List.of(e.emailFrom(), e.emailTo(), e.subject(), e.message()).stream()
-						.map(x -> PLACEHOLDER.matcher(x).replaceAll(y -> m.get(y.group(1)))).toList();
-				smtpClient.sendMail(OffsetDateTime.now(), ss.get(0), ss.get(1), ss.get(2), ss.get(3));
-			}
-		return d;
+//		var d = super.create(document);
+//		var m = d.submissionData().stream().collect(Collectors.toMap(SubmissionDatum::field, SubmissionDatum::value));
+//		var f = persistence.crud(Form.class).read(d.form());
+//		if (f.confirmationType().equals(domain.formConfirmationType("MESSAGE")))
+//			for (var e : f.emails()) {
+//				var ss = List.of(e.emailFrom(), e.emailTo(), e.subject(), e.message()).stream()
+//						.map(x -> PLACEHOLDER.matcher(x).replaceAll(y -> m.get(y.group(1)))).toList();
+//				smtpClient.sendMail(OffsetDateTime.now(), ss.get(0), ss.get(1), ss.get(2), ss.get(3));
+//			}
+//		return d;
+		throw new RuntimeException();
 	}
 }

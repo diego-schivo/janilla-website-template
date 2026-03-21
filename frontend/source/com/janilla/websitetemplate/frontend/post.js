@@ -41,9 +41,17 @@ export default class Post extends WebComponent {
     async updateDisplay() {
         let hs = history.state;
         const a = this.closest("app-element");
+
+        if (!Object.hasOwn(hs, "post"))
+            history.replaceState(hs = {
+                ...hs,
+                post: a.serverState?.post
+            }, "");
+
         if (this.dataset.slug != hs.post?.slug) {
             const u = new URL(`${a.dataset.apiUrl}/posts`, location.href);
             u.searchParams.append("slug", this.dataset.slug);
+            u.searchParams.append("depth", 1);
             const p = (await (await fetch(u)).json()).elements[0];
             history.replaceState(hs = {
                 ...hs,

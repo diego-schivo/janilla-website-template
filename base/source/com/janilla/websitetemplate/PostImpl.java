@@ -32,6 +32,6 @@ import com.janilla.cms.DocumentStatus;
 import com.janilla.cms.User;
 
 record PostImpl(Long id, String title, Media heroImage, List<?> content, List<Post> relatedPosts,
-		List<Category> categories, Meta meta, String slug, List<User<?>> authors, Instant createdAt, Instant updatedAt,
-		DocumentStatus documentStatus, Instant publishedAt) implements Post {
+		List<Category> categories, Meta meta, String slug, List<User<Long>> authors, Instant createdAt,
+		Instant updatedAt, DocumentStatus documentStatus, Instant publishedAt) implements Post {
 }

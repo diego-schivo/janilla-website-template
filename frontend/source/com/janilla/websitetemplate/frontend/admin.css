@@ -39,9 +39,14 @@
 @import "/cms/admin-join.css";
 @import "/cms/admin-list.css";
 @import "/cms/admin-login.css";
+@import "/cms/admin-page-controls.css";
+@import "/cms/admin-pagination.css";
+@import "/cms/admin-per-page.css";
 @import "/cms/admin-radio-group.css";
 @import "/cms/admin-relationship.css";
 @import "/cms/admin-rich-text.css";
+@import "/cms/admin-search-bar.css";
+@import "/cms/admin-search-filter.css";
 @import "/cms/admin-select.css";
 @import "/cms/admin-slug.css";
 @import "/cms/admin-tabs.css";

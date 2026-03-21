@@ -41,18 +41,6 @@ public class PageApi extends AbstractCollectionApi<Long, Page> {
 		super(Page.class, drafts, persistence, "title");
 	}
 
-//	@Handle(method = "GET")
-//	public List<Page> read(@Bind("slug") String slug, HttpExchange exchange) {
-//		return read(slug, drafts.test(exchange));
-//	}
-//
-//	public List<Page> read(String slug, boolean draft) {
-//		return crud().read(
-//				slug != null && !slug.isBlank() ? crud().filter(draft ? "slugDraft" : "slug", new Object[] { slug })
-//						: crud().list(),
-//				draft);
-//	}
-
 	@Handle(method = "GET")
 	public ListPortion<Page> read(String search, Boolean reverse, Long skip, Long limit, Integer depth, String slug,
 			HttpExchange exchange) {
