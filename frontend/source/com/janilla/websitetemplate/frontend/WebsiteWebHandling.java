@@ -29,6 +29,7 @@ import java.util.stream.Stream;
 
 import com.janilla.blanktemplate.frontend.BlankFrontendHttpExchange;
 import com.janilla.blanktemplate.frontend.BlankWebHandling;
+import com.janilla.frontend.Index;
 import com.janilla.frontend.IndexFactory;
 import com.janilla.http.HttpExchange;
 import com.janilla.persistence.ListPortion;
@@ -51,12 +52,12 @@ public class WebsiteWebHandling extends BlankWebHandling {
 	}
 
 	@Override
-	public Object page(HttpExchange exchange) {
+	public Index home(HttpExchange exchange) {
 		return page("home", exchange);
 	}
 
 	@Handle(method = "GET", path = "/([\\w\\d-]+)")
-	public Object page(String slug, HttpExchange exchange) {
+	public Index page(String slug, HttpExchange exchange) {
 //		IO.println("WebHandling.page, slug=" + slug);
 		var pp = dataFetching.pages(slug, 1, ((BlankFrontendHttpExchange) exchange).tokenCookie());
 		if (pp.totalSize() == 0) {
@@ -79,7 +80,7 @@ public class WebsiteWebHandling extends BlankWebHandling {
 	}
 
 	@Handle(method = "GET", path = "/posts/([\\w\\d-]+)")
-	public Object post(String slug, HttpExchange exchange) {
+	public Index post(String slug, HttpExchange exchange) {
 //		IO.println("WebHandling.post, slug=" + slug);
 		var pp = dataFetching.posts(slug, 1, ((BlankFrontendHttpExchange) exchange).tokenCookie());
 		if (pp.totalSize() == 0)
@@ -92,7 +93,7 @@ public class WebsiteWebHandling extends BlankWebHandling {
 	}
 
 	@Handle(method = "GET", path = "/posts")
-	public Object posts(HttpExchange exchange) {
+	public Index posts(HttpExchange exchange) {
 //		IO.println("WebHandling.posts");
 		var i = indexFactory.newIndex(exchange);
 		i.app().state().put("posts", dataFetching.posts(null, 1, ((BlankFrontendHttpExchange) exchange).tokenCookie()));
@@ -102,7 +103,7 @@ public class WebsiteWebHandling extends BlankWebHandling {
 	}
 
 	@Handle(method = "GET", path = "/search")
-	public Object search(@Bind("q") String query, HttpExchange exchange) {
+	public Index search(@Bind("q") String query, HttpExchange exchange) {
 //		IO.println("WebHandling.search, query=" + query);
 		var i = indexFactory.newIndex(exchange);
 		i.app().state().put("results", dataFetching.searchResults(query));
